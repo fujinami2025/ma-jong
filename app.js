@@ -66,14 +66,16 @@ function startGame(roomId) {
 
   room.players.forEach((player, i) => {
     player.send(JSON.stringify({
-      type: 'hand',
-      hand: hands[i],
-      index: i
+      type: 'start',
+      playerIndex: i,
+      roomId,
+      hand: hands[i]
     }));
   });
 
   room.hands = hands;
   room.currentTurn = 0;
+  console.log('手牌:', hands);
 }
 
 function shuffle(array) {

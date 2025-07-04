@@ -44,13 +44,18 @@
       const data = JSON.parse(event.data)
 
       if (data.type === 'start') {
-        // 2人揃ったらゲーム開始画面に切り替え
         statusDiv.style.display = 'none'
         gameDiv.style.display = 'block'
         playerSpan.textContent = data.playerIndex === 0 ? '先手' : '後手'
         roomSpan.textContent = data.roomId
-      }
 
+        // 配牌を表示
+        if (data.hand) {
+          const handDisplay = document.createElement('p');
+          handDisplay.textContent = 'あなたの手牌: ' + data.hand.join(', ');
+          gameDiv.appendChild(handDisplay);
+        }
+      }
       if (data.type === 'hand') {
         console.log('配られた手牌:', data.hand);
         // 手牌を画面に表示する処理をここに追加
