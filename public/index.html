@@ -2,21 +2,53 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>二人対戦麻雀（ロビー）</title>
+  <title>2人対戦麻雀（仮）</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    #status { font-size: 1.5em; margin-bottom: 20px; }
+  </style>
 </head>
 <body>
-  <h1>待機中...</h1>
+  <div id="status">サーバーに接続中...</div>
+  <div id="game" style="display: none;">
+    <h2>対戦スタート！</h2>
+    <p>あなたは <span id="player"></span> プレイヤーです。</p>
+    <p>ルームID: <span id="room"></span></p>
+    <!-- 対戦ゲーム画面などをここに追加していけます -->
+  </div>
 
   <script>
-    const ws = new WebSocket('ws://' + location.host + '/ws');
+    const statusDiv = document.getElementById('status')
+    const gameDiv = document.getElementById('game')
+    const playerSpan = document.getElementById('player')
+    const roomSpan = document.getElementById('room')
+
+    const ws = new WebSocket(`ws://${location.host}/ws`)
+
+    ws.onopen = () => {
+      statusDiv.textContent = '待機中… 他のプレイヤーを待っています。'
+    }
 
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data)
+
       if (data.type === 'start') {
-        // 対戦画面に遷移する（例: 対戦ページに飛ぶ）
-        window.location.href = 'game.html?player=' + data.playerIndex;
+        // 2人揃ったらゲーム開始画面に切り替え
+        statusDiv.style.display = 'none'
+        gameDiv.style.display = 'block'
+        playerSpan.textContent = data.playerIndex === 0 ? '先手' : '後手'
+        roomSpan.textContent = data.roomId
       }
-    };
+
+      if (data.type === 'waiting') {
+        // （オプション）待機人数を表示
+        statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`
+      }
+    }
+
+    ws.onclose = () => {
+      statusDiv.textContent = 'サーバーとの接続が切断されました。'
+    }
   </script>
 </body>
 </html>
