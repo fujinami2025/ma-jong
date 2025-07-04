@@ -51,6 +51,15 @@
         roomSpan.textContent = data.roomId
       }
 
+      if (data.type === 'hand') {
+        console.log('配られた手牌:', data.hand);
+        // 手牌を画面に表示する処理をここに追加
+        // 例: 文字列で表示
+        const handDisplay = document.createElement('p');
+        handDisplay.textContent = 'あなたの手牌: ' + data.hand.join(', ');
+        gameDiv.appendChild(handDisplay);
+      }
+
       if (data.type === 'waiting') {
         // （オプション）待機人数を表示
         statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`

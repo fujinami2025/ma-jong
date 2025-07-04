@@ -53,3 +53,32 @@ app.ws('/ws', (ws, req) => {
 app.listen(port, () => {
   console.log(`🚀 サーバー起動中: http://localhost:${port}`)
 })
+
+function startGame(roomId) {
+  const room = rooms[roomId];
+  let tiles = Array.from({ length: 136 }, (_, i) => i);
+  shuffle(tiles);
+
+  const hands = [
+    tiles.slice(0, 13),
+    tiles.slice(13, 26)
+  ];
+
+  room.players.forEach((player, i) => {
+    player.send(JSON.stringify({
+      type: 'hand',
+      hand: hands[i],
+      index: i
+    }));
+  });
+
+  room.hands = hands;
+  room.currentTurn = 0;
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
