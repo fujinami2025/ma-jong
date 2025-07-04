@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <title>2人対戦麻雀（仮）</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-    #status { font-size: 1.5em; margin-bottom: 20px; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #status {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
+
 <body>
   <div id="status">サーバーに接続中...</div>
   <div id="game" style="display: none;">
@@ -23,7 +33,8 @@
     const playerSpan = document.getElementById('player')
     const roomSpan = document.getElementById('room')
 
-    const ws = new WebSocket(`ws://${location.host}/ws`)
+    const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${protocol}://${location.host}/ws`);
 
     ws.onopen = () => {
       statusDiv.textContent = '待機中… 他のプレイヤーを待っています。'
@@ -51,4 +62,5 @@
     }
   </script>
 </body>
+
 </html>
