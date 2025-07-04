@@ -5,26 +5,30 @@ const app = express()
 expressWs(app)
 
 const port = process.env.PORT || 3001
-let connects = []
+let waitingPlayers = []
 
 app.use(express.static('public'))
 
 app.ws('/ws', (ws, req) => {
-  connects.push(ws)
+  console.log('New connection')
+
+  waitingPlayers.push(ws)
+
+  if (waitingPlayers.length === 2) {
+    // プレイヤーが2人揃ったら両方にstartメッセージを送る
+    waitingPlayers.forEach((player, index) => {
+      player.send(JSON.stringify({ type: 'start', playerIndex: index }))
+    })
+  }
 
   ws.on('message', (message) => {
     console.log('Received:', message)
-
-    connects.forEach((socket) => {
-      if (socket.readyState === 1) {
-        // Check if the connection is open
-        socket.send(message)
-      }
-    })
+    // 対戦中ロジックはここに追加
   })
 
   ws.on('close', () => {
-    connects = connects.filter((conn) => conn !== ws)
+    console.log('Connection closed')
+    waitingPlayers = waitingPlayers.filter((conn) => conn !== ws)
   })
 })
 
