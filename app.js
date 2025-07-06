@@ -69,8 +69,8 @@ function startGame(roomId) {
   shuffle(tiles);
 
   const hands = [
-    tiles.slice(0, 12),
-    tiles.slice(13, 25)
+    tiles.slice(0, 13),
+    tiles.slice(14, 26)
   ];
 
   room.players.forEach((player, i) => {
