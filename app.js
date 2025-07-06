@@ -68,10 +68,10 @@ function startGame(roomId) {
   let tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
 
-  const hands = [
-    tiles.slice(0, 13).sort((a,b=>a-b)),
-    tiles.slice(13, 26).sort((a,b=>a-b))
-  ];
+const hands = [
+  tiles.slice(0, 13).sort((a, b) => a - b),     // プレイヤー1の手牌（昇順）
+  tiles.slice(13, 26).sort((a, b) => a - b)     // プレイヤー2の手牌（昇順）
+];
 
   room.players.forEach((player, i) => {
     player.send(JSON.stringify({
