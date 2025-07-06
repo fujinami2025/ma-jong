@@ -12,7 +12,7 @@ app.use(express.static('public'))
 let waitingPlayers = []
 let roomCounter = 1
 let waitingCount = 0 // ログ出力用に明示
-
+const rooms = {}
 app.ws('/ws', (ws, req) => {
   console.log('🔌 新しいクライアントが接続しました')
 
@@ -28,20 +28,28 @@ app.ws('/ws', (ws, req) => {
   })
 
   // 2人揃ったらゲーム開始
-  if (waitingPlayers.length >= 2) {
-    const roomId = `room-${roomCounter++}`
-    const players = waitingPlayers.splice(0, 2)
-    waitingCount -= 2
+if (waitingPlayers.length >= 2) {
+  const roomId = `room-${roomCounter++}`
+  const players = waitingPlayers.splice(0, 2)
+  waitingCount -= 2
 
-    console.log(`🎮 ルーム作成: ${roomId} で 2人の対戦を開始します`)
+  console.log(`🎮 ルーム作成: ${roomId} で 2人の対戦を開始します`)
 
-    players.forEach((player, index) => {
-      if (player.readyState === 1) {
-        player.send(JSON.stringify({ type: 'start', playerIndex: index, roomId }))
-      }
-    })
-    startGame(roomId);
-  }
+  // ここでルーム情報を保存
+  rooms[roomId] = {
+    players
+  };
+
+  // 対戦開始メッセージ送信
+  players.forEach((player, index) => {
+    if (player.readyState === 1) {
+      player.send(JSON.stringify({ type: 'start', playerIndex: index, roomId }))
+    }
+  });
+
+  // 対戦開始処理
+  startGame(roomId);
+}
 
   ws.on('close', () => {
     console.log('❌ クライアントが切断されました')
