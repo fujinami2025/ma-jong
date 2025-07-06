@@ -40,6 +40,7 @@ app.ws('/ws', (ws, req) => {
         player.send(JSON.stringify({ type: 'start', playerIndex: index, roomId }))
       }
     })
+    startGame(roomId);
   }
 
   ws.on('close', () => {
