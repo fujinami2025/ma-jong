@@ -51,8 +51,29 @@
 
         // 配牌を表示
         if (data.hand) {
+          /*
           const handDisplay = document.createElement('p');
           handDisplay.textContent = 'あなたの手牌: ' + data.hand.join(', ');
+          gameDiv.appendChild(handDisplay);
+          */
+          const handDisplay = document.createElement('div');
+          handDisplay.id = 'hand-display';
+          handDisplay.textContent = 'あなたの手牌: ';
+          data.hand.forEach(pai => {
+            const btn = document.createElement('button');
+            btn.textContent = pai;
+            btn.onclick = () => {
+              // 打牌メッセージをサーバーへ送信
+              ws.send(JSON.stringify({
+                type: 'dahai',
+                roomId: data.roomId,
+                playerIndex: data.playerIndex,
+                pai
+              }));
+              btn.disabled = true; // 打ったら押せなくする
+            };
+            handDisplay.appendChild(btn);
+          });
           gameDiv.appendChild(handDisplay);
         }
       }
@@ -63,6 +84,12 @@
         const handDisplay = document.createElement('p');
         handDisplay.textContent = 'あなたの手牌: ' + data.hand.join(', ');
         gameDiv.appendChild(handDisplay);
+      }
+
+      if (data.type === 'dahai') {
+        const log = document.createElement('p');
+        log.textContent = `プレイヤー${data.playerIndex + 1} が ${data.pai} を捨てました`;
+        gameDiv.appendChild(log);
       }
 
       if (data.type === 'waiting') {
