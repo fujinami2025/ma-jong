@@ -65,6 +65,10 @@ app.ws('/ws', (ws, req) => {
       const pai = data.pai;
 
       // 捨て牌の処理（room.handsなどを更新してもいい）
+      const index = room.hands[playerIndex].indexOf(pai);
+      if (index !== -1) {
+        room.hands[playerIndex].splice(index, 1);
+      }
       // 例えば捨て牌リストを作る場合はroom.discards[playerIndex] = [...];など管理
 
       // 他のプレイヤーに捨て牌を通知
