@@ -2,16 +2,6 @@ const express = require('express')
 const expressWs = require('express-ws')
 //https://www.npmjs.com/package/@kobalab/majiang-core
 const Majiang = require('@kobalab/majiang-core')
-/*メモ　使いそうなやつ
-手牌を表す
-const shoupai = Majiang.Shoupai.fromString('123m456p789s東東東發');
-向聴数（あと何枚でテンパイか）を返す
-const xiangting = Majiang.Util.xiangting(shoupai);
-テンパイ時の待ち牌一覧を返す
-const tingpai = Majiang.Util.tingpai(shoupai);
-和了判定・役判定・符計算・得点算出を行う
-const huleResult = Majiang.Util.hule({...});
-*/
 
 const app = express()
 expressWs(app)
@@ -40,30 +30,76 @@ app.ws('/ws', (ws, req) => {
   })
 
   // 2人揃ったらゲーム開始
-if (waitingPlayers.length >= 2) {
-  const roomId = `room-${roomCounter++}`
-  const players = waitingPlayers.splice(0, 2)
-  waitingCount -= 2
+  if (waitingPlayers.length >= 2) {
+    const roomId = `room-${roomCounter++}`
+    const players = waitingPlayers.splice(0, 2)
+    waitingCount -= 2
 
-  console.log(`🎮 ルーム作成: ${roomId} で 2人の対戦を開始します`)
+    console.log(`🎮 ルーム作成: ${roomId} で 2人の対戦を開始します`)
 
-  // ここでルーム情報を保存
-  rooms[roomId] = {
-    players
-  };
+    // ここでルーム情報を保存
+    rooms[roomId] = {
+      players
+    };
 
-  // 対戦開始メッセージ送信
-  /*
-  players.forEach((player, index) => {
-    if (player.readyState === 1) {
-      player.send(JSON.stringify({ type: 'start', playerIndex: index, roomId }))
+    // 対戦開始メッセージ送信
+    /*
+    players.forEach((player, index) => {
+      if (player.readyState === 1) {
+        player.send(JSON.stringify({ type: 'start', playerIndex: index, roomId }))
+      }
+    });
+    */
+
+    // 対戦開始処理
+    startGame(roomId);
+  }
+
+  ws.on('message', (msg) => {
+    const data = JSON.parse(msg);
+
+    if (data.type === 'dahai') {
+      const room = rooms[data.roomId];
+      if (!room) return;
+      const playerIndex = data.playerIndex;
+      const pai = data.pai;
+
+      // 捨て牌の処理（room.handsなどを更新してもいい）
+      // 例えば捨て牌リストを作る場合はroom.discards[playerIndex] = [...];など管理
+
+      // 他のプレイヤーに捨て牌を通知
+      room.players.forEach((player, i) => {
+        if (player !== ws && player.readyState === 1) {
+          player.send(JSON.stringify({
+            type: 'dahai',
+            playerIndex,
+            pai
+          }));
+        }
+      });
+
+      // ターン交代
+      room.currentTurn = (room.currentTurn + 1) % 2;
+
+      // ツモ（山から1枚引く）メッセージを次のプレイヤーに送る
+      const nextPlayer = room.players[room.currentTurn];
+      if (room.mountain.length > 0) {
+        const nextPai = room.mountain.shift(); // 山から1枚引く
+        room.hands[room.currentTurn].push(nextPai);
+        room.hands[room.currentTurn].sort((a, b) => a - b);
+
+        if (nextPlayer.readyState === 1) {
+          nextPlayer.send(JSON.stringify({
+            type: 'tsumo',
+            pai: nextPai,
+            hand: room.hands[room.currentTurn]
+          }));
+        }
+      } else {
+        // 山が無くなった場合は流局処理などをここで
+      }
     }
   });
-  */
-
-  // 対戦開始処理
-  startGame(roomId);
-}
 
   ws.on('close', () => {
     console.log('❌ クライアントが切断されました')
@@ -82,10 +118,12 @@ function startGame(roomId) {
   let tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
 
-const hands = [
-  tiles.slice(0, 13).sort((a, b) => a - b),     // プレイヤー1の手牌（昇順）
-  tiles.slice(13, 26).sort((a, b) => a - b)     // プレイヤー2の手牌（昇順）
-];
+  const hands = [
+    tiles.slice(0, 13).sort((a, b) => a - b),     // プレイヤー1の手牌（昇順）
+    tiles.slice(13, 26).sort((a, b) => a - b)     // プレイヤー2の手牌（昇順）
+  ];
+
+  const mountain = tiles.slice(26); // 配牌後の山牌を保持
 
   room.players.forEach((player, i) => {
     player.send(JSON.stringify({
@@ -97,6 +135,7 @@ const hands = [
   });
 
   room.hands = hands;
+  room.mountain = mountain;
   room.currentTurn = 0;
   console.log('手牌:', hands);
 }
