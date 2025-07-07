@@ -99,6 +99,7 @@
           const btn = document.createElement('button');
           btn.textContent = pai;
           btn.onclick = () => {
+            btn.remove();
             ws.send(JSON.stringify({
               type: 'dahai',
               roomId: data.roomId,
