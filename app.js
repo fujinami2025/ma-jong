@@ -51,13 +51,15 @@ if (waitingPlayers.length >= 2) {
   rooms[roomId] = {
     players
   };
-  
+
   // 対戦開始メッセージ送信
+  /*
   players.forEach((player, index) => {
     if (player.readyState === 1) {
       player.send(JSON.stringify({ type: 'start', playerIndex: index, roomId }))
     }
   });
+  */
 
   // 対戦開始処理
   startGame(roomId);
