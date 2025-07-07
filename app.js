@@ -129,6 +129,11 @@ function startGame(roomId) {
 
   const mountain = tiles.slice(26); // 配牌後の山牌を保持
 
+  // 最初のツモ（プレイヤー0が1枚ツモって14枚に）
+  const firstDraw = mountain.shift();
+  hands[0].push(firstDraw);
+  hands[0].sort((a, b) => a - b);
+
   room.players.forEach((player, i) => {
     player.send(JSON.stringify({
       type: 'start',
