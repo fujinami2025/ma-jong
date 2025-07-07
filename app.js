@@ -1,5 +1,17 @@
 const express = require('express')
 const expressWs = require('express-ws')
+//https://www.npmjs.com/package/@kobalab/majiang-core
+const Majiang = require('@kobalab/majiang-core')
+/*メモ　使いそうなやつ
+手牌を表す
+const shoupai = Majiang.Shoupai.fromString('123m456p789s東東東發');
+向聴数（あと何枚でテンパイか）を返す
+const xiangting = Majiang.Util.xiangting(shoupai);
+テンパイ時の待ち牌一覧を返す
+const tingpai = Majiang.Util.tingpai(shoupai);
+和了判定・役判定・符計算・得点算出を行う
+const huleResult = Majiang.Util.hule({...});
+*/
 
 const app = express()
 expressWs(app)
