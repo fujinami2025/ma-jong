@@ -32,6 +32,8 @@
     const gameDiv = document.getElementById('game')
     const playerSpan = document.getElementById('player')
     const roomSpan = document.getElementById('room')
+    let myPlayerIndex = null;
+    let myRoomId = null;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
@@ -48,6 +50,8 @@
         gameDiv.style.display = 'block'
         playerSpan.textContent = data.playerIndex === 0 ? '先手' : '後手'
         roomSpan.textContent = data.roomId
+        myPlayerIndex = data.playerIndex;
+        myRoomId = data.roomId;
 
         // 配牌を表示
         if (data.hand) {
@@ -99,14 +103,14 @@
           const btn = document.createElement('button');
           btn.textContent = pai;
           btn.onclick = () => {
+            btn.remove();
             const log = document.createElement('p');
             log.textContent = `あなたは ${pai} を捨てました`;
             gameDiv.appendChild(log);
-            btn.remove();
             ws.send(JSON.stringify({
               type: 'dahai',
-              roomId: data.roomId,
-              playerIndex: data.playerIndex,
+              roomId: myRoomId,
+              playerIndex: myPlayerIndex,
               pai
             }));
             btn.disabled = true;
