@@ -96,7 +96,9 @@ app.ws('/ws', (ws, req) => {
           nextPlayer.send(JSON.stringify({
             type: 'tsumo',
             pai: nextPai,
-            hand: room.hands[room.currentTurn]
+            hand: room.hands[room.currentTurn],
+            playerIndex: room.currentTurn,
+            roomId: data.roomId
           }));
         }
       } else {
