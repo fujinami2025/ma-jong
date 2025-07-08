@@ -16,20 +16,34 @@
       margin-bottom: 20px;
     }
 
-    img {
-      width: 40px;
-      margin: 2px;
-      cursor: pointer;
+    #discards-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .discards {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 
 <body>
   <div id="status">サーバーに接続中...</div>
+
   <div id="game" style="display: none;">
     <h2>対戦スタート！</h2>
     <p>あなたは <span id="player"></span> プレイヤーです。</p>
     <p>ルームID: <span id="room"></span></p>
+
+    <div id="hand-display"></div>
+
+    <div id="discards-container">
+      <!-- 相手と自分の捨て牌がここに並ぶ -->
+    </div>
   </div>
 
   <script>
@@ -37,10 +51,11 @@
     const gameDiv = document.getElementById('game');
     const playerSpan = document.getElementById('player');
     const roomSpan = document.getElementById('room');
+    const handDiv = document.getElementById('hand-display');
+    const discardsContainer = document.getElementById('discards-container');
 
     let myPlayerIndex = null;
     let myRoomId = null;
-    let currentHand = [];
     let canDiscard = false;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
@@ -61,28 +76,28 @@
         myPlayerIndex = data.playerIndex;
         myRoomId = data.roomId;
 
-        if (data.hand) {
-          currentHand = data.hand.slice().sort((a, b) => a - b);
-          canDiscard = (data.playerIndex === 0);
-          renderHand();
-        }
+        if (data.playerIndex === 0) canDiscard = true; // 先手は最初に捨てられる
+
+        // 配牌を表示
+        if (data.hand) showHand(data.hand);
       }
 
       if (data.type === 'tsumo') {
-        currentHand.push(data.pai);
-        currentHand.sort((a, b) => a - b);
-        canDiscard = true;
-        renderHand();
+        if (data.playerIndex === myPlayerIndex) {
+          showHand(data.hand);
+          canDiscard = true;
 
-        const tsumoLog = document.createElement('p');
-        tsumoLog.textContent = `あなたは牌 ${data.pai} をツモりました。`;
-        gameDiv.appendChild(tsumoLog);
+          const tsumoLog = document.createElement('p');
+          tsumoLog.textContent = `あなたは牌 ${data.pai} をツモりました。`;
+          gameDiv.appendChild(tsumoLog);
+        }
       }
 
       if (data.type === 'dahai') {
-        const log = document.createElement('p');
-        log.textContent = `プレイヤー${data.playerIndex + 1} が ${data.pai} を捨てました`;
-        gameDiv.appendChild(log);
+        showDiscardedTile(data.playerIndex, data.pai);
+        if (data.playerIndex === myPlayerIndex) {
+          canDiscard = false;
+        }
       }
 
       if (data.type === 'waiting') {
@@ -90,55 +105,64 @@
       }
     };
 
-    ws.onclose = () => {
-      statusDiv.textContent = 'サーバーとの接続が切断されました。';
-    };
-
-    function renderHand() {
-      const oldDisplay = document.getElementById('hand-display');
-      if (oldDisplay) oldDisplay.remove();
-
-      const handDisplay = document.createElement('div');
-      handDisplay.id = 'hand-display';
-      handDisplay.textContent = 'あなたの手牌: ';
-
-      currentHand.forEach(pai => {
+    function showHand(hand) {
+      handDiv.innerHTML = 'あなたの手牌: ';
+      const sorted = [...hand].sort((a, b) => a - b);
+      sorted.forEach(pai => {
         const img = document.createElement('img');
         img.src = `/dist/image/${getTileImage(pai)}`;
         img.alt = pai;
+        img.style.width = '40px';
+        img.style.margin = '2px';
+        img.style.cursor = 'pointer';
 
         img.onclick = () => {
-          if (!canDiscard) return; // ← 打牌不可なら無視
-
-          canDiscard = false; // ← 打牌したら不可にする
-          currentHand = currentHand.filter(p => p !== pai);
-          renderHand();
-
+          if (!canDiscard) return;
+          img.style.opacity = 0.5;
+          img.style.pointerEvents = 'none';
           ws.send(JSON.stringify({
             type: 'dahai',
             roomId: myRoomId,
             playerIndex: myPlayerIndex,
             pai
           }));
-
-          const log = document.createElement('p');
-          log.textContent = `あなたは ${pai} を捨てました。`;
-          gameDiv.appendChild(log);
         };
 
-        handDisplay.appendChild(img);
+        handDiv.appendChild(img);
       });
+    }
 
-      gameDiv.appendChild(handDisplay);
+    function showDiscardedTile(playerIndex, pai) {
+      const discardsId = `discards-player-${playerIndex}`;
+      let discardsDiv = document.getElementById(discardsId);
+
+      if (!discardsDiv) {
+        discardsDiv = document.createElement('div');
+        discardsDiv.id = discardsId;
+        discardsDiv.className = 'discards';
+        discardsContainer.appendChild(discardsDiv);
+      }
+
+      const img = document.createElement('img');
+      img.src = `/dist/image/${getTileImage(pai)}`;
+      img.alt = pai;
+      img.style.width = '40px';
+      img.style.margin = '2px';
+
+      discardsDiv.appendChild(img);
     }
 
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
-      if (typeIndex < 9) return `m${typeIndex + 1}.gif`;      // 萬子
-      if (typeIndex < 18) return `p${typeIndex - 9 + 1}.gif`;  // 筒子
-      if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`; // 索子
-      return `z${typeIndex - 27 + 1}.gif`;                     // 字牌
+      if (typeIndex < 9) return `m${typeIndex + 1}.gif`;       // 萬子
+      if (typeIndex < 18) return `p${typeIndex - 9 + 1}.gif`;   // 筒子
+      if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`;  // 索子
+      return `z${typeIndex - 27 + 1}.gif`;                      // 字牌
     }
+
+    ws.onclose = () => {
+      statusDiv.textContent = 'サーバーとの接続が切断されました。';
+    };
   </script>
 </body>
 
