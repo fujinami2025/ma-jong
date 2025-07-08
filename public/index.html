@@ -119,6 +119,7 @@
 
         img.onclick = () => {
           if (!canDiscard) return;
+          canDiscard = false; // ここで即座に false にする
           img.style.opacity = 0.5;
           img.style.pointerEvents = 'none';
           ws.send(JSON.stringify({
@@ -128,6 +129,7 @@
             pai
           }));
         };
+
 
         handDiv.appendChild(img);
       });
@@ -160,4 +162,3 @@
 </body>
 
 </html>
-あ
