@@ -63,6 +63,7 @@
 
         if (data.hand) {
           currentHand = data.hand.slice().sort((a, b) => a - b);
+          canDiscard = (data.playerIndex === 0);
           renderHand();
         }
       }
@@ -124,7 +125,7 @@
           log.textContent = `あなたは ${pai} を捨てました。`;
           gameDiv.appendChild(log);
         };
-        
+
         handDisplay.appendChild(img);
       });
 
