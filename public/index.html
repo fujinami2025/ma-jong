@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
   <meta charset="UTF-8" />
   <title>2人対戦麻雀（仮）</title>
@@ -15,6 +14,12 @@
       font-size: 1.5em;
       margin-bottom: 20px;
     }
+
+    img {
+      width: 40px;
+      margin: 2px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -24,111 +29,47 @@
     <h2>対戦スタート！</h2>
     <p>あなたは <span id="player"></span> プレイヤーです。</p>
     <p>ルームID: <span id="room"></span></p>
-    <!-- 対戦ゲーム画面などをここに追加していけます -->
   </div>
 
   <script>
-    const statusDiv = document.getElementById('status')
-    const gameDiv = document.getElementById('game')
-    const playerSpan = document.getElementById('player')
-    const roomSpan = document.getElementById('room')
+    const statusDiv = document.getElementById('status');
+    const gameDiv = document.getElementById('game');
+    const playerSpan = document.getElementById('player');
+    const roomSpan = document.getElementById('room');
+
     let myPlayerIndex = null;
     let myRoomId = null;
+    let currentHand = [];
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
 
     ws.onopen = () => {
-      statusDiv.textContent = '待機中… 他のプレイヤーを待っています。'
-    }
+      statusDiv.textContent = '待機中… 他のプレイヤーを待っています。';
+    };
 
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data)
+      const data = JSON.parse(event.data);
 
       if (data.type === 'start') {
-        statusDiv.style.display = 'none'
-        gameDiv.style.display = 'block'
-        playerSpan.textContent = data.playerIndex === 0 ? '先手' : '後手'
-        roomSpan.textContent = data.roomId
+        statusDiv.style.display = 'none';
+        gameDiv.style.display = 'block';
+        playerSpan.textContent = data.playerIndex === 0 ? '先手' : '後手';
+        roomSpan.textContent = data.roomId;
         myPlayerIndex = data.playerIndex;
         myRoomId = data.roomId;
 
-        // 配牌を表示
         if (data.hand) {
-          /*
-          const handDisplay = document.createElement('p');
-          handDisplay.textContent = 'あなたの手牌: ' + data.hand.join(', ');
-          gameDiv.appendChild(handDisplay);
-          */
-          const handDisplay = document.createElement('div');
-          handDisplay.id = 'hand-display';
-          handDisplay.textContent = 'あなたの手牌: ';
-          data.hand.forEach(pai => {
-            const img = document.createElement('img');
-            img.src = `/dist/image/${getTileImage(pai)}`; // 画像パスは適宜調整
-            img.alt = pai;
-            img.style.width = '40px'; // サイズは好みに応じて
-            img.style.margin = '2px';
-            img.style.cursor = 'pointer';
-
-            img.onclick = () => {
-              img.style.opacity = 0.5; // 打った感
-              img.style.pointerEvents = 'none'; // 2回押せない
-              ws.send(JSON.stringify({
-                type: 'dahai',
-                roomId: data.roomId,
-                playerIndex: data.playerIndex,
-                pai
-              }));
-            };
-            handDisplay.appendChild(img);
-          });
-          gameDiv.appendChild(handDisplay);
+          currentHand = data.hand.slice().sort((a, b) => a - b);
+          renderHand();
         }
-      }
-      if (data.type === 'hand') {
-        console.log('配られた手牌:', data.hand);
-        // 手牌を画面に表示する処理をここに追加
-        // 例: 文字列で表示
-        const handDisplay = document.createElement('p');
-        handDisplay.textContent = 'あなたの手牌: ' + data.hand.join(', ');
-        gameDiv.appendChild(handDisplay);
       }
 
       if (data.type === 'tsumo') {
-        // ツモ牌を受け取り、画面の手牌を更新する
-        const handDisplay = document.getElementById('hand-display');
-        if (handDisplay) handDisplay.remove();
+        currentHand.push(data.pai);
+        currentHand.sort((a, b) => a - b);
+        renderHand();
 
-        const newHandDisplay = document.createElement('div');
-        newHandDisplay.id = 'hand-display';
-        newHandDisplay.textContent = 'あなたの手牌: ';
-
-        data.hand.forEach(pai => {
-          const img = document.createElement('img');
-          img.src = `/dist/image/${getTileImage(pai)}`; // 画像パスは適宜調整
-          img.alt = pai;
-          img.style.width = '40px'; // サイズは好みに応じて
-          img.style.margin = '2px';
-          img.style.cursor = 'pointer';
-
-          img.onclick = () => {
-            img.style.opacity = 0.5; // 打った感
-            img.style.pointerEvents = 'none'; // 2回押せない
-            ws.send(JSON.stringify({
-              type: 'dahai',
-              roomId: data.roomId,
-              playerIndex: data.playerIndex,
-              pai
-            }));
-          };
-
-          handDisplay.appendChild(img);
-        });
-
-        gameDiv.appendChild(newHandDisplay);
-
-        // ツモ牌のログ表示（任意）
         const tsumoLog = document.createElement('p');
         tsumoLog.textContent = `あなたは牌 ${data.pai} をツモりました。`;
         gameDiv.appendChild(tsumoLog);
@@ -141,29 +82,56 @@
       }
 
       if (data.type === 'waiting') {
-        // （オプション）待機人数を表示
-        statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`
+        statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`;
       }
-    }
+    };
 
     ws.onclose = () => {
-      statusDiv.textContent = 'サーバーとの接続が切断されました。'
+      statusDiv.textContent = 'サーバーとの接続が切断されました。';
+    };
+
+    function renderHand() {
+      const oldDisplay = document.getElementById('hand-display');
+      if (oldDisplay) oldDisplay.remove();
+
+      const handDisplay = document.createElement('div');
+      handDisplay.id = 'hand-display';
+      handDisplay.textContent = 'あなたの手牌: ';
+
+      currentHand.forEach(pai => {
+        const img = document.createElement('img');
+        img.src = `/dist/image/${getTileImage(pai)}`;
+        img.alt = pai;
+
+        img.onclick = () => {
+          currentHand = currentHand.filter(p => p !== pai);
+          renderHand();
+
+          ws.send(JSON.stringify({
+            type: 'dahai',
+            roomId: myRoomId,
+            playerIndex: myPlayerIndex,
+            pai
+          }));
+
+          const log = document.createElement('p');
+          log.textContent = `あなたは ${pai} を捨てました。`;
+          gameDiv.appendChild(log);
+        };
+
+        handDisplay.appendChild(img);
+      });
+
+      gameDiv.appendChild(handDisplay);
     }
 
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
-
-      if (typeIndex < 9) {
-        return `m${typeIndex + 1}.gif`;  // 萬子
-      } else if (typeIndex < 18) {
-        return `p${typeIndex - 9 + 1}.gif`;  // 筒子
-      } else if (typeIndex < 27) {
-        return `s${typeIndex - 18 + 1}.gif`;  // 索子
-      } else {
-        return `z${typeIndex - 27 + 1}.gif`;  // 字牌
-      }
+      if (typeIndex < 9) return `m${typeIndex + 1}.gif`;      // 萬子
+      if (typeIndex < 18) return `p${typeIndex - 9 + 1}.gif`;  // 筒子
+      if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`; // 索子
+      return `z${typeIndex - 27 + 1}.gif`;                     // 字牌
     }
   </script>
 </body>
-
 </html>
