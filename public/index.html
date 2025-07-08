@@ -101,7 +101,7 @@
 
         data.hand.forEach(pai => {
           const img = document.createElement('img');
-          img.src = `/images/${getTileImage(pai)}`; // 画像パスは適宜調整
+          img.src = `/dist/image/${getTileImage(pai)}`; // 画像パスは適宜調整
           img.alt = pai;
           img.style.width = '40px'; // サイズは好みに応じて
           img.style.margin = '2px';
@@ -120,7 +120,7 @@
 
           handDisplay.appendChild(img);
         });
-        
+
         gameDiv.appendChild(newHandDisplay);
 
         // ツモ牌のログ表示（任意）
@@ -149,13 +149,13 @@
       const typeIndex = Math.floor(paiNumber / 4);
 
       if (typeIndex < 9) {
-        return `m${typeIndex + 1}.jpg`;  // 萬子
+        return `m${typeIndex + 1}.gif`;  // 萬子
       } else if (typeIndex < 18) {
-        return `p${typeIndex - 9 + 1}.jpg`;  // 筒子
+        return `p${typeIndex - 9 + 1}.gif`;  // 筒子
       } else if (typeIndex < 27) {
-        return `s${typeIndex - 18 + 1}.jpg`;  // 索子
+        return `s${typeIndex - 18 + 1}.gif`;  // 索子
       } else {
-        return `z${typeIndex - 27 + 1}.jpg`;  // 字牌
+        return `z${typeIndex - 27 + 1}.gif`;  // 字牌
       }
     }
   </script>
