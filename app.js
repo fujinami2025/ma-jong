@@ -8,6 +8,7 @@ expressWs(app)
 
 const port = process.env.PORT || 3001
 
+app.use('/dist', express.static('dist'));
 app.use(express.static('public'))
 
 // プレイヤー待機用
