@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <title>2人対戦麻雀（仮）</title>
@@ -40,6 +41,7 @@
     let myPlayerIndex = null;
     let myRoomId = null;
     let currentHand = [];
+    let canDiscard = false;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
@@ -68,6 +70,7 @@
       if (data.type === 'tsumo') {
         currentHand.push(data.pai);
         currentHand.sort((a, b) => a - b);
+        canDiscard = true;
         renderHand();
 
         const tsumoLog = document.createElement('p');
@@ -104,6 +107,9 @@
         img.alt = pai;
 
         img.onclick = () => {
+          if (!canDiscard) return; // ← 打牌不可なら無視
+
+          canDiscard = false; // ← 打牌したら不可にする
           currentHand = currentHand.filter(p => p !== pai);
           renderHand();
 
@@ -118,7 +124,7 @@
           log.textContent = `あなたは ${pai} を捨てました。`;
           gameDiv.appendChild(log);
         };
-
+        
         handDisplay.appendChild(img);
       });
 
@@ -134,4 +140,5 @@
     }
   </script>
 </body>
+
 </html>
