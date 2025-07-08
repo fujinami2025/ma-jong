@@ -44,8 +44,9 @@
     <p>ルームID: <span id="room"></span></p>
 
     <div id="discards-container">
-      <div id="opponent-discards" class="discards"></div>
-      <div id="my-discards" class="discards"></div>
+      <div id="opponent-discards" style="margin-bottom: 10px;"></div>
+      <div id="my-discards" style="margin-bottom: 10px;"></div>
+      <div id="hand-display"></div>
     </div>
 
     <div id="hand-display"></div>
@@ -135,18 +136,21 @@
       });
     }
 
-    function showDiscardedTile(playerIndex, pai) {
-      const targetDiv = playerIndex === myPlayerIndex ? myDiscards : opponentDiscards;
+    if (data.type === 'dahai') {
+      const isMine = data.playerIndex === myPlayerIndex;
+      const discardContainer = document.createElement('img');
+      discardContainer.src = `/dist/image/${getTileImage(data.pai)}`;
+      discardContainer.alt = data.pai;
+      discardContainer.style.width = '40px';
+      discardContainer.style.margin = '2px';
 
-      const img = document.createElement('img');
-      img.src = `/dist/image/${getTileImage(pai)}`;
-      img.alt = pai;
-      img.style.width = '40px';
-      img.style.margin = '2px';
-
-      targetDiv.appendChild(img);
+      if (isMine) {
+        document.getElementById('my-discards').appendChild(discardContainer);
+      } else {
+        document.getElementById('opponent-discards').appendChild(discardContainer);
+      }
     }
-
+    
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
       if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
