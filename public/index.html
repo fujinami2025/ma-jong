@@ -100,24 +100,27 @@
         newHandDisplay.textContent = 'あなたの手牌: ';
 
         data.hand.forEach(pai => {
-          const btn = document.createElement('button');
-          btn.textContent = pai;
-          btn.onclick = () => {
-            btn.remove();
-            const log = document.createElement('p');
-            log.textContent = `あなたは ${pai} を捨てました`;
-            gameDiv.appendChild(log);
+          const img = document.createElement('img');
+          img.src = `/images/${getTileImage(pai)}`; // 画像パスは適宜調整
+          img.alt = pai;
+          img.style.width = '40px'; // サイズは好みに応じて
+          img.style.margin = '2px';
+          img.style.cursor = 'pointer';
+
+          img.onclick = () => {
+            img.style.opacity = 0.5; // 打った感
+            img.style.pointerEvents = 'none'; // 2回押せない
             ws.send(JSON.stringify({
               type: 'dahai',
-              roomId: myRoomId,
-              playerIndex: myPlayerIndex,
+              roomId: data.roomId,
+              playerIndex: data.playerIndex,
               pai
             }));
-            btn.disabled = true;
           };
-          newHandDisplay.appendChild(btn);
-        });
 
+          handDisplay.appendChild(img);
+        });
+        
         gameDiv.appendChild(newHandDisplay);
 
         // ツモ牌のログ表示（任意）
@@ -140,6 +143,20 @@
 
     ws.onclose = () => {
       statusDiv.textContent = 'サーバーとの接続が切断されました。'
+    }
+
+    function getTileImage(paiNumber) {
+      const typeIndex = Math.floor(paiNumber / 4);
+
+      if (typeIndex < 9) {
+        return `m${typeIndex + 1}.jpg`;  // 萬子
+      } else if (typeIndex < 18) {
+        return `p${typeIndex - 9 + 1}.jpg`;  // 筒子
+      } else if (typeIndex < 27) {
+        return `s${typeIndex - 18 + 1}.jpg`;  // 索子
+      } else {
+        return `z${typeIndex - 27 + 1}.jpg`;  // 字牌
+      }
     }
   </script>
 </body>
