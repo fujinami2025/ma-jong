@@ -94,12 +94,7 @@
       }
 
       if (data.type === 'dahai') {
-        if (data.playerIndex === myPlayerIndex) {
-          showMyDiscardedTile(data.pai);
-          canDiscard = false;
-        } else {
-          showOpponentDiscardedTile(data.pai);
-        }
+        showOpponentDiscardedTile(data.pai);
       }
 
 
@@ -124,6 +119,7 @@
           canDiscard = false; // ここで即座に false にする
           img.style.opacity = 0.5;
           img.style.pointerEvents = 'none';
+          showMyDiscardedTile(pai);
           ws.send(JSON.stringify({
             type: 'dahai',
             roomId: myRoomId,
