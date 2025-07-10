@@ -48,8 +48,6 @@
       <div id="my-discards" style="margin-bottom: 10px;"></div>
       <div id="hand-display"></div>
     </div>
-
-    <div id="hand-display"></div>
   </div>
 
   <script>
@@ -96,11 +94,14 @@
       }
 
       if (data.type === 'dahai') {
-        showDiscardedTile(data.playerIndex, data.pai);
         if (data.playerIndex === myPlayerIndex) {
+          showMyDiscardedTile(data.pai);
           canDiscard = false;
+        } else {
+          showOpponentDiscardedTile(data.pai);
         }
       }
+
 
       if (data.type === 'waiting') {
         statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`;
@@ -132,15 +133,6 @@
         };
         handDiv.appendChild(img);
       });
-    }
-
-    if (data.type === 'dahai') {
-      if (data.playerIndex === myPlayerIndex) {
-        showMyDiscardedTile(data.pai);
-        canDiscard = false;
-      } else {
-        showOpponentDiscardedTile(data.pai);
-      }
     }
 
     function getTileImage(paiNumber) {
