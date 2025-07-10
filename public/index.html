@@ -135,22 +135,13 @@
     }
 
     if (data.type === 'dahai') {
-      const isMine = data.playerIndex === myPlayerIndex;
-
-      const discardImg = document.createElement('img');
-      discardImg.src = `/dist/image/${getTileImage(data.pai)}`;
-      discardImg.alt = data.pai;
-      discardImg.style.width = '40px';
-      discardImg.style.margin = '2px';
-
-      if (isMine) {
-        myDiscards.appendChild(discardImg);
+      if (data.playerIndex === myPlayerIndex) {
+        showMyDiscardedTile(data.pai);
         canDiscard = false;
       } else {
-        opponentDiscards.appendChild(discardImg);
+        showOpponentDiscardedTile(data.pai);
       }
     }
-
 
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
@@ -159,6 +150,25 @@
       if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`;
       return `z${typeIndex - 27 + 1}.gif`;
     }
+
+    function showOpponentDiscardedTile(pai) {
+      const img = document.createElement('img');
+      img.src = `/dist/image/${getTileImage(pai)}`;
+      img.alt = pai;
+      img.style.width = '40px';
+      img.style.margin = '2px';
+      document.getElementById('opponent-discards').appendChild(img);
+    }
+
+    function showMyDiscardedTile(pai) {
+      const img = document.createElement('img');
+      img.src = `/dist/image/${getTileImage(pai)}`;
+      img.alt = pai;
+      img.style.width = '40px';
+      img.style.margin = '2px';
+      document.getElementById('my-discards').appendChild(img);
+    }
+
 
     ws.onclose = () => {
       statusDiv.textContent = 'サーバーとの接続が切断されました。';
