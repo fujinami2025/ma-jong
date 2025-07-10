@@ -130,27 +130,28 @@
             pai
           }));
         };
-
-
         handDiv.appendChild(img);
       });
     }
 
     if (data.type === 'dahai') {
       const isMine = data.playerIndex === myPlayerIndex;
-      const discardContainer = document.createElement('img');
-      discardContainer.src = `/dist/image/${getTileImage(data.pai)}`;
-      discardContainer.alt = data.pai;
-      discardContainer.style.width = '40px';
-      discardContainer.style.margin = '2px';
+
+      const discardImg = document.createElement('img');
+      discardImg.src = `/dist/image/${getTileImage(data.pai)}`;
+      discardImg.alt = data.pai;
+      discardImg.style.width = '40px';
+      discardImg.style.margin = '2px';
 
       if (isMine) {
-        document.getElementById('my-discards').appendChild(discardContainer);
+        myDiscards.appendChild(discardImg);
+        canDiscard = false;
       } else {
-        document.getElementById('opponent-discards').appendChild(discardContainer);
+        opponentDiscards.appendChild(discardImg);
       }
     }
-    
+
+
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
       if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
