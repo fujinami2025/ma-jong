@@ -140,6 +140,9 @@
     }
 
     function showOpponentDiscardedTile(pai) {
+      if (opponentDiscards.children.length === 0) {
+        opponentDiscards.innerHTML = '<p>相手の捨て牌:</p>';
+      }
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
       img.alt = pai;
@@ -149,6 +152,9 @@
     }
 
     function showMyDiscardedTile(pai) {
+      if (myDiscards.children.length === 0) {
+        myDiscards.innerHTML = '<p>あなたの捨て牌:</p>';
+      }
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
       img.alt = pai;
