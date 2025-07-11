@@ -214,7 +214,7 @@ function convertPaiArrayToStringSorted(paiArray) {
     for (let i = 0; i < tiles.length; i++) {
       suitStr += String(i + 1).repeat(tiles[i]);
     }
-    if (suitStr !== '') result += suitStr + suit; // ← スーツごとに確定
+    if (suitStr !== '') result += suit+suitStr; // ← スーツごとに確定
   }
 
   const honors = paiCounts.z;
@@ -222,7 +222,7 @@ function convertPaiArrayToStringSorted(paiArray) {
   for (let i = 0; i < honors.length; i++) {
     honorStr += String(i + 1).repeat(honors[i]);
   }
-  if (honorStr !== '') result += honorStr + 'z'; // ← 字牌があるときだけ 'z'
+  if (honorStr !== '') result +='z'+ honorStr ; // ← 字牌があるときだけ 'z'
 
   return result;
 }
