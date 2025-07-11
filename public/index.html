@@ -83,16 +83,18 @@
         myRoomId = data.roomId;
 
         if (data.playerIndex === 0) canDiscard = true;
-        if (data.hand) showHand(data.hand);
+        if (data.handString) {
+          const paiArray = convertHandStringToIndexes(data.handString);
+          showHand(paiArray);
+        }
       }
-
       if (data.type === 'tsumo') {
         if (data.playerIndex === myPlayerIndex) {
-          showHand(data.hand);
+          const paiArray = convertHandStringToIndexes(data.handString);
+          showHand(paiArray);
           canDiscard = true;
         }
       }
-
       if (data.type === 'dahai') {
         if (data.playerIndex === myPlayerIndex) {
           // 自分が捨てたときの確認表示はすでにonclickで処理済み
@@ -170,6 +172,31 @@
     ws.onclose = () => {
       statusDiv.textContent = 'サーバーとの接続が切断されました。';
     };
+
+    function convertHandStringToIndexes(handString) {
+      const result = [];
+      const suits = ['m', 'p', 's', 'z'];
+
+      for (const suit of suits) {
+        const regex = new RegExp(`([1-9]+)${suit}`, 'g');
+        let match;
+        while ((match = regex.exec(handString)) !== null) {
+          const numbers = match[1];
+          for (const ch of numbers) {
+            const num = parseInt(ch);
+            let base = 0;
+            if (suit === 'p') base = 9;
+            else if (suit === 's') base = 18;
+            else if (suit === 'z') base = 27;
+            const tileIndex = base + num - 1;
+            result.push(tileIndex * 4); // 同じ牌の0番目インスタンス
+          }
+        }
+      }
+
+      return result.sort((a, b) => a - b);
+    }
+
   </script>
 </body>
 

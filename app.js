@@ -133,14 +133,13 @@ function startGame(roomId) {
   room.mountain = mountain;
   room.currentTurn = 0;
   console.log(`7`)
-  console.log(convertShoupaiToArray(shoupais[i]))
   // クライアントに初期手牌を送信
   room.players.forEach((player, i) => {
     player.send(JSON.stringify({
       type: 'start',
       playerIndex: i,
       roomId,
-      hand: convertShoupaiToArray(shoupais[i])
+      handString: shoupais[i].toString()
     }));
   });
 }
