@@ -83,22 +83,18 @@
         myRoomId = data.roomId;
 
         if (data.playerIndex === 0) canDiscard = true;
-        if (data.handString) {
-          const paiArray = convertHandStringToIndexes(data.handString);
-          showHand(paiArray);
-        }
+        if (data.handString) showHandFromShoupaiString(data.handString); // ✅ 変更
       }
+
       if (data.type === 'tsumo') {
         if (data.playerIndex === myPlayerIndex) {
-          const paiArray = convertHandStringToIndexes(data.handString);
-          showHand(paiArray);
+          if (data.handString) showHandFromShoupaiString(data.handString); // ✅ 変更
           canDiscard = true;
         }
       }
+
       if (data.type === 'dahai') {
-        if (data.playerIndex === myPlayerIndex) {
-          // 自分が捨てたときの確認表示はすでにonclickで処理済み
-        } else {
+        if (data.playerIndex !== myPlayerIndex) {
           showOpponentDiscardedTile(data.pai);
         }
       }
@@ -108,7 +104,7 @@
       }
     };
 
-    function showHand(hand) {
+    /*function showHand(hand) {
       handDiv.innerHTML = 'あなたの手牌: ';
       const sorted = [...hand].sort((a, b) => a - b);
       sorted.forEach(pai => {
@@ -134,8 +130,24 @@
         };
         handDiv.appendChild(img);
       });
+    }*/
+    function showHandFromShoupaiString(handStr) {
+      handDiv.innerHTML = 'あなたの手牌: ';
+      let suit = '';
+      for (let i = 0; i < handStr.length; i++) {
+        const ch = handStr[i];
+        if ('mpsz'.includes(ch)) {
+          suit = ch;
+        } else if (/\d/.test(ch)) {
+          const img = document.createElement('img');
+          img.src = `/dist/image/${suit}${ch}.gif`;  // ← m1.gif など
+          img.alt = `${suit}${ch}`;
+          img.style.width = '40px';
+          img.style.margin = '2px';
+          handDiv.appendChild(img);
+        }
+      }
     }
-
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
       if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
@@ -173,7 +185,7 @@
       statusDiv.textContent = 'サーバーとの接続が切断されました。';
     };
 
-    function convertHandStringToIndexes(handString) {
+    /*function convertHandStringToIndexes(handString) {
       const result = [];
       const suits = ['m', 'p', 's', 'z'];
 
@@ -195,7 +207,7 @@
       }
 
       return result.sort((a, b) => a - b);
-    }
+    }*/
 
   </script>
 </body>

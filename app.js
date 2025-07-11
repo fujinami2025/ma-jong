@@ -82,11 +82,10 @@ app.ws('/ws', (ws, req) => {
         if (nextPlayer.readyState === 1) {
           nextPlayer.send(JSON.stringify({
             type: 'tsumo',
-            pai: nextPai,
-            hand: convertShoupaiToArray(room.shoupais[room.currentTurn]),
             playerIndex: room.currentTurn,
-            roomId: data.roomId
-          }))
+            roomId: data.roomId,
+            handString: room.shoupais[room.currentTurn].toString() // ← ここ重要
+          }));
         }
       } else {
         console.log('🈳 山が尽きました（流局）')
