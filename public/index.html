@@ -82,7 +82,6 @@
         myRoomId = data.roomId;
 
         if (data.playerIndex === 0) canDiscard = true;
-
         if (data.hand) showHand(data.hand);
       }
 
@@ -94,9 +93,12 @@
       }
 
       if (data.type === 'dahai') {
-        showOpponentDiscardedTile(data.pai);
+        if (data.playerIndex === myPlayerIndex) {
+          // 自分が捨てたときの確認表示はすでにonclickで処理済み
+        } else {
+          showOpponentDiscardedTile(data.pai);
+        }
       }
-
 
       if (data.type === 'waiting') {
         statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`;
@@ -116,7 +118,7 @@
 
         img.onclick = () => {
           if (!canDiscard) return;
-          canDiscard = false; // ここで即座に false にする
+          canDiscard = false;
           img.style.opacity = 0.5;
           img.style.pointerEvents = 'none';
           showMyDiscardedTile(pai);
@@ -148,7 +150,7 @@
       img.alt = pai;
       img.style.width = '40px';
       img.style.margin = '2px';
-      document.getElementById('opponent-discards').appendChild(img);
+      opponentDiscards.appendChild(img);
     }
 
     function showMyDiscardedTile(pai) {
@@ -160,9 +162,8 @@
       img.alt = pai;
       img.style.width = '40px';
       img.style.margin = '2px';
-      document.getElementById('my-discards').appendChild(img);
+      myDiscards.appendChild(img);
     }
-
 
     ws.onclose = () => {
       statusDiv.textContent = 'サーバーとの接続が切断されました。';
