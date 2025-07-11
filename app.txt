@@ -54,3 +54,19 @@ room.players.forEach((player, i) => {
   console.log('先手:', shoupais[0].toString())
   console.log('後手:', shoupais[1].toString())
 }
+
+function convertPaiArrayToString(paiArray) {
+  const paiCounts = {
+    m: Array(9).fill(0),
+    p: Array(9).fill(0),
+    s: Array(9).fill(0),
+    z: Array(7).fill(0)
+  };
+
+  for (const pai of paiArray) {
+    const typeIndex = Math.floor(pai / 4);
+    if (typeIndex < 9) paiCounts.m[typeIndex]++;
+    else if (typeIndex < 18) paiCounts.p[typeIndex - 9]++;
+    else if (typeIndex < 27) paiCounts.s[typeIndex - 18]++;
+    else paiCounts.z[typeIndex - 27]++;
+  }
