@@ -118,13 +118,19 @@ function startGame(roomId) {
   console.log(`4`)
   const mountain = tiles.slice(); // 全牌を山にして、ツモで配る
 
-  // プレイヤーごとに13枚配牌
+  const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
+  const mountain = tiles.slice(26);
+
+  // プレイヤー0は1枚多く持つ（最初にツモる）
+  const firstDraw = mountain.shift();
+  hands[0].push(firstDraw);
+
+  const shoupais = [];
+
   for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < 13; j++) {
-      const pai = mountain.shift();
-      const paiStr = convertPaiIndexToMPSZ(pai);
-      shoupais[i].zimo(paiStr);
-    }
+    const handString = convertPaiArrayToString(hands[i]); // → m123p456z77 形式
+    const sp = Majiang.Shoupai.fromString(handString);
+    shoupais.push(sp);
   }
   console.log(`5`)
   // 先手（player 0）にもう1枚ツモ
