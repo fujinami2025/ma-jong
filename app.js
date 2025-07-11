@@ -123,7 +123,7 @@ function startGame(roomId) {
   console.log(`5`)
   // 先手（player 0）にもう1枚ツモ
   const firstDraw = mountain.shift();
-  console.log(firstDraw)
+  console.log(convertPaiIndexToMPSZ(firstDraw))
   shoupais[0].zimo(convertPaiIndexToMPSZ(firstDraw));
   
   console.log(`6`)
