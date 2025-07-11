@@ -113,11 +113,6 @@ function startGame(roomId) {
   console.log(`4`)
   const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
   const mountain = tiles.slice(26);
-
-  // プレイヤー0は1枚多く持つ（最初にツモる）
-  const firstDraw = mountain.shift();
-  hands[0].push(firstDraw);
-
   const shoupais = [];
 
   for (let i = 0; i < 2; i++) {
@@ -191,4 +186,36 @@ function convertMPSZToPaiIndex(paiStr) {
   else if (suit === 'z') base = 27
   const tileIndex = base + num - 1
   return tileIndex * 4 // 常に0番目のインスタンス
+}
+
+function convertPaiArrayToString(paiArray) {
+  const paiCounts = {
+    m: Array(9).fill(0),
+    p: Array(9).fill(0),
+    s: Array(9).fill(0),
+    z: Array(7).fill(0)
+  };
+
+  for (const pai of paiArray) {
+    const typeIndex = Math.floor(pai / 4);
+    if (typeIndex < 9) paiCounts.m[typeIndex]++;
+    else if (typeIndex < 18) paiCounts.p[typeIndex - 9]++;
+    else if (typeIndex < 27) paiCounts.s[typeIndex - 18]++;
+    else paiCounts.z[typeIndex - 27]++;
+  }
+
+  let result = '';
+  for (const suit of ['m', 'p', 's']) {
+    const tiles = paiCounts[suit];
+    for (let i = 0; i < tiles.length; i++) {
+      result += String(i + 1).repeat(tiles[i]);
+    }
+    if (result.slice(-1).match(/[1-9]/)) result += suit;
+  }
+
+  const honors = paiCounts.z;
+  result += honors.map((count, i) => String(i + 1).repeat(count)).join('');
+  if (result.slice(-1).match(/[1-7]/)) result += 'z';
+
+  return result;
 }
