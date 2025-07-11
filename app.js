@@ -119,21 +119,22 @@ function startGame(roomId) {
     new Majiang.Shoupai(),
     new Majiang.Shoupai()
   ]
-
+  console.log(`4`)
   // プレイヤー0は1枚多く持つ（最初にツモる）
   const firstDraw = mountain.shift()
   hands[0].push(firstDraw)
-
+  console.log(`5`)
   for (let i = 0; i < 2; i++) {
     for (const pai of hands[i]) {
       shoupais[i].zimo(convertPaiIndexToMPSZ(pai))
     }
   }
-
+  console.log(`6`)
   room.hands = hands
   room.shoupais = shoupais
   room.mountain = mountain
   room.currentTurn = 0
+  console.log(`7`)
 
 room.players.forEach((player, i) => {
   const handArr = convertShoupaiToArray(shoupais[i]);
