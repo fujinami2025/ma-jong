@@ -155,7 +155,7 @@ function shuffle(array) {
   }
 }
 
-function convertPaiIndexToMPSZ(pai) {#0~3=m1
+function convertPaiIndexToMPSZ(pai) {
   const typeIndex = Math.floor(pai / 4);
   if (typeIndex < 9) return 'm'+(typeIndex+1);
   if (typeIndex < 18) return 'p'+(typeIndex -9 +1);
