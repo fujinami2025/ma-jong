@@ -119,6 +119,7 @@ function startGame(roomId) {
     const handString = convertPaiArrayToString(hands[i]); // → m123p456z77 形式
     const sp = Majiang.Shoupai.fromString(handString);
     shoupais.push(sp);
+    console.log(`配牌 ${i}:`, sp.toString());
   }
   console.log(`5`)
   // 先手（player 0）にもう1枚ツモ
