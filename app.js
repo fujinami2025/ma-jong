@@ -190,7 +190,7 @@ function convertMPSZToPaiIndex(paiStr) {
 }
 
 function convertPaiArrayToString(paiArray) {
-  const tileStrs = paiArray.map(convertPaiIndexToMPSZ);
+  const tileStrs = paiArray.map(convertPaiIndexToMPSZ); // "1m", "3m", ...
   const suitMap = { m: '', p: '', s: '', z: '' };
 
   for (const tile of tileStrs) {
@@ -205,20 +205,4 @@ function convertPaiArrayToString(paiArray) {
   }
 
   return result;
-}
-
-let result = '';
-for (const suit of ['m', 'p', 's']) {
-  const tiles = paiCounts[suit];
-  for (let i = 0; i < tiles.length; i++) {
-    result += String(i + 1).repeat(tiles[i]);
-  }
-  if (result.slice(-1).match(/[1-9]/)) result += suit;
-}
-
-const honors = paiCounts.z;
-result += honors.map((count, i) => String(i + 1).repeat(count)).join('');
-if (result.slice(-1).match(/[1-7]/)) result += 'z';
-
-return result;
 }
