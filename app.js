@@ -3,7 +3,7 @@ const expressWs = require('express-ws')
 const Majiang = require('@kobalab/majiang-core')
 
 const app = express()
-expressWs(app)
+const expressWs = require('express-ws')(app);
 
 const port = process.env.PORT || 3001
 
