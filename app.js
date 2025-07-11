@@ -116,8 +116,8 @@ function startGame(roomId) {
   const shoupais = [];
 
   for (let i = 0; i < 2; i++) {
-    console.log(handString);
     const handString = convertPaiArrayToStringSorted(hands[i]); // → m123p456z77 形式
+    console.log(handString);
     const sp = Majiang.Shoupai.fromString(handString);
     shoupais.push(sp);
     console.log(`配牌 ${i}:`, sp.toString());
