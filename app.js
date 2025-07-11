@@ -116,8 +116,6 @@ function startGame(roomId) {
     new Majiang.Shoupai()
   ];
   console.log(`4`)
-  const mountain = tiles.slice(); // 全牌を山にして、ツモで配る
-
   const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
   const mountain = tiles.slice(26);
 
