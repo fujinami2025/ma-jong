@@ -136,9 +136,9 @@
 
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
-      if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
-      if (typeIndex < 18) return `p${typeIndex - 9 + 1}.gif`;
-      if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`;
+      if (typeIndex < 9) return `m${typeIndex + 2}.gif`;
+      if (typeIndex < 18) return `p${typeIndex - 9 + 2}.gif`;
+      if (typeIndex < 27) return `s${typeIndex - 18 + 2}.gif`;
       return `z${typeIndex - 27 + 1}.gif`;
     }
     //10 m3 floor10/4 = 2

@@ -124,7 +124,6 @@ function startGame(roomId) {
   console.log(`5`)
   // 先手（player 0）にもう1枚ツモ
   const firstDraw = mountain.shift();
-  console.log(convertPaiIndexToMPSZ(firstDraw))
   shoupais[0].zimo(convertPaiIndexToMPSZ(firstDraw));
   
   console.log(`6`)
@@ -158,10 +157,10 @@ function shuffle(array) {
 
 function convertPaiIndexToMPSZ(pai) {
   const typeIndex = Math.floor(pai / 4);
-  if (typeIndex < 9) return 'm'+(typeIndex+1);
-  if (typeIndex < 18) return 'p'+(typeIndex -9 +1);
-  if (typeIndex < 27) return 's'+(typeIndex -18 +1);
-  return 'z'+(typeIndex -27 +1);
+  if (typeIndex < 9) return 'm'+(typeIndex+2);
+  if (typeIndex < 18) return 'p'+(typeIndex -9 +2);
+  if (typeIndex < 27) return 's'+(typeIndex -18 +2);
+  return 'z'+(typeIndex -27 +2);
 }
 
 function convertShoupaiToArray(shoupai) {
