@@ -105,62 +105,52 @@ app.ws('/ws', (ws, req) => {
 app.listen(port, () => {
   console.log(`🚀 サーバー起動中: http://localhost:${port}`)
 })
+
 function startGame(roomId) {
-  console.log(`2`)
-  const room = rooms[roomId]
-  let tiles = Array.from({ length: 136 }, (_, i) => i)
-  shuffle(tiles)
-
-  const hands = [tiles.slice(0, 13), tiles.slice(13, 26)]
-  const mountain = tiles.slice(26)
+  const room = rooms[roomId];
+  const tiles = Array.from({ length: 136 }, (_, i) => i);
+  shuffle(tiles);
   console.log(`3`)
-
   const shoupais = [
     new Majiang.Shoupai(),
     new Majiang.Shoupai()
-  ]
+  ];
   console.log(`4`)
-  // プレイヤー0は1枚多く持つ（最初にツモる）
-  const firstDraw = mountain.shift()
-  hands[0].push(firstDraw)
-  console.log(`5`)
+  const mountain = tiles.slice(); // 全牌を山にして、ツモで配る
+
+  // プレイヤーごとに13枚配牌
   for (let i = 0; i < 2; i++) {
-    for (const pai of hands[i]) {
-      shoupais[i].zimo(convertPaiIndexToMPSZ(pai))
+    for (let j = 0; j < 13; j++) {
+      const pai = mountain.shift();
+      const paiStr = convertPaiIndexToMPSZ(pai);
+      shoupais[i].zimo(paiStr);
     }
   }
+  console.log(`5`)
+  // 先手（player 0）にもう1枚ツモ
+  const firstDraw = mountain.shift();
+  shoupais[0].zimo(convertPaiIndexToMPSZ(firstDraw));
   console.log(`6`)
-  room.hands = hands
-  room.shoupais = shoupais
-  room.mountain = mountain
-  room.currentTurn = 0
+  // 状態をルームに保存
+  room.shoupais = shoupais;
+  room.mountain = mountain;
+  room.currentTurn = 0;
   console.log(`7`)
+  // クライアントに初期手牌を送信
+  room.players.forEach((player, i) => {
+    player.send(JSON.stringify({
+      type: 'start',
+      playerIndex: i,
+      roomId,
+      hand: convertShoupaiToArray(shoupais[i])
+    }));
+  });
 
-room.players.forEach((player, i) => {
-  const handArr = convertShoupaiToArray(shoupais[i]);
-  console.log(`プレイヤー${i}の配列:`, handArr);
-
-  if (player.readyState === 1) {
-    try {
-      player.send(JSON.stringify({
-        type: 'start',
-        playerIndex: i,
-        roomId,
-        hand: handArr
-      }));
-    } catch (e) {
-      console.error(`送信失敗:`, e);
-    }
-  } else {
-    console.warn(`プレイヤー${i} readyState=${player.readyState} で送信スキップ`);
-  }
-});
-
-
-  console.log('🀄️ 初期手牌:')
-  console.log('先手:', shoupais[0].toString())
-  console.log('後手:', shoupais[1].toString())
+  console.log('🀄️ 初期手牌:');
+  console.log('先手:', shoupais[0].toString());
+  console.log('後手:', shoupais[1].toString());
 }
+
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -170,11 +160,12 @@ function shuffle(array) {
 }
 
 function convertPaiIndexToMPSZ(pai) {
-  const typeIndex = Math.floor(pai / 4)
-  if (typeIndex < 9) return (typeIndex + 1) + 'm'
-  if (typeIndex < 18) return (typeIndex - 9 + 1) + 'p'
-  if (typeIndex < 27) return (typeIndex - 18 + 1) + 's'
-  return (typeIndex - 27 + 1) + 'z'
+  const typeIndex = Math.floor(pai / 4);
+  if (typeIndex < 0 || typeIndex >= 34) return null;  // 明示的に不正値をはじく
+  if (typeIndex < 9) return (typeIndex + 1) + 'm';
+  if (typeIndex < 18) return (typeIndex - 9 + 1) + 'p';
+  if (typeIndex < 27) return (typeIndex - 18 + 1) + 's';
+  return (typeIndex - 27 + 1) + 'z';
 }
 
 function convertShoupaiToArray(shoupai) {

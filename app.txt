@@ -1,0 +1,56 @@
+function startGame(roomId) {
+  console.log(`2`)
+  const room = rooms[roomId]
+  let tiles = Array.from({ length: 136 }, (_, i) => i)
+  shuffle(tiles)
+
+  const hands = [tiles.slice(0, 13), tiles.slice(13, 26)]
+  const mountain = tiles.slice(26)
+  console.log(`3`)
+
+  const shoupais = [
+    new Majiang.Shoupai(),
+    new Majiang.Shoupai()
+  ]
+  console.log(`4`)
+  // プレイヤー0は1枚多く持つ（最初にツモる）
+  const firstDraw = mountain.shift()
+  hands[0].push(firstDraw)
+  console.log(`5`)
+  for (let i = 0; i < 2; i++) {
+    for (const pai of hands[i]) {
+      shoupais[i].zimo(convertPaiIndexToMPSZ(pai))
+    }
+  }
+  console.log(`6`)
+  room.hands = hands
+  room.shoupais = shoupais
+  room.mountain = mountain
+  room.currentTurn = 0
+  console.log(`7`)
+
+room.players.forEach((player, i) => {
+  const handArr = convertShoupaiToArray(shoupais[i]);
+  console.log(`プレイヤー${i}の配列:`, handArr);
+
+  if (player.readyState === 1) {
+    try {
+      player.send(JSON.stringify({
+        type: 'start',
+        playerIndex: i,
+        roomId,
+        hand: handArr
+      }));
+    } catch (e) {
+      console.error(`送信失敗:`, e);
+    }
+  } else {
+    console.warn(`プレイヤー${i} readyState=${player.readyState} で送信スキップ`);
+  }
+});
+
+
+  console.log('🀄️ 初期手牌:')
+  console.log('先手:', shoupais[0].toString())
+  console.log('後手:', shoupais[1].toString())
+}
