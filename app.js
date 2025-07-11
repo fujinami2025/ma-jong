@@ -132,14 +132,18 @@ function startGame(roomId) {
   room.mountain = mountain
   room.currentTurn = 0
 
-  room.players.forEach((player, i) => {
+room.players.forEach((player, i) => {
+  if (player.readyState === 1) {
     player.send(JSON.stringify({
       type: 'start',
       playerIndex: i,
       roomId,
       hand: convertShoupaiToArray(shoupais[i])
     }))
-  })
+  } else {
+    console.warn(`⚠️ player ${i} の readyState = ${player.readyState} のため送信不可`)
+  }
+})
 
   console.log('🀄️ 初期手牌:')
   console.log('先手:', shoupais[0].toString())
