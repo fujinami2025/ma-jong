@@ -133,17 +133,25 @@ function startGame(roomId) {
   room.currentTurn = 0
 
 room.players.forEach((player, i) => {
+  const handArr = convertShoupaiToArray(shoupais[i]);
+  console.log(`プレイヤー${i}の配列:`, handArr);
+
   if (player.readyState === 1) {
-    player.send(JSON.stringify({
-      type: 'start',
-      playerIndex: i,
-      roomId,
-      hand: convertShoupaiToArray(shoupais[i])
-    }))
+    try {
+      player.send(JSON.stringify({
+        type: 'start',
+        playerIndex: i,
+        roomId,
+        hand: handArr
+      }));
+    } catch (e) {
+      console.error(`送信失敗:`, e);
+    }
   } else {
-    console.warn(`⚠️ player ${i} の readyState = ${player.readyState} のため送信不可`)
+    console.warn(`プレイヤー${i} readyState=${player.readyState} で送信スキップ`);
   }
-})
+});
+
 
   console.log('🀄️ 初期手牌:')
   console.log('先手:', shoupais[0].toString())
