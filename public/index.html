@@ -64,7 +64,7 @@
     let canDiscard = false;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-    const ws = new WebSocket(${protocol}://${location.host}/ws);
+    const ws = new WebSocket(`${protocol}://${location.host}/ws`);
 
     ws.onopen = () => {
       statusDiv.textContent = '待機中… 他のプレイヤーを待っています。';
@@ -82,7 +82,6 @@
         myRoomId = data.roomId;
 
         if (data.playerIndex === 0) canDiscard = true;
-
         if (data.hand) showHand(data.hand);
       }
 
@@ -94,12 +93,15 @@
       }
 
       if (data.type === 'dahai') {
-        showOpponentDiscardedTile(data.pai);
+        if (data.playerIndex === myPlayerIndex) {
+          // 自分が捨てたときの確認表示はすでにonclickで処理済み
+        } else {
+          showOpponentDiscardedTile(data.pai);
+        }
       }
 
-
       if (data.type === 'waiting') {
-        statusDiv.textContent = 待機中… 現在 ${data.count} 人が待機しています。;
+        statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`;
       }
     };
 
@@ -108,7 +110,7 @@
       const sorted = [...hand].sort((a, b) => a - b);
       sorted.forEach(pai => {
         const img = document.createElement('img');
-        img.src = /dist/image/${getTileImage(pai)};
+        img.src = `/dist/image/${getTileImage(pai)}`;
         img.alt = pai;
         img.style.width = '40px';
         img.style.margin = '2px';
@@ -116,7 +118,7 @@
 
         img.onclick = () => {
           if (!canDiscard) return;
-          canDiscard = false; // ここで即座に false にする
+          canDiscard = false;
           img.style.opacity = 0.5;
           img.style.pointerEvents = 'none';
           showMyDiscardedTile(pai);
@@ -133,10 +135,10 @@
 
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
-      if (typeIndex < 9) return m${typeIndex + 1}.gif;
-      if (typeIndex < 18) return p${typeIndex - 9 + 1}.gif;
-      if (typeIndex < 27) return s${typeIndex - 18 + 1}.gif;
-      return z${typeIndex - 27 + 1}.gif;
+      if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
+      if (typeIndex < 18) return `p${typeIndex - 9 + 1}.gif`;
+      if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`;
+      return `z${typeIndex - 27 + 1}.gif`;
     }
 
     function showOpponentDiscardedTile(pai) {
@@ -144,11 +146,11 @@
         opponentDiscards.innerHTML = '<p>相手の捨て牌:</p>';
       }
       const img = document.createElement('img');
-      img.src = /dist/image/${getTileImage(pai)};
+      img.src = `/dist/image/${getTileImage(pai)}`;
       img.alt = pai;
       img.style.width = '40px';
       img.style.margin = '2px';
-      document.getElementById('opponent-discards').appendChild(img);
+      opponentDiscards.appendChild(img);
     }
 
     function showMyDiscardedTile(pai) {
@@ -156,17 +158,17 @@
         myDiscards.innerHTML = '<p>あなたの捨て牌:</p>';
       }
       const img = document.createElement('img');
-      img.src = /dist/image/${getTileImage(pai)};
+      img.src = `/dist/image/${getTileImage(pai)}`;
       img.alt = pai;
       img.style.width = '40px';
       img.style.margin = '2px';
-      document.getElementById('my-discards').appendChild(img);
+      myDiscards.appendChild(img);
     }
-
 
     ws.onclose = () => {
       statusDiv.textContent = 'サーバーとの接続が切断されました。';
     };
   </script>
 </body>
+
 </html>
