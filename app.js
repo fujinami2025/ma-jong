@@ -42,7 +42,7 @@ app.ws('/ws', (ws, req) => {
       mountain: [],
       currentTurn: 0
     }
-    console.log(`1`)
+        console.log(`1`)
 
     startGame(roomId)
   }
@@ -116,7 +116,8 @@ function startGame(roomId) {
   const shoupais = [];
 
   for (let i = 0; i < 2; i++) {
-    const handString = convertPaiArrayToString(hands[i]); // → m123p456z77 形式
+    console.log(handString);
+    const handString = convertPaiArrayToStringSorted(hands[i]); // → m123p456z77 形式
     const sp = Majiang.Shoupai.fromString(handString);
     shoupais.push(sp);
     console.log(`配牌 ${i}:`, sp.toString());
@@ -125,7 +126,7 @@ function startGame(roomId) {
   // 先手（player 0）にもう1枚ツモ
   const firstDraw = mountain.shift();
   shoupais[0].zimo(convertPaiIndexToMPSZ(firstDraw));
-
+  
   console.log(`6`)
   // 状態をルームに保存
   room.shoupais = shoupais;
@@ -151,21 +152,21 @@ function startGame(roomId) {
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-      ;[array[i], array[j]] = [array[j], array[i]]
+    ;[array[i], array[j]] = [array[j], array[i]]
   }
 }
 
 function convertPaiIndexToMPSZ(pai) {
   const typeIndex = Math.floor(pai / 4);
-  if (typeIndex < 9) return 'm' + (typeIndex + 1);
-  if (typeIndex < 18) return 'p' + (typeIndex - 9 + 1);
-  if (typeIndex < 27) return 's' + (typeIndex - 18 + 1);
-  return 'z' + (typeIndex - 27 + 1);
+  if (typeIndex < 9) return 'm'+(typeIndex+1);
+  if (typeIndex < 18) return 'p'+(typeIndex -9 +1);
+  if (typeIndex < 27) return 's'+(typeIndex -18 +1);
+  return 'z'+(typeIndex -27 +1);
 }
 
 function convertShoupaiToArray(shoupai) {
   const result = []
-  const allPai = shoupai._bingpai // { m:[], p:[], s:[], z:[] }
+  const allPai = shoupai._bingpai
   for (const suit of ['m', 'p', 's', 'z']) {
     const tiles = allPai[suit]
     for (let i = 0; i < tiles.length; i++) {
@@ -189,19 +190,33 @@ function convertMPSZToPaiIndex(paiStr) {
   return tileIndex * 4 // 常に0番目のインスタンス
 }
 
-function convertPaiArrayToString(paiArray) {
-  const tileStrs = paiArray.map(convertPaiIndexToMPSZ); // "1m", "3m", ...
-  const suitMap = { m: '', p: '', s: '', z: '' };
+function convertPaiArrayToStringSorted(paiArray) {
+  const sorted = [...paiArray].sort((a, b) => a - b);
+  const groups = { m: [], p: [], s: [], z: [] };
 
-  for (const tile of tileStrs) {
-    const suit = tile.slice(-1);
-    const num = tile.slice(0, -1);
-    suitMap[suit] += num;
+  for (const pai of sorted) {
+    const typeIndex = Math.floor(pai / 4);
+    if (typeIndex < 9) {
+      groups.m.push(typeIndex + 1); // 1〜9
+    } else if (typeIndex < 18) {
+      groups.p.push(typeIndex - 9 + 1); // 1〜9
+    } else if (typeIndex < 27) {
+      groups.s.push(typeIndex - 18 + 1); // 1〜9
+    } else {
+      groups.z.push(typeIndex - 27 + 1); // 1〜7
+    }
   }
 
   let result = '';
-  for (const suit of ['m', 'p', 's', 'z']) {
-    if (suitMap[suit]) result += suitMap[suit] + suit;
+
+  for (const suit of ['m', 'p', 's']) {
+    if (groups[suit].length > 0) {
+      result += groups[suit].join('') + suit;
+    }
+  }
+
+  if (groups.z.length > 0) {
+    result += groups.z.join('') + 'z';
   }
 
   return result;
