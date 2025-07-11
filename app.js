@@ -110,11 +110,6 @@ function startGame(roomId) {
   const room = rooms[roomId];
   const tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
-  console.log(`3`)
-  const shoupais = [
-    new Majiang.Shoupai(),
-    new Majiang.Shoupai()
-  ];
   console.log(`4`)
   const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
   const mountain = tiles.slice(26);
