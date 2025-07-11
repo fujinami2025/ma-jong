@@ -134,13 +134,15 @@ function startGame(roomId) {
   room.currentTurn = 0
 
   room.players.forEach((player, i) => {
-    player.send(JSON.stringify({
-      type: 'start',
-      playerIndex: i,
-      roomId,
-      hand: convertShoupaiToArray(shoupais[i])
-    }))
-  })
+    if (player.readyState === 1) {
+      player.send(JSON.stringify({
+        type: 'start',
+        playerIndex: i,
+        roomId,
+        hand: hands[i]
+     }));
+   }
+  });
 
   console.log('🀄️ 初期手牌:')
   console.log('先手:', shoupais[0].toString())

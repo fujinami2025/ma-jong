@@ -72,7 +72,7 @@
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
+      console.log('[受信]', data); // ← 追加してみて
       if (data.type === 'start') {
         statusDiv.style.display = 'none';
         gameDiv.style.display = 'block';
