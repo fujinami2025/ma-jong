@@ -126,7 +126,7 @@ function startGame(roomId) {
   // 先手（player 0）にもう1枚ツモ
   const firstDraw = mountain.shift();
   shoupais[0].zimo(convertPaiIndexToMPSZ(firstDraw));
-  
+
   console.log(`6`)
   // 状態をルームに保存
   room.shoupais = shoupais;
@@ -191,33 +191,38 @@ function convertMPSZToPaiIndex(paiStr) {
 }
 
 function convertPaiArrayToStringSorted(paiArray) {
-  const sorted = [...paiArray].sort((a, b) => a - b);
-  const groups = { m: [], p: [], s: [], z: [] };
+  const paiCounts = {
+    m: Array(9).fill(0),
+    p: Array(9).fill(0),
+    s: Array(9).fill(0),
+    z: Array(7).fill(0)
+  };
 
-  for (const pai of sorted) {
+  for (const pai of paiArray) {
     const typeIndex = Math.floor(pai / 4);
-    if (typeIndex < 9) {
-      groups.m.push(typeIndex + 1); // 1〜9
-    } else if (typeIndex < 18) {
-      groups.p.push(typeIndex - 9 + 1); // 1〜9
-    } else if (typeIndex < 27) {
-      groups.s.push(typeIndex - 18 + 1); // 1〜9
-    } else {
-      groups.z.push(typeIndex - 27 + 1); // 1〜7
-    }
+    if (typeIndex < 9) paiCounts.m[typeIndex]++;
+    else if (typeIndex < 18) paiCounts.p[typeIndex - 9]++;
+    else if (typeIndex < 27) paiCounts.s[typeIndex - 18]++;
+    else paiCounts.z[typeIndex - 27]++;
   }
 
   let result = '';
 
   for (const suit of ['m', 'p', 's']) {
-    if (groups[suit].length > 0) {
-      result += groups[suit].join('') + suit;
+    const tiles = paiCounts[suit];
+    let suitStr = '';
+    for (let i = 0; i < tiles.length; i++) {
+      suitStr += String(i + 1).repeat(tiles[i]);
     }
+    if (suitStr !== '') result += suitStr + suit; // ← スーツごとに確定
   }
 
-  if (groups.z.length > 0) {
-    result += groups.z.join('') + 'z';
+  const honors = paiCounts.z;
+  let honorStr = '';
+  for (let i = 0; i < honors.length; i++) {
+    honorStr += String(i + 1).repeat(honors[i]);
   }
+  if (honorStr !== '') result += honorStr + 'z'; // ← 字牌があるときだけ 'z'
 
   return result;
 }
