@@ -133,6 +133,7 @@ function startGame(roomId) {
   room.mountain = mountain;
   room.currentTurn = 0;
   console.log(`7`)
+  console.log(convertShoupaiToArray(shoupais[i]))
   // クライアントに初期手牌を送信
   room.players.forEach((player, i) => {
     player.send(JSON.stringify({
@@ -142,10 +143,6 @@ function startGame(roomId) {
       hand: convertShoupaiToArray(shoupais[i])
     }));
   });
-
-  console.log('🀄️ 初期手牌:');
-  console.log('先手:', shoupais[0].toString());
-  console.log('後手:', shoupais[1].toString());
 }
 
 
@@ -214,7 +211,7 @@ function convertPaiArrayToStringSorted(paiArray) {
     for (let i = 0; i < tiles.length; i++) {
       suitStr += String(i + 1).repeat(tiles[i]);
     }
-    if (suitStr !== '') result += suit+suitStr; // ← スーツごとに確定
+    if (suitStr !== '') result += suit+suitStr;
   }
 
   const honors = paiCounts.z;
@@ -222,7 +219,7 @@ function convertPaiArrayToStringSorted(paiArray) {
   for (let i = 0; i < honors.length; i++) {
     honorStr += String(i + 1).repeat(honors[i]);
   }
-  if (honorStr !== '') result +='z'+ honorStr ; // ← 字牌があるときだけ 'z'
+  if (honorStr !== '') result +='z'+ honorStr ;
 
   return result;
 }
