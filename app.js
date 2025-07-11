@@ -155,13 +155,12 @@ function shuffle(array) {
   }
 }
 
-function convertPaiIndexToMPSZ(pai) {
+function convertPaiIndexToMPSZ(pai) {#0~3=m1
   const typeIndex = Math.floor(pai / 4);
-  if (typeIndex < 0 || typeIndex >= 34) return null;  // 明示的に不正値をはじく
-  if (typeIndex < 9) return (typeIndex + 1) + 'm';
-  if (typeIndex < 18) return (typeIndex - 9 + 1) + 'p';
-  if (typeIndex < 27) return (typeIndex - 18 + 1) + 's';
-  return (typeIndex - 27 + 1) + 'z';
+  if (typeIndex < 9) return 'm'+(typeIndex+1);
+  if (typeIndex < 18) return 'p'+(typeIndex -9 +1);
+  if (typeIndex < 27) return 's'+(typeIndex -18 +1);
+  return 'z'+(typeIndex -27 +1);
 }
 
 function convertShoupaiToArray(shoupai) {
