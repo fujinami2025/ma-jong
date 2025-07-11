@@ -42,6 +42,7 @@ app.ws('/ws', (ws, req) => {
       mountain: [],
       currentTurn: 0
     }
+        console.log(`1`)
 
     startGame(roomId)
   }
@@ -105,12 +106,14 @@ app.listen(port, () => {
   console.log(`🚀 サーバー起動中: http://localhost:${port}`)
 })
 function startGame(roomId) {
+  console.log(`2`)
   const room = rooms[roomId]
   let tiles = Array.from({ length: 136 }, (_, i) => i)
   shuffle(tiles)
 
   const hands = [tiles.slice(0, 13), tiles.slice(13, 26)]
   const mountain = tiles.slice(26)
+  console.log(`3`)
 
   const shoupais = [
     new Majiang.Shoupai(),
