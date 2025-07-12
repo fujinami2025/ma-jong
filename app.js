@@ -143,11 +143,11 @@ function startGame(roomId) {
 
 
   // 🔧 テスト用固定牌構成
-  const fixedHand0 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 36, 37, 38, 108]; // プレイヤー0
-  const fixedHand1 = [9, 10, 11, 12, 13, 14, 15, 16, 17, 39, 40, 41, 109]; // プレイヤー1 (即ロン用)
+  const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, /*予備:*/ 5, 6]; // プレイヤー0
+  const fixedHand1 = [96, 100, 104, 32, 36, 40, 4, 8, 12, 110, 111, /*補完:*/ 33, 34]; // プレイヤー1 (即ロン用)
   const hands = [fixedHand0, fixedHand1]
 
-  
+
   //const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
   const mountain = tiles.slice(26);
   const shoupais = [];
