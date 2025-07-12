@@ -149,7 +149,7 @@ function startGame(roomId) {
 
 
   //const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
-  const mountain = tiles.slice(26);
+  const mountain = [108, ...tiles.slice(27)];
   const shoupais = [];
 
   for (let i = 0; i < 2; i++) {
