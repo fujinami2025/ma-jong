@@ -42,7 +42,7 @@ app.ws('/ws', (ws, req) => {
       mountain: [],
       currentTurn: 0
     }
-        console.log(`1`)
+    console.log(`1`)
 
     startGame(roomId)
   }
@@ -58,6 +58,21 @@ app.ws('/ws', (ws, req) => {
       const shoupai = room.shoupais[playerIndex]
       const paiStr = convertPaiIndexToMPSZ(data.pai)
       shoupai.dapai(paiStr)
+
+      const opponentIndex = (playerIndex + 1) % 2;
+      const oppShoupai = room.shoupais[opponentIndex];
+      if (oppShoupai.agari(paiStr)) {
+        room.players.forEach((player, i) => {
+          if (player.readyState === 1) {
+            player.send(JSON.stringify({
+              type: 'ron',
+              winner: opponentIndex,
+              pai: data.pai,
+            }));
+          }
+        });
+        return;//終了
+      }
 
       room.players.forEach((player, i) => {
         if (player.readyState === 1) {
@@ -147,16 +162,16 @@ function startGame(roomId) {
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[array[i], array[j]] = [array[j], array[i]]
+      ;[array[i], array[j]] = [array[j], array[i]]
   }
 }
 
 function convertPaiIndexToMPSZ(pai) {
   const typeIndex = Math.floor(pai / 4);
-  if (typeIndex < 9) return 'm'+(typeIndex+1);
-  if (typeIndex < 18) return 'p'+(typeIndex -9 +1);
-  if (typeIndex < 27) return 's'+(typeIndex -18 +1);
-  return 'z'+(typeIndex -27 +1);
+  if (typeIndex < 9) return 'm' + (typeIndex + 1);
+  if (typeIndex < 18) return 'p' + (typeIndex - 9 + 1);
+  if (typeIndex < 27) return 's' + (typeIndex - 18 + 1);
+  return 'z' + (typeIndex - 27 + 1);
 }
 
 function convertShoupaiToArray(shoupai) {
@@ -209,7 +224,7 @@ function convertPaiArrayToStringSorted(paiArray) {
     for (let i = 0; i < tiles.length; i++) {
       suitStr += String(i + 1).repeat(tiles[i]);
     }
-    if (suitStr !== '') result += suit+suitStr;
+    if (suitStr !== '') result += suit + suitStr;
   }
 
   const honors = paiCounts.z;
@@ -217,7 +232,7 @@ function convertPaiArrayToStringSorted(paiArray) {
   for (let i = 0; i < honors.length; i++) {
     honorStr += String(i + 1).repeat(honors[i]);
   }
-  if (honorStr !== '') result +='z'+ honorStr ;
+  if (honorStr !== '') result += 'z' + honorStr;
 
   return result;
 }

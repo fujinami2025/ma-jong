@@ -93,6 +93,15 @@
         }
       }
 
+      if (data.type === 'ron') {
+        if (data.winner === myPlayerIndex) {
+          alert('🎉 あなたがロンしました！獲得牌: ' +
+            convertMPSZToPaiIndex(data.pai));
+        } else {
+          alert('相手がロンしました。');
+        }
+      }
+
       if (data.type === 'dahai') {
         if (data.playerIndex !== myPlayerIndex) {
           showOpponentDiscardedTile(data.pai);
@@ -163,7 +172,7 @@
               pai: paiIndex
             }));
           };
-          
+
 
           handDiv.appendChild(img);
         }
