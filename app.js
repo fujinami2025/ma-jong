@@ -71,6 +71,7 @@ app.ws('/ws', (ws, req) => {
             }));
           }
         });
+        console.log("あがり");
         return;//終了
       }
 
