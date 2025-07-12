@@ -59,6 +59,8 @@ app.ws('/ws', (ws, req) => {
       const paiStr = convertPaiIndexToMPSZ(data.pai)
       shoupai.dapai(paiStr)
 
+      const opponentIndex = (playerIndex + 1) % 2;
+      const oppShoupai = room.shoupais[opponentIndex];
       const isAgari = Majiang.Util.agari(oppShoupai, paiStr);
 
       if (isAgari) {
