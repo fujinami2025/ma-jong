@@ -61,9 +61,21 @@ app.ws('/ws', (ws, req) => {
 
       const opponentIndex = (playerIndex + 1) % 2;
       const oppShoupai = room.shoupais[opponentIndex];
-      const isAgari = Majiang.Util.agari(oppShoupai, paiStr);
+      console.log(paiStr);
+      console.log(oppShoupai);
+      const ronResult = Majiang.Util.hule(
+        oppShoupai,
+        paiStr + '-',
+        Majiang.Util.hule_param({
+          zhuangfeng: 0,
+          menfeng: opponentIndex,
+          baopai: null,
+          changbang: 0,
+          lizhibang: 0,
+        })
+      );
 
-      if (isAgari) {
+      if (ronResult) {
         room.players.forEach((player, i) => {
           if (player.readyState === 1) {
             player.send(JSON.stringify({
