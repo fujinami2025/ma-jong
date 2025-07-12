@@ -134,8 +134,8 @@
     function showHandFromShoupaiString(handStr) {
       handDiv.innerHTML = 'あなたの手牌: ';
       let suit = '';
-      for (let i = 0; i < handStr.length; i++) {
-        const ch = handStr[i];
+      for (let i = 0; i < handStr.length; i++) { //m123p456s789z1233
+        const ch = handStr[i]; //m p s z
         if ('mpsz'.includes(ch)) {
           suit = ch;
         } else if (/\d/.test(ch)) {
@@ -144,6 +144,24 @@
           img.alt = `${suit}${ch}`;
           img.style.width = '40px';
           img.style.margin = '2px';
+
+          img.onclick = () => {
+            if (!canDiscard) return;
+            canDiscard = false;
+            img.style.opacity = 0.5;
+            img.style.pointerEvents = 'none';
+
+            const paiIndex = convertMPSZToPaiIndex(tileStr);
+            showMyDiscardedTile(paiIndex);
+
+            ws.send(JSON.stringify({
+              type: 'dahai',
+              roomId: myRoomId,
+              playerIndex: myPlayerIndex,
+              pai: paiIndex
+            }));
+          };
+
           handDiv.appendChild(img);
         }
       }
@@ -184,6 +202,17 @@
     ws.onclose = () => {
       statusDiv.textContent = 'サーバーとの接続が切断されました。';
     };
+
+    function convertMPSZToPaiIndex(paiStr) {
+      const num = parseInt(paiStr[1]);
+      const suit = paiStr[0];
+      let base = 0;
+      if (suit === 'p') base = 9;
+      else if (suit === 's') base = 18;
+      else if (suit === 'z') base = 27;
+      const tileIndex = base + num - 1;
+      return tileIndex * 4; // 常に0番目のインスタンス
+    }
 
     /*function convertHandStringToIndexes(handString) {
       const result = [];
