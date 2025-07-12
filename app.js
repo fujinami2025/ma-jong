@@ -59,11 +59,9 @@ app.ws('/ws', (ws, req) => {
       const paiStr = convertPaiIndexToMPSZ(data.pai)
       shoupai.dapai(paiStr)
 
-      const opponentIndex = (playerIndex + 1) % 2;
-      const oppShoupai = room.shoupais[opponentIndex];
-      console.log(typeof oppShoupai);
-      console.log(oppShoupai);
-      if (oppShoupai.agari(paiStr)) {
+      const isAgari = Majiang.Util.agari(oppShoupai, paiStr);
+
+      if (isAgari) {
         room.players.forEach((player, i) => {
           if (player.readyState === 1) {
             player.send(JSON.stringify({
