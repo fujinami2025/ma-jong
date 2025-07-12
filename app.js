@@ -54,42 +54,6 @@ app.ws('/ws', (ws, req) => {
 
     const playerIndex = data.playerIndex
 
-    if (data.type === 'ron') {
-      const room = rooms[data.roomId];
-      if (!room) return;
-
-      const playerIndex = data.playerIndex;
-      const opponentIndex = (playerIndex + 1) % 2;
-      const paiStr = convertPaiIndexToMPSZ(data.pai);
-
-      const result = Majiang.Util.hule(
-        room.shoupais[playerIndex],
-        paiStr + '-',
-        Majiang.Util.hule_param({
-          zhuangfeng: 0,
-          menfeng: playerIndex,
-          baopai: null,
-          changbang: 0,
-          lizhibang: 0
-        })
-      );
-
-      if (result) {
-        room.players.forEach((player, i) => {
-          if (player.readyState === 1) {
-            player.send(JSON.stringify({
-              type: 'ron',
-              winner: playerIndex,
-              pai: data.pai
-            }));
-          }
-        });
-        return;
-      } else {
-        console.log("不正なロン要求");
-      }
-    }
-
     if (data.type === 'dahai') {
       const shoupai = room.shoupais[playerIndex]
       const paiStr = convertPaiIndexToMPSZ(data.pai)
@@ -99,7 +63,6 @@ app.ws('/ws', (ws, req) => {
       const oppShoupai = room.shoupais[opponentIndex];
       console.log(paiStr);
       console.log(oppShoupai);
-/*
       const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
@@ -125,7 +88,7 @@ app.ws('/ws', (ws, req) => {
         console.log("あがり");
         return;//終了
       }
-*/
+
       room.players.forEach((player, i) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
