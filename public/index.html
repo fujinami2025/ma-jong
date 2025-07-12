@@ -139,6 +139,7 @@
         if ('mpsz'.includes(ch)) {
           suit = ch;
         } else if (/\d/.test(ch)) {
+          const tileStr = `${suit}${ch}`;
           const img = document.createElement('img');
           img.src = `/dist/image/${suit}${ch}.gif`;  // ← m1.gif など
           img.alt = `${suit}${ch}`;
