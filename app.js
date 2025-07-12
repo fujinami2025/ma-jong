@@ -140,7 +140,15 @@ function startGame(roomId) {
   const tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
   console.log(`4`)
-  const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
+
+
+  // 🔧 テスト用固定牌構成
+  const fixedHand0 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 36, 37, 38, 108]; // プレイヤー0
+  const fixedHand1 = [9, 10, 11, 12, 13, 14, 15, 16, 17, 39, 40, 41, 109]; // プレイヤー1 (即ロン用)
+  const hands = [fixedHand0, fixedHand1]
+
+  
+  //const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
   const mountain = tiles.slice(26);
   const shoupais = [];
 
