@@ -133,6 +133,28 @@ app.ws('/ws', (ws, req) => {
       console.log('あがり（ユーザー操作によるロン）');
       // 対局終了処理は必要に応じてここで
     }
+    if (data.type === 'skip') {
+      // 通常の打牌後の処理と同じようにツモへ
+      room.currentTurn = (room.currentTurn + 1) % 2;
+      const nextPlayer = room.players[room.currentTurn];
+
+      if (room.mountain.length > 0) {
+        const nextPai = room.mountain.shift();
+        const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
+        room.shoupais[room.currentTurn].zimo(nextPaiStr);
+
+        if (nextPlayer.readyState === 1) {
+          nextPlayer.send(JSON.stringify({
+            type: 'tsumo',
+            playerIndex: room.currentTurn,
+            roomId: data.roomId,
+            handString: room.shoupais[room.currentTurn].toString()
+          }));
+        }
+      } else {
+        console.log('🈳 山が尽きました（流局）');
+      }
+    }
   });
 
 
