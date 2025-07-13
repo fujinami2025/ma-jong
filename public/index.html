@@ -176,6 +176,9 @@
 
     function updateTileInteractivity() {
       document.querySelectorAll('.tile').forEach(img => {
+        console.log("牌要素:", img.alt, "index属性:", img.dataset.index);
+      });
+      document.querySelectorAll('.tile').forEach(img => {
         const index = parseInt(img.dataset.index);
         if (isRiichi) {
           img.style.pointerEvents = tingpaiSet.has(index) ? 'auto' : 'none';
@@ -194,11 +197,17 @@
 
       const shoupai = Majiang.Shoupai.fromString(currentHandString);
       const reachInfo = Majiang.Util.reach(shoupai);
+      console.log("reachInfo:", reachInfo);
       if (reachInfo) {
+        console.log("reachInfo.dapai:", reachInfo.dapai);
+        console.log("converted indices:", reachInfo.dapai.map(p => {
+          const pstr = p.replace(/[+\-*]/g, '');
+          return convertMPSZToPaiIndex(pstr);
+        }));
         tingpaiSet = new Set(
           reachInfo.dapai.map(p => convertMPSZToPaiIndex(p.replace(/[+\-\*]/g, '')))
         );
-        alert("リーチ可能な打牌（index）:", Array.from(tingpaiSet));
+        console.log("リーチ可能な打牌 index:", Array.from(tingpaiSet));
       } else {
         tingpaiSet.clear();
       }
@@ -286,7 +295,9 @@
           img.onclick = () => {
             console.log("クリックされました");　//なぜか出てこないlog　謎　サーバー側に指示飛ばしてないのでは？、type:かなんかでサーバー側に表示頼めば？
             const paiIndex = convertMPSZToPaiIndex(tileStr);
+            console.log("クリックされた牌", tileStr, "index", paiIndex);
             if (!canDiscard) return;
+            if (isRiichi) console.log("リーチ中。tingpaiSet.has:", tingpaiSet.has(paiIndex));
             if (isRiichi && !tingpaiSet.has(paiIndex)) return;
             canDiscard = false;
             img.style.opacity = 0.5;
