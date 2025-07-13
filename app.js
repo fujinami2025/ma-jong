@@ -129,7 +129,7 @@ app.ws('/ws', (ws, req) => {
 
 
           const shanten = Majiang.Util.xiangting(currentShoupai);
-
+          console.log('シャンテン:' + shanten);
           if (shanten === 0) {
             nextPlayer.send(JSON.stringify({
               type: 'reachable',
@@ -306,7 +306,7 @@ function startGame(roomId) {
       roomId,
       handString: shoupai.toString()
     }));
-
+    console.log('シャンテン:' + shanten);
     if (i === 0 && shanten === 0) { // 後手はまだツモってないのでリーチ不可能
       player.send(JSON.stringify({
         type: 'reachable',
