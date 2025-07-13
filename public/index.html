@@ -87,7 +87,7 @@
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      if (data.type === 'riichiAvailable' && data.playerIndex === myPlayerIndex) {
+      if (data.type === 'reachable' && data.playerIndex === myPlayerIndex) {
         document.getElementById('riichi-button').style.display = 'inline-block';
       }
 
@@ -245,33 +245,6 @@
       ronPendingPai = null;
     };
 
-    /*function showHand(hand) {
-      handDiv.innerHTML = 'あなたの手牌: ';
-      const sorted = [...hand].sort((a, b) => a - b);
-      sorted.forEach(pai => {
-        const img = document.createElement('img');
-        img.src = `/dist/image/${getTileImage(pai)}`;
-        img.alt = pai;
-        img.style.width = '40px';
-        img.style.margin = '2px';
-        img.style.cursor = 'pointer';
-
-        img.onclick = () => {
-          if (!canDiscard) return;
-          canDiscard = false;
-          img.style.opacity = 0.5;
-          img.style.pointerEvents = 'none';
-          showMyDiscardedTile(pai);
-          ws.send(JSON.stringify({
-            type: 'dahai',
-            roomId: myRoomId,
-            playerIndex: myPlayerIndex,
-            pai
-          }));
-        };
-        handDiv.appendChild(img);
-      });
-    }*/
     function showHandFromShoupaiString(handStr) {
       console.log("🀄 再描画対象の手牌:", handStr);
       handDiv.innerHTML = 'あなたの手牌: ';
@@ -359,31 +332,7 @@
       const tileIndex = base + num - 1;
       return tileIndex * 4; // 常に0番目のインスタンス
     }
-
-    /*function convertHandStringToIndexes(handString) {
-      const result = [];
-      const suits = ['m', 'p', 's', 'z'];
-
-      for (const suit of suits) {
-        const regex = new RegExp(`([1-9]+)${suit}`, 'g');
-        let match;
-        while ((match = regex.exec(handString)) !== null) {
-          const numbers = match[1];
-          for (const ch of numbers) {
-            const num = parseInt(ch);
-            let base = 0;
-            if (suit === 'p') base = 9;
-            else if (suit === 's') base = 18;
-            else if (suit === 'z') base = 27;
-            const tileIndex = base + num - 1;
-            result.push(tileIndex * 4); // 同じ牌の0番目インスタンス
-          }
-        }
-      }
-
-      return result.sort((a, b) => a - b);
-    }*/
-
+    
   </script>
 </body>
 
