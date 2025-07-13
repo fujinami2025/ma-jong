@@ -127,7 +127,7 @@ app.ws('/ws', (ws, req) => {
             handString: currentShoupai.toString()
           }));
 
-          const currentShoupai = room.shoupais[room.currentTurn];
+
           const shanten = Majiang.Util.xiangting(currentShoupai);
 
           if (shanten === 0) {
@@ -297,7 +297,7 @@ function startGame(roomId) {
         }));
       }
     }
-    
+
     const shanten = Majiang.Util.xiangting(shoupai);
 
     player.send(JSON.stringify({
