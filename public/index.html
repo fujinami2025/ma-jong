@@ -49,7 +49,8 @@
       <div id="my-discards" style="margin-bottom: 10px;"></div>
       <div id="hand-display"></div>
     </div>
-      <button id="ron-button" style="display:none; margin-top:10px;">ロンする</button>
+    <button id="ron-button" style="display:none; margin-top:10px;">ロンする</button>
+    <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
   </div>
 
   <script>
@@ -61,12 +62,13 @@
     const opponentDiscards = document.getElementById('opponent-discards');
     const myDiscards = document.getElementById('my-discards');
     const ronButton = document.getElementById('ron-button');
+    const skipButton = document.getElementById('skip-button');
 
     let myPlayerIndex = null;
     let myRoomId = null;
     let canDiscard = false;
     let ronPendingPai = null;
-
+    let skipRequested = false;
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
 
@@ -99,10 +101,11 @@
       if (data.type === 'ronCheck') {
         // ユーザーにロンするかどうか選ばせる
         ronPendingPai = data.pai;
-        showRonButton();
+        showRonSkipButtons();
       }
 
       if (data.type === 'ron') {
+        hideRonSkipButtons();
         if (data.winner === myPlayerIndex) {
           alert('🎉 あなたがロンしました！獲得牌: ' + convertMPSZToPaiIndex(data.pai));
         } else {
@@ -120,12 +123,17 @@
       }
     };
 
-    function showRonButton() {
+    function showRonSkipButtons() {
       ronButton.style.display = 'inline-block';
+      skipButton.style.display = 'inline-block';
+    }
+
+    function hideRonSkipButtons() {
+      ronButton.style.display = 'none';
+      skipButton.style.display = 'none';
     }
 
     ronButton.onclick = () => {
-      ronButton.style.display = 'none';
       if (ronPendingPai !== null) {
         ws.send(JSON.stringify({
           type: 'ron',
@@ -135,7 +143,20 @@
         }));
         ronPendingPai = null;
       }
+      hideRonSkipButtons();
     };
+
+    // スキップを押した場合
+    skipButton.onclick = () => {
+      hideRonSkipButtons();
+      ws.send(JSON.stringify({
+        type: 'skip',
+        roomId: myRoomId,
+        playerIndex: myPlayerIndex
+      }));
+      ronPendingPai = null;
+    };
+    
     /*function showHand(hand) {
       handDiv.innerHTML = 'あなたの手牌: ';
       const sorted = [...hand].sort((a, b) => a - b);
