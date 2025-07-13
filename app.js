@@ -83,6 +83,7 @@ app.ws('/ws', (ws, req) => {
     }
 */
     if (data.type === 'reach') {
+      console.log('📩 reach リクエスト受信:', data);
       const playerIndex = data.playerIndex;
       const room = rooms[data.roomId];
       if (!room) return;
@@ -409,17 +410,6 @@ function convertShoupaiToArray(shoupai) {
     }
   }
   return result.sort((a, b) => a - b)
-}
-
-function convertMPSZToPaiIndex(paiStr) {
-  const num = parseInt(paiStr[0])
-  const suit = paiStr[1]
-  let base = 0
-  if (suit === 'p') base = 9
-  else if (suit === 's') base = 18
-  else if (suit === 'z') base = 27
-  const tileIndex = base + num - 1
-  return tileIndex * 4 // 常に0番目のインスタンス
 }
 
 function convertMPSZToPaiIndex(paiStr) {
