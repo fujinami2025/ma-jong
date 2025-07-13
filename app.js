@@ -127,15 +127,17 @@ app.ws('/ws', (ws, req) => {
             handString: currentShoupai.toString()
           }));
 
-          const shanten = Majiang.Util.shanten(room.shoupais[room.currentTurn]);
+          const currentShoupai = room.shoupais[room.currentTurn];
+          const shanten = Majiang.Util.xiangting(currentShoupai);
+
           if (shanten === 0) {
             nextPlayer.send(JSON.stringify({
-              type: 'riichiAvailable',
-              playerIndex: room.currentTurn,
-              roomId: data.roomId
+              type: 'reachable',
+              roomId: data.roomId,
+              playerIndex: room.currentTurn
             }));
           }
-          
+
           if (tsumoResult) {
             nextPlayer.send(JSON.stringify({
               type: 'tsumoCheck',
@@ -294,6 +296,23 @@ function startGame(roomId) {
           playerIndex: i
         }));
       }
+    }
+    
+    const shanten = Majiang.Util.xiangting(shoupai);
+
+    player.send(JSON.stringify({
+      type: 'start',
+      playerIndex: i,
+      roomId,
+      handString: shoupai.toString()
+    }));
+
+    if (i === 0 && shanten === 0) { // 後手はまだツモってないのでリーチ不可能
+      player.send(JSON.stringify({
+        type: 'reachable',
+        roomId,
+        playerIndex: i
+      }));
     }
   });
 }
