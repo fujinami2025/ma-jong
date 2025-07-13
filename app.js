@@ -255,30 +255,36 @@ function startGame(roomId) {
   console.log(`7`)
   // クライアントに初期手牌を送信
   room.players.forEach((player, i) => {
+    const shoupai = shoupais[i];
+
     player.send(JSON.stringify({
       type: 'start',
       playerIndex: i,
       roomId,
-      handString: shoupais[i].toString()
+      handString: shoupai.toString()
     }));
-    const tsumoResult = Majiang.Util.hule(
-      shoupai,
-      null,
-      Majiang.Util.hule_param({
-        zhuangfeng: 0,
-        menfeng: i,
-        baopai: null,
-        changbang: 0,
-        lizhibang: 0
-      })
-    );
 
-    if (tsumoResult) {
-      player.send(JSON.stringify({
-        type: 'tsumoCheck',
-        roomId,
-        playerIndex: i
-      }));
+    // 👇 先手（プレイヤー0）のみツモチェック
+    if (i === 0) {
+      const tsumoResult = Majiang.Util.hule(
+        shoupai,
+        null,
+        Majiang.Util.hule_param({
+          zhuangfeng: 0,
+          menfeng: i,
+          baopai: null,
+          changbang: 0,
+          lizhibang: 0
+        })
+      );
+
+      if (tsumoResult) {
+        player.send(JSON.stringify({
+          type: 'tsumoCheck',
+          roomId,
+          playerIndex: i
+        }));
+      }
     }
   });
 }
