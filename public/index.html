@@ -100,7 +100,13 @@
       }
 
       if (data.type === 'start') {
-        // ...
+        tatusDiv.style.display = 'none';
+        gameDiv.style.display = 'block';
+        myPlayerIndex = data.playerIndex;
+        myRoomId = data.roomId;
+        playerSpan.textContent = myPlayerIndex;
+        roomSpan.textContent = myRoomId;
+
         currentHandString = data.handString || '';
         if (data.handString) showHandFromShoupaiString(data.handString);
       }
