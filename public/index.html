@@ -278,11 +278,13 @@
           img.style.width = '40px';
           img.style.margin = '2px';
           img.style.cursor = 'pointer';
+          const paiIndex = convertMPSZToPaiIndex(tileStr);
+          img.dataset.index = paiIndex;
           img.classList.add('tile');
 
           img.onclick = () => {
             console.log("クリックされました");　//なぜか出てこないlog　謎　サーバー側に指示飛ばしてないのでは？、type:かなんかでサーバー側に表示頼めば？
-            const paiIndex = convertMPSZToPaiIndex(tileStr); 
+            const paiIndex = convertMPSZToPaiIndex(tileStr);
             if (!canDiscard) return;
             if (isRiichi && !tingpaiSet.has(paiIndex)) return;
             canDiscard = false;
