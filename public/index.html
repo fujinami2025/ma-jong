@@ -49,6 +49,7 @@
       <div id="my-discards" style="margin-bottom: 10px;"></div>
       <div id="hand-display"></div>
     </div>
+      <button id="ron-button" style="display:none; margin-top:10px;">ロンする</button>
   </div>
 
   <script>
@@ -59,10 +60,12 @@
     const handDiv = document.getElementById('hand-display');
     const opponentDiscards = document.getElementById('opponent-discards');
     const myDiscards = document.getElementById('my-discards');
+    const ronButton = document.getElementById('ron-button');
 
     let myPlayerIndex = null;
     let myRoomId = null;
     let canDiscard = false;
+    let ronPendingPai = null;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
@@ -93,15 +96,19 @@
         }
       }
 
+      if (data.type === 'ronCheck') {
+        // ユーザーにロンするかどうか選ばせる
+        ronPendingPai = data.pai;
+        showRonButton();
+      }
+
       if (data.type === 'ron') {
         if (data.winner === myPlayerIndex) {
-          alert('🎉 あなたがロンしました！獲得牌: ' +
-            convertMPSZToPaiIndex(data.pai));
+          alert('🎉 あなたがロンしました！獲得牌: ' + convertMPSZToPaiIndex(data.pai));
         } else {
           alert('相手がロンしました。');
         }
       }
-
       if (data.type === 'dahai') {
         if (data.playerIndex !== myPlayerIndex) {
           showOpponentDiscardedTile(data.pai);
@@ -113,6 +120,22 @@
       }
     };
 
+    function showRonButton() {
+      ronButton.style.display = 'inline-block';
+    }
+
+    ronButton.onclick = () => {
+      ronButton.style.display = 'none';
+      if (ronPendingPai !== null) {
+        ws.send(JSON.stringify({
+          type: 'ron',
+          roomId: myRoomId,
+          playerIndex: myPlayerIndex,
+          pai: ronPendingPai
+        }));
+        ronPendingPai = null;
+      }
+    };
     /*function showHand(hand) {
       handDiv.innerHTML = 'あなたの手牌: ';
       const sorted = [...hand].sort((a, b) => a - b);
@@ -154,9 +177,10 @@
           img.alt = `${suit}${ch}`;
           img.style.width = '40px';
           img.style.margin = '2px';
+          img.style.cursor = 'pointer';
 
           img.onclick = () => {
-            console.log("クリックされました");　//なぜか出てこないlog　謎
+            console.log("クリックされました");　//なぜか出てこないlog　謎　サーバー側に指示飛ばしてないのでは？、type:かなんかでサーバー側に表示頼めば？
             if (!canDiscard) return;
             canDiscard = false;
             img.style.opacity = 0.5;
