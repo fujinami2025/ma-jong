@@ -283,6 +283,7 @@
           img.onclick = () => {
             console.log("クリックされました");　//なぜか出てこないlog　謎　サーバー側に指示飛ばしてないのでは？、type:かなんかでサーバー側に表示頼めば？
             if (!canDiscard) return;
+            if (isRiichi && !tingpaiSet.has(paiIndex)) return;
             canDiscard = false;
             img.style.opacity = 0.5;
             img.style.pointerEvents = 'none';
