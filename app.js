@@ -139,11 +139,10 @@ app.ws('/ws', (ws, req) => {
       let tingpaiList = [];
 
       if (shanten === 0) {
-        // 打てる牌をチェック
         const candidates = [];
         const shoupaiClone = Majiang.Shoupai.fromString(shoupai.toString());
 
-        for (let p of shoupaiClone._get_dapai()) {
+        for (let p of Majiang.Util.dapai_list(shoupaiClone)) {
           const clone = Majiang.Shoupai.fromString(shoupai.toString());
           clone.dapai(p);
           if (Majiang.Util.xiangting(clone) === 0) {
