@@ -198,6 +198,7 @@
         tingpaiSet = new Set(
           reachInfo.dapai.map(p => convertMPSZToPaiIndex(p.replace(/[+\-\*]/g, '')))
         );
+        alert("リーチ可能な打牌（index）:", Array.from(tingpaiSet));
       } else {
         tingpaiSet.clear();
       }
@@ -304,6 +305,9 @@
 
           handDiv.appendChild(img);
         }
+      }
+      if (isRiichi) {
+        updateTileInteractivity(); // ← リーチ中なら再度フィルターを適用
       }
     }
     function getTileImage(paiNumber) {
