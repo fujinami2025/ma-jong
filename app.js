@@ -54,6 +54,33 @@ app.ws('/ws', (ws, req) => {
 
     const playerIndex = data.playerIndex;
 
+    if (data.type === 'reach') {
+      const shoupai = room.shoupais[playerIndex];
+      const shanten = Majiang.Util.xiangting(shoupai);
+
+      if (shanten === 0) {
+        room.players.forEach((player) => {
+          if (player.readyState === 1) {
+            player.send(JSON.stringify({
+              type: 'reachResult',
+              playerIndex,
+              result: 'OK'
+            }));
+          }
+        });
+      } else {
+        if (room.players[playerIndex].readyState === 1) {
+          room.players[playerIndex].send(JSON.stringify({
+            type: 'reachResult',
+            playerIndex,
+            result: 'NG',
+            message: 'リーチはできません（シャンテン数が0ではない）'
+          }));
+        }
+      }
+      return;
+    }
+
     if (data.type === 'dahai') {
       const shoupai = room.shoupais[playerIndex];
       const paiStr = convertPaiIndexToMPSZ(data.pai);

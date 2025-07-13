@@ -89,6 +89,17 @@
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
+      if (data.type === 'reachResult') {
+        if (data.result === 'OK') {
+          console.log("リーチ成立！");
+          alert("リーチ成立しました！");
+        } else {
+          console.log("リーチ失敗:", data.message);
+          alert("リーチできません: " + data.message);
+        }
+        return;  // これ以降の処理をしない
+      }
+
       if (data.type === 'reachable' && data.playerIndex === myPlayerIndex) {
         ws.send(JSON.stringify({
           type: 'log',
@@ -189,32 +200,44 @@
         }
       });
     }
+    /*
+        riichiButton.onclick = () => {
+          isRiichi = true;
+          riichiButton.style.display = 'none';
+          canselButton.style.display = 'inline-block';
+    
+          const shoupai = Majiang.Shoupai.fromString(currentHandString);
+          const reachInfo = Majiang.Util.reach(shoupai);
+          console.log("reachInfo:", reachInfo);
+          if (reachInfo) {
+            console.log("reachInfo.dapai:", reachInfo.dapai);
+            console.log("converted indices:", reachInfo.dapai.map(p => {
+              const pstr = p.replace(/[+\-*]/g, '');
+              return convertMPSZToPaiIndex(pstr);
+            }));
+            tingpaiSet = new Set(
+              reachInfo.dapai.map(p => convertMPSZToPaiIndex(p.replace(/[+\-\*]/g, '')))
+            );
+            console.log("リーチ可能な打牌 index:", Array.from(tingpaiSet));
+          } else {
+            tingpaiSet.clear();
+          }
+    
+          // 有効牌のみアクティブに
+          updateTileInteractivity();
+        };
+    */
 
     riichiButton.onclick = () => {
-      isRiichi = true;
-      riichiButton.style.display = 'none';
-      canselButton.style.display = 'inline-block';
+      console.log("クリックされました");
 
-      const shoupai = Majiang.Shoupai.fromString(currentHandString);
-      const reachInfo = Majiang.Util.reach(shoupai);
-      console.log("reachInfo:", reachInfo);
-      if (reachInfo) {
-        console.log("reachInfo.dapai:", reachInfo.dapai);
-        console.log("converted indices:", reachInfo.dapai.map(p => {
-          const pstr = p.replace(/[+\-*]/g, '');
-          return convertMPSZToPaiIndex(pstr);
-        }));
-        tingpaiSet = new Set(
-          reachInfo.dapai.map(p => convertMPSZToPaiIndex(p.replace(/[+\-\*]/g, '')))
-        );
-        console.log("リーチ可能な打牌 index:", Array.from(tingpaiSet));
-      } else {
-        tingpaiSet.clear();
-      }
-
-      // 有効牌のみアクティブに
-      updateTileInteractivity();
-    };
+      // サーバーに reach メッセージを送信
+      socket.send(JSON.stringify({
+        type: 'reach',
+        playerIndex: myPlayerIndex,
+        roomId: currentRoomId
+      }));
+    }
 
     // キャンセル
     canselButton.onclick = () => {
