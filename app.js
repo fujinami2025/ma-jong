@@ -48,11 +48,11 @@ app.ws('/ws', (ws, req) => {
   }
 
   ws.on('message', (msg) => {
-    const data = JSON.parse(msg)
-    const room = rooms[data.roomId]
-    if (!room) return
+    const data = JSON.parse(msg);
+    const room = rooms[data.roomId];
+    if (!room) return;
 
-    const playerIndex = data.playerIndex
+    const playerIndex = data.playerIndex;
 
     if (data.type === 'dahai') {
       const shoupai = room.shoupais[playerIndex];
@@ -75,7 +75,6 @@ app.ws('/ws', (ws, req) => {
       );
 
       if (ronResult) {
-        // 👇 和了ではなく確認メッセージを送る
         room.players[opponentIndex].send(JSON.stringify({
           type: 'ronCheck',
           pai: data.pai,
@@ -85,7 +84,7 @@ app.ws('/ws', (ws, req) => {
         return;
       }
 
-      // 通常の打牌処理
+      // 通常の打牌通知
       room.players.forEach((player, i) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
@@ -105,13 +104,36 @@ app.ws('/ws', (ws, req) => {
         const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
         room.shoupais[room.currentTurn].zimo(nextPaiStr);
 
+        const currentShoupai = room.shoupais[room.currentTurn];
+
+        // ツモ和了の判定
+        const tsumoResult = Majiang.Util.hule(
+          currentShoupai,
+          null,
+          Majiang.Util.hule_param({
+            zhuangfeng: 0,
+            menfeng: room.currentTurn,
+            baopai: null,
+            changbang: 0,
+            lizhibang: 0,
+          })
+        );
+
         if (nextPlayer.readyState === 1) {
           nextPlayer.send(JSON.stringify({
             type: 'tsumo',
             playerIndex: room.currentTurn,
             roomId: data.roomId,
-            handString: room.shoupais[room.currentTurn].toString()
+            handString: currentShoupai.toString()
           }));
+
+          if (tsumoResult) {
+            nextPlayer.send(JSON.stringify({
+              type: 'tsumoCheck',
+              roomId: data.roomId,
+              playerIndex: room.currentTurn
+            }));
+          }
         }
       } else {
         console.log('🈳 山が尽きました（流局）');
@@ -154,6 +176,32 @@ app.ws('/ws', (ws, req) => {
       } else {
         console.log('🈳 山が尽きました（流局）');
       }
+    }
+    if (data.type === 'tsumo') {
+      const winner = data.playerIndex;
+      room.players.forEach((player, i) => {
+        if (player.readyState === 1) {
+          player.send(JSON.stringify({
+            type: 'tsumo',
+            winner,
+            pai: null // ツモは捨て牌が無い
+          }));
+        }
+      });
+      console.log('あがり（ツモ）');
+    }
+    if (data.type === 'tsumo') {
+      const winner = data.playerIndex;
+      room.players.forEach((player, i) => {
+        if (player.readyState === 1) {
+          player.send(JSON.stringify({
+            type: 'tsumo',
+            winner,
+            pai: null
+          }));
+        }
+      });
+      console.log('あがり（ツモ）');
     }
   });
 
