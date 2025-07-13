@@ -293,7 +293,7 @@
           img.classList.add('tile');
 
           img.onclick = () => {
-            console.log("クリックされました");　//なぜか出てこないlog　謎　サーバー側に指示飛ばしてないのでは？、type:かなんかでサーバー側に表示頼めば？
+            console.log("クリックされました"); //なぜか出てこないlog　謎　サーバー側に指示飛ばしてないのでは？、type:かなんかでサーバー側に表示頼めば？
             const paiIndex = convertMPSZToPaiIndex(tileStr);
             console.log("クリックされた牌", tileStr, "index", paiIndex);
             if (!canDiscard) return;
