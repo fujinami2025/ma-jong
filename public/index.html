@@ -52,6 +52,7 @@
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
     <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
+    <button id="tsumoskip-button" style="display:none;">スキップ</button>
   </div>
 
   <script>
@@ -65,6 +66,7 @@
     const ronButton = document.getElementById('ron-button');
     const skipButton = document.getElementById('skip-button');
     const tsumoButton = document.getElementById('tsumo-button');
+
 
     let myPlayerIndex = null;
     let myRoomId = null;
@@ -114,8 +116,13 @@
           alert('相手がロンしました。');
         }
       }
+      const tsumoButton = document.getElementById("tsumo-button");
+      const tsumoskipButton = document.getElementById("tsumoskip-button");
+
       if (data.type === 'tsumoCheck') {
         tsumoButton.style.display = 'inline-block';
+        tsumoskipButton.style.display = 'inline-block';
+        canDiscard = false; // まだ捨てられない（判定中）
       }
 
       if (data.type === 'tsumo' && data.winner !== undefined) {
@@ -165,13 +172,22 @@
 
     tsumoButton.onclick = () => {
       tsumoButton.style.display = 'none';
+      tsumoskipButton.style.display = 'none';
+
       ws.send(JSON.stringify({
         type: 'tsumo',
-        playerIndex: myPlayerIndex,
-        roomId: myRoomId
+        roomId: myRoomId,
+        playerIndex: myPlayerIndex
       }));
     };
+    
+    tsumoskipButton.onclick = () => {
+      tsumoButton.style.display = 'none';
+      tsumoskipButton.style.display = 'none';
 
+      // ツモスキップ → 通常の打牌に移行
+      canDiscard = true;
+    };
     // スキップを押した場合
     skipButton.onclick = () => {
       hideRonSkipButtons();

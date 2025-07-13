@@ -261,6 +261,25 @@ function startGame(roomId) {
       roomId,
       handString: shoupais[i].toString()
     }));
+    const tsumoResult = Majiang.Util.hule(
+      shoupai,
+      null,
+      Majiang.Util.hule_param({
+        zhuangfeng: 0,
+        menfeng: i,
+        baopai: null,
+        changbang: 0,
+        lizhibang: 0
+      })
+    );
+
+    if (tsumoResult) {
+      player.send(JSON.stringify({
+        type: 'tsumoCheck',
+        roomId,
+        playerIndex: i
+      }));
+    }
   });
 }
 
