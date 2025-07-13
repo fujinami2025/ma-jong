@@ -54,6 +54,7 @@ app.ws('/ws', (ws, req) => {
 
     const playerIndex = data.playerIndex;
 
+    /*
     if (data.type === 'reach') {
       const shoupai = room.shoupais[playerIndex];
       const shanten = Majiang.Util.xiangting(shoupai);
@@ -78,6 +79,36 @@ app.ws('/ws', (ws, req) => {
           }));
         }
       }
+      return;
+    }
+*/
+    if (data.type === 'reach') {
+      const playerIndex = data.playerIndex;
+      const room = rooms[data.roomId];
+      if (!room) return;
+
+      const shoupai = room.shoupais[playerIndex];
+      const reachInfo = Majiang.Util.reach(shoupai);
+
+      let result, tingpaiList = [];
+
+      if (reachInfo && reachInfo.dapai && reachInfo.dapai.length > 0) {
+        tingpaiList = reachInfo.dapai.map(p => {
+          const pstr = p.replace(/[+\-*]/g, '');
+          return convertMPSZToPaiIndex(pstr);
+        });
+
+        result = 'OK';
+      } else {
+        result = 'NG';
+      }
+
+      room.players[playerIndex].send(JSON.stringify({
+        type: 'reachResult',
+        result,
+        message: result === 'OK' ? '' : 'リーチできません',
+        tingpaiList
+      }));
       return;
     }
 
@@ -389,6 +420,17 @@ function convertMPSZToPaiIndex(paiStr) {
   else if (suit === 'z') base = 27
   const tileIndex = base + num - 1
   return tileIndex * 4 // 常に0番目のインスタンス
+}
+
+function convertMPSZToPaiIndex(paiStr) {
+  const num = parseInt(paiStr[1]);
+  const suit = paiStr[0];
+  let base = 0;
+  if (suit === 'p') base = 9;
+  else if (suit === 's') base = 18;
+  else if (suit === 'z') base = 27;
+  const tileIndex = base + num - 1;
+  return tileIndex * 4; // 最初の牌
 }
 
 function convertPaiArrayToStringSorted(paiArray) {

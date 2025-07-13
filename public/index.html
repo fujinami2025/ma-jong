@@ -89,15 +89,22 @@
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
+
       if (data.type === 'reachResult') {
         if (data.result === 'OK') {
-          console.log("リーチ成立！");
-          alert("リーチ成立しました！");
+          isRiichi = true;
+          tingpaiSet = new Set(data.tingpaiList);
+
+          riichiButton.style.display = 'none';
+          canselButton.style.display = 'inline-block';
+
+          updateTileInteractivity();
+          alert("リーチ成立しました！捨てられる牌に制限がかかります。");
+
         } else {
-          console.log("リーチ失敗:", data.message);
           alert("リーチできません: " + data.message);
         }
-        return;  // これ以降の処理をしない
+        return;
       }
 
       if (data.type === 'reachable' && data.playerIndex === myPlayerIndex) {
