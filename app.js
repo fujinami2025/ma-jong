@@ -127,6 +127,15 @@ app.ws('/ws', (ws, req) => {
             handString: currentShoupai.toString()
           }));
 
+          const shanten = Majiang.Util.shanten(room.shoupais[room.currentTurn]);
+          if (shanten === 0) {
+            nextPlayer.send(JSON.stringify({
+              type: 'riichiAvailable',
+              playerIndex: room.currentTurn,
+              roomId: data.roomId
+            }));
+          }
+          
           if (tsumoResult) {
             nextPlayer.send(JSON.stringify({
               type: 'tsumoCheck',

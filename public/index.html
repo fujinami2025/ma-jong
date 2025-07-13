@@ -53,6 +53,8 @@
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
     <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
     <button id="tsumoskip-button" style="display:none;">スキップ</button>
+    <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
+    <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
   </div>
 
   <script>
@@ -73,6 +75,8 @@
     let canDiscard = false;
     let ronPendingPai = null;
     let skipRequested = false;
+    let isRiichi = false;
+    let tingpaiSet = new Set();
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
 
@@ -82,6 +86,10 @@
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
+      if (data.type === 'riichiAvailable' && data.playerIndex === myPlayerIndex) {
+        document.getElementById('riichi-button').style.display = 'inline-block';
+      }
 
       if (data.type === 'start') {
         statusDiv.style.display = 'none';
@@ -155,6 +163,44 @@
       ronButton.style.display = 'none';
       skipButton.style.display = 'none';
     }
+
+    function updateTileInteractivity() {
+      document.querySelectorAll('.tile').forEach(img => {
+        const index = parseInt(img.dataset.index);
+        if (isRiichi) {
+          img.style.pointerEvents = tingpaiSet.has(index) ? 'auto' : 'none';
+          img.style.opacity = tingpaiSet.has(index) ? '1.0' : '0.5';
+        } else {
+          img.style.pointerEvents = 'auto';
+          img.style.opacity = '1.0';
+        }
+      });
+    }
+
+    document.getElementById('riichi-button').onclick = () => {
+      isRiichi = true;
+      document.getElementById('riichi-button').style.display = 'none';
+      document.getElementById('cancel-riichi-button').style.display = 'inline-block';
+
+      const shoupai = Majiang.Shoupai.fromString(currentHandString);
+      const tingpai = Majiang.Util.tingpai(shoupai);
+      tingpaiSet = new Set(tingpai.map(p => convertMPSZToPaiIndex(p)));
+
+      // 有効牌のみアクティブに
+      updateTileInteractivity();
+    };
+
+    // キャンセル
+    document.getElementById('cancel-riichi-button').onclick = () => {
+      isRiichi = false;
+      document.getElementById('cancel-riichi-button').style.display = 'none';
+      document.getElementById('riichi-button').style.display = 'inline-block';
+      tingpaiSet.clear();
+
+      // 全牌を選択可能に戻す
+      updateTileInteractivity();
+    };
+
 
     ronButton.onclick = () => {
       if (ronPendingPai !== null) {
