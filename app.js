@@ -104,12 +104,24 @@ app.ws('/ws', (ws, req) => {
         result = 'NG';
       }
 
+      console.log(`📤 reachResult 送信:`, {
+        type: 'reachResult',
+        result,
+        tingpaiList
+      });
+
       room.players[playerIndex].send(JSON.stringify({
         type: 'reachResult',
         result,
         message: result === 'OK' ? '' : 'リーチできません',
         tingpaiList
       }));
+
+      console.log(`📤 reachResult 送信:`, {
+        type: 'reachResult',
+        result,
+        tingpaiList
+      });
       return;
     }
 

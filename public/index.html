@@ -91,9 +91,14 @@
 
 
       if (data.type === 'reachResult') {
+        console.log('📨 reachResult 受信:', data);
         if (data.result === 'OK') {
           isRiichi = true;
           tingpaiSet = new Set(data.tingpaiList);
+
+          document.getElementById('cancelRiichiButton').style.display = 'block';
+
+          console.log('聴牌可能:', data.tingpaiList);
 
           riichiButton.style.display = 'none';
           canselButton.style.display = 'inline-block';
