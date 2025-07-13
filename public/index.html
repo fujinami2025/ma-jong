@@ -69,6 +69,8 @@
     const skipButton = document.getElementById('skip-button');
     const tsumoButton = document.getElementById('tsumo-button');
     const tsumoskipButton = document.getElementById("tsumoskip-button");
+    const riichiButton = document.getElementById('riichi-button');
+    const canselButton = document.getElementById('cancel-riichi-button');
 
     let myPlayerIndex = null;
     let myRoomId = null;
@@ -88,6 +90,10 @@
       const data = JSON.parse(event.data);
 
       if (data.type === 'reachable' && data.playerIndex === myPlayerIndex) {
+        ws.send(JSON.stringify({
+          type: 'log',
+          message: '1!'
+        }));
         document.getElementById('riichi-button').style.display = 'inline-block';
       }
 
@@ -127,6 +133,10 @@
 
 
       if (data.type === 'tsumoCheck') {
+        ws.send(JSON.stringify({
+          type: 'log',
+          message: '2!'
+        }));
         tsumoButton.style.display = 'inline-block';
         tsumoskipButton.style.display = 'inline-block';
         canDiscard = false; // まだ捨てられない（判定中）
@@ -177,10 +187,10 @@
       });
     }
 
-    document.getElementById('riichi-button').onclick = () => {
+    riichiButton.onclick = () => {
       isRiichi = true;
-      document.getElementById('riichi-button').style.display = 'none';
-      document.getElementById('cancel-riichi-button').style.display = 'inline-block';
+      riichiButton.style.display = 'none';
+      canselButton.style.display = 'inline-block';
 
       const shoupai = Majiang.Shoupai.fromString(currentHandString);
       const tingpai = Majiang.Util.tingpai(shoupai);
@@ -191,10 +201,10 @@
     };
 
     // キャンセル
-    document.getElementById('cancel-riichi-button').onclick = () => {
+    canselButton.onclick = () => {
       isRiichi = false;
-      document.getElementById('cancel-riichi-button').style.display = 'none';
-      document.getElementById('riichi-button').style.display = 'inline-block';
+      canselButton.style.display = 'none';
+      riichiButton.style.display = 'inline-block';
       tingpaiSet.clear();
 
       // 全牌を選択可能に戻す
@@ -332,7 +342,7 @@
       const tileIndex = base + num - 1;
       return tileIndex * 4; // 常に0番目のインスタンス
     }
-    
+
   </script>
 </body>
 
