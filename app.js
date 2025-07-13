@@ -7,7 +7,7 @@ expressWs(app)
 
 const port = process.env.PORT || 3001
 
-app.use('/dist', express.static('dist'));
+app.use('/dist', express.static('dist'))
 app.use(express.static('public'))
 
 let waitingPlayers = []
@@ -42,135 +42,24 @@ app.ws('/ws', (ws, req) => {
       mountain: [],
       currentTurn: 0
     }
-    console.log(`1`)
 
     startGame(roomId)
   }
 
   ws.on('message', (msg) => {
-    const data = JSON.parse(msg);
-    const room = rooms[data.roomId];
-    if (!room) return;
+    const data = JSON.parse(msg)
+    const room = rooms[data.roomId]
+    if (!room) return
 
-    const playerIndex = data.playerIndex;
-
-    /*
-    if (data.type === 'reach') {
-      const shoupai = room.shoupais[playerIndex];
-      const shanten = Majiang.Util.xiangting(shoupai);
-
-      if (shanten === 0) {
-        room.players.forEach((player) => {
-          if (player.readyState === 1) {
-            player.send(JSON.stringify({
-              type: 'reachResult',
-              playerIndex,
-              result: 'OK'
-            }));
-          }
-        });
-      } else {
-        if (room.players[playerIndex].readyState === 1) {
-          room.players[playerIndex].send(JSON.stringify({
-            type: 'reachResult',
-            playerIndex,
-            result: 'NG',
-            message: 'リーチはできません（シャンテン数が0ではない）'
-          }));
-        }
-      }
-      return;
-    }
-
-
-    if (data.type === 'reach') {
-      console.log('📩 reach リクエスト受信:', data);
-      const playerIndex = data.playerIndex;
-      const room = rooms[data.roomId];
-      if (!room) return;
-
-      const shoupai = room.shoupais[playerIndex];
-      const reachInfo = Majiang.Util.reach(shoupai);
-
-      let result, tingpaiList = [];
-
-      if (reachInfo && reachInfo.dapai && reachInfo.dapai.length > 0) {
-        tingpaiList = reachInfo.dapai.map(p => {
-          const pstr = p.replace(/[+\-*]/g, '');
-          return convertMPSZToPaiIndex(pstr);
-        });
-
-        result = 'OK';
-      } else {
-        result = 'NG';
-      }
-
-      console.log(`📤 reachResult 送信:`, {
-        type: 'reachResult',
-        result,
-        tingpaiList
-      });
-
-      room.players[playerIndex].send(JSON.stringify({
-        type: 'reachResult',
-        result,
-        message: result === 'OK' ? '' : 'リーチできません',
-        tingpaiList
-      }));
-
-      console.log(`📤 reachResult 送信:`, {
-        type: 'reachResult',
-        result,
-        tingpaiList
-      });
-      return;
-    }
-    */
-
-    if (data.type === 'reach') {
-      const playerIndex = data.playerIndex;
-      const room = rooms[data.roomId];
-      if (!room) return;
-
-      const shoupai = room.shoupais[playerIndex];
-      const shanten = Majiang.Util.xiangting(shoupai);
-
-      let result = 'NG';
-      let tingpaiList = [];
-
-      if (shanten === 0) {
-        const candidates = [];
-        const shoupaiClone = Majiang.Shoupai.fromString(shoupai.toString());
-
-        for (let p of Majiang.Util.dapai_list(shoupaiClone)) {
-          const clone = Majiang.Shoupai.fromString(shoupai.toString());
-          clone.dapai(p);
-          if (Majiang.Util.xiangting(clone) === 0) {
-            candidates.push(p);
-          }
-        }
-
-        if (candidates.length > 0) {
-          result = 'OK';
-          tingpaiList = candidates.map(p => convertMPSZToPaiIndex(p.replace(/[+\-*]/g, '')));
-        }
-      }
-
-      room.players[playerIndex].send(JSON.stringify({
-        type: 'reachResult',
-        result,
-        message: result === 'OK' ? '' : 'リーチできません',
-        tingpaiList
-      }));
-    }
+    const playerIndex = data.playerIndex
 
     if (data.type === 'dahai') {
-      const shoupai = room.shoupais[playerIndex];
-      const paiStr = convertPaiIndexToMPSZ(data.pai);
-      shoupai.dapai(paiStr);
+      const shoupai = room.shoupais[playerIndex]
+      const paiStr = convertPaiIndexToMPSZ(data.pai)
+      shoupai.dapai(paiStr)
 
-      const opponentIndex = (playerIndex + 1) % 2;
-      const oppShoupai = room.shoupais[opponentIndex];
+      const opponentIndex = (playerIndex + 1) % 2
+      const oppShoupai = room.shoupais[opponentIndex]
 
       const ronResult = Majiang.Util.hule(
         oppShoupai,
@@ -182,7 +71,7 @@ app.ws('/ws', (ws, req) => {
           changbang: 0,
           lizhibang: 0,
         })
-      );
+      )
 
       if (ronResult) {
         room.players[opponentIndex].send(JSON.stringify({
@@ -190,33 +79,29 @@ app.ws('/ws', (ws, req) => {
           pai: data.pai,
           fromPlayer: playerIndex,
           roomId: data.roomId
-        }));
-        return;
+        }))
+        return
       }
 
-      // 通常の打牌通知
-      room.players.forEach((player, i) => {
+      room.players.forEach((player) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
             type: 'dahai',
             playerIndex,
             pai: data.pai
-          }));
+          }))
         }
-      });
+      })
 
-      // 次のターン処理
-      room.currentTurn = (room.currentTurn + 1) % 2;
-      const nextPlayer = room.players[room.currentTurn];
+      room.currentTurn = (room.currentTurn + 1) % 2
+      const nextPlayer = room.players[room.currentTurn]
 
       if (room.mountain.length > 0) {
-        const nextPai = room.mountain.shift();
-        const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
-        room.shoupais[room.currentTurn].zimo(nextPaiStr);
+        const nextPai = room.mountain.shift()
+        const nextPaiStr = convertPaiIndexToMPSZ(nextPai)
+        room.shoupais[room.currentTurn].zimo(nextPaiStr)
 
-        const currentShoupai = room.shoupais[room.currentTurn];
-
-        // ツモ和了の判定
+        const currentShoupai = room.shoupais[room.currentTurn]
         const tsumoResult = Majiang.Util.hule(
           currentShoupai,
           null,
@@ -227,7 +112,7 @@ app.ws('/ws', (ws, req) => {
             changbang: 0,
             lizhibang: 0,
           })
-        );
+        )
 
         if (nextPlayer.readyState === 1) {
           nextPlayer.send(JSON.stringify({
@@ -235,17 +120,17 @@ app.ws('/ws', (ws, req) => {
             playerIndex: room.currentTurn,
             roomId: data.roomId,
             handString: currentShoupai.toString()
-          }));
+          }))
 
+          const shanten = Majiang.Util.xiangting(currentShoupai)
+          console.log(`シャンテン: ${shanten}`)
 
-          const shanten = Majiang.Util.xiangting(currentShoupai);
-          console.log('シャンテン:' + shanten);
           if (shanten === 0) {
             nextPlayer.send(JSON.stringify({
               type: 'reachable',
               roomId: data.roomId,
               playerIndex: room.currentTurn
-            }));
+            }))
           }
 
           if (tsumoResult) {
@@ -253,38 +138,36 @@ app.ws('/ws', (ws, req) => {
               type: 'tsumoCheck',
               roomId: data.roomId,
               playerIndex: room.currentTurn
-            }));
+            }))
           }
         }
       } else {
-        console.log('🈳 山が尽きました（流局）');
+        console.log('🈳 山が尽きました（流局）')
       }
     }
 
-    // 👇 追加：ロン要求を受けたときの処理
     if (data.type === 'ron') {
-      const winner = data.playerIndex;
-      room.players.forEach((player, i) => {
+      const winner = data.playerIndex
+      room.players.forEach((player) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
             type: 'ron',
             winner,
             pai: data.pai
-          }));
+          }))
         }
-      });
-      console.log('あがり（ユーザー操作によるロン）');
-      // 対局終了処理は必要に応じてここで
+      })
+      console.log('あがり（ユーザー操作によるロン）')
     }
+
     if (data.type === 'skip') {
-      // 通常の打牌後の処理と同じようにツモへ
-      room.currentTurn = (room.currentTurn + 1) % 2;
-      const nextPlayer = room.players[room.currentTurn];
+      room.currentTurn = (room.currentTurn + 1) % 2
+      const nextPlayer = room.players[room.currentTurn]
 
       if (room.mountain.length > 0) {
-        const nextPai = room.mountain.shift();
-        const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
-        room.shoupais[room.currentTurn].zimo(nextPaiStr);
+        const nextPai = room.mountain.shift()
+        const nextPaiStr = convertPaiIndexToMPSZ(nextPai)
+        room.shoupais[room.currentTurn].zimo(nextPaiStr)
 
         if (nextPlayer.readyState === 1) {
           nextPlayer.send(JSON.stringify({
@@ -292,32 +175,32 @@ app.ws('/ws', (ws, req) => {
             playerIndex: room.currentTurn,
             roomId: data.roomId,
             handString: room.shoupais[room.currentTurn].toString()
-          }));
+          }))
         }
       } else {
-        console.log('🈳 山が尽きました（流局）');
+        console.log('🈳 山が尽きました（流局）')
       }
     }
+
     if (data.type === 'tsumo') {
-      const winner = data.playerIndex;
-      room.players.forEach((player, i) => {
+      const winner = data.playerIndex
+      room.players.forEach((player) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
             type: 'tsumo',
             winner,
-            pai: null // ツモは捨て牌が無い
-          }));
+            pai: null
+          }))
         }
-      });
-      console.log('あがり（ツモ）');
+      })
+      console.log('あがり（ツモ）')
     }
 
     if (data.type === 'log') {
-      console.log(`🪵 クライアントログ: ${data.message}`);
-      return; // 他の処理に進まないよう終了
+      console.log(`🪵 クライアントログ: ${data.message}`)
+      return
     }
-  });
-
+  })
 
   ws.on('close', () => {
     console.log('❌ クライアントが切断されました')
@@ -330,12 +213,15 @@ app.ws('/ws', (ws, req) => {
 app.listen(port, () => {
   console.log(`🚀 サーバー起動中: http://localhost:${port}`)
 })
+app.listen(port, () => {
+  console.log('🚀 サーバー起動中: http://localhost:${port}')
+})
 
 function startGame(roomId) {
   const room = rooms[roomId];
   const tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
-  console.log(`4`)
+  console.log(4)
 
 
   // 🔧 テスト用固定牌構成
@@ -353,19 +239,19 @@ function startGame(roomId) {
     console.log(handString);
     const sp = Majiang.Shoupai.fromString(handString);
     shoupais.push(sp);
-    console.log(`配牌 ${i}:`, sp.toString());
+    console.log('配牌 ${i}:, sp.toString()');
   }
-  console.log(`5`)
+  console.log(5)
   // 先手（player 0）にもう1枚ツモ
   const firstDraw = mountain.shift();
   shoupais[0].zimo(convertPaiIndexToMPSZ(firstDraw));
 
-  console.log(`6`)
+  console.log(6)
   // 状態をルームに保存
   room.shoupais = shoupais;
   room.mountain = mountain;
   room.currentTurn = 0;
-  console.log(`7`)
+  console.log(7)
   // クライアントに初期手牌を送信
   room.players.forEach((player, i) => {
     const shoupai = shoupais[i];
@@ -451,14 +337,14 @@ function convertShoupaiToArray(shoupai) {
 }
 
 function convertMPSZToPaiIndex(paiStr) {
-  const num = parseInt(paiStr[1]);
-  const suit = paiStr[0];
-  let base = 0;
-  if (suit === 'p') base = 9;
-  else if (suit === 's') base = 18;
-  else if (suit === 'z') base = 27;
-  const tileIndex = base + num - 1;
-  return tileIndex * 4; // 最初の牌
+  const num = parseInt(paiStr[0])
+  const suit = paiStr[1]
+  let base = 0
+  if (suit === 'p') base = 9
+  else if (suit === 's') base = 18
+  else if (suit === 'z') base = 27
+  const tileIndex = base + num - 1
+  return tileIndex * 4 // 常に0番目のインスタンス
 }
 
 function convertPaiArrayToStringSorted(paiArray) {

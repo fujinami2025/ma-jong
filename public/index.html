@@ -79,7 +79,9 @@
     let skipRequested = false;
     let isRiichi = false;
     let tingpaiSet = new Set();
+    let currentHandString = '';
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
 
     ws.onopen = () => {
@@ -88,29 +90,6 @@
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
-
-      if (data.type === 'reachResult') {
-        console.log('📨 reachResult 受信:', data);
-        if (data.result === 'OK') {
-          isRiichi = true;
-          tingpaiSet = new Set(data.tingpaiList);
-
-          document.getElementById('cancelRiichiButton').style.display = 'block';
-
-          console.log('聴牌可能:', data.tingpaiList);
-
-          riichiButton.style.display = 'none';
-          canselButton.style.display = 'inline-block';
-
-          updateTileInteractivity();
-          alert("リーチ成立しました！捨てられる牌に制限がかかります。");
-
-        } else {
-          alert("リーチできません: " + data.message);
-        }
-        return;
-      }
 
       if (data.type === 'reachable' && data.playerIndex === myPlayerIndex) {
         ws.send(JSON.stringify({
@@ -121,20 +100,15 @@
       }
 
       if (data.type === 'start') {
-        statusDiv.style.display = 'none';
-        gameDiv.style.display = 'block';
-        playerSpan.textContent = data.playerIndex === 0 ? '先手' : '後手';
-        roomSpan.textContent = data.roomId;
-        myPlayerIndex = data.playerIndex;
-        myRoomId = data.roomId;
-
-        if (data.playerIndex === 0) canDiscard = true;
-        if (data.handString) showHandFromShoupaiString(data.handString); // ✅ 変更
+        // ...
+        currentHandString = data.handString || '';
+        if (data.handString) showHandFromShoupaiString(data.handString);
       }
 
       if (data.type === 'tsumo') {
         if (data.playerIndex === myPlayerIndex) {
-          if (data.handString) showHandFromShoupaiString(data.handString); // ✅ 変更
+          currentHandString = data.handString || currentHandString;
+          if (data.handString) showHandFromShoupaiString(data.handString);
           canDiscard = true;
         }
       }
@@ -199,9 +173,6 @@
 
     function updateTileInteractivity() {
       document.querySelectorAll('.tile').forEach(img => {
-        console.log("牌要素:", img.alt, "index属性:", img.dataset.index);
-      });
-      document.querySelectorAll('.tile').forEach(img => {
         const index = parseInt(img.dataset.index);
         if (isRiichi) {
           img.style.pointerEvents = tingpaiSet.has(index) ? 'auto' : 'none';
@@ -212,44 +183,19 @@
         }
       });
     }
-    /*
-        riichiButton.onclick = () => {
-          isRiichi = true;
-          riichiButton.style.display = 'none';
-          canselButton.style.display = 'inline-block';
-    
-          const shoupai = Majiang.Shoupai.fromString(currentHandString);
-          const reachInfo = Majiang.Util.reach(shoupai);
-          console.log("reachInfo:", reachInfo);
-          if (reachInfo) {
-            console.log("reachInfo.dapai:", reachInfo.dapai);
-            console.log("converted indices:", reachInfo.dapai.map(p => {
-              const pstr = p.replace(/[+\-*]/g, '');
-              return convertMPSZToPaiIndex(pstr);
-            }));
-            tingpaiSet = new Set(
-              reachInfo.dapai.map(p => convertMPSZToPaiIndex(p.replace(/[+\-\*]/g, '')))
-            );
-            console.log("リーチ可能な打牌 index:", Array.from(tingpaiSet));
-          } else {
-            tingpaiSet.clear();
-          }
-    
-          // 有効牌のみアクティブに
-          updateTileInteractivity();
-        };
-    */
 
     riichiButton.onclick = () => {
-      console.log("クリックされました");
+      isRiichi = true;
+      riichiButton.style.display = 'none';
+      canselButton.style.display = 'inline-block';
 
-      // サーバーに reach メッセージを送信
-      ws.send(JSON.stringify({
-        type: 'reach',
-        playerIndex: myPlayerIndex,
-        roomId: myRoomId
-      }));
-    }
+      const shoupai = Majiang.Shoupai.fromString(currentHandString);
+      const tingpai = Majiang.Util.tingpai(shoupai);
+      tingpaiSet = new Set(tingpai.map(p => convertMPSZToPaiIndex(p)));
+
+      // 有効牌のみアクティブに
+      updateTileInteractivity();
+    };
 
     // キャンセル
     canselButton.onclick = () => {
@@ -311,33 +257,28 @@
       console.log("🀄 再描画対象の手牌:", handStr);
       handDiv.innerHTML = 'あなたの手牌: ';
       let suit = '';
-      for (let i = 0; i < handStr.length; i++) { //m123p456s789z1233
-        const ch = handStr[i]; //m p s z
+
+      for (let i = 0; i < handStr.length; i++) {
+        const ch = handStr[i];
         if ('mpsz'.includes(ch)) {
           suit = ch;
         } else if (/\d/.test(ch)) {
           const tileStr = `${suit}${ch}`;
           const img = document.createElement('img');
-          img.src = `/dist/image/${suit}${ch}.gif`;  // ← m1.gif など
-          img.alt = `${suit}${ch}`;
+          img.src = `/dist/image/${suit}${ch}.gif`;
+          img.alt = tileStr;
           img.style.width = '40px';
           img.style.margin = '2px';
           img.style.cursor = 'pointer';
-          const paiIndex = convertMPSZToPaiIndex(tileStr);
-          img.dataset.index = paiIndex;
-          img.classList.add('tile');
 
           img.onclick = () => {
-            console.log("クリックされました"); //なぜか出てこないlog サーバー側に指示飛ばしてないのでは？、type:かなんかでサーバー側に表示頼めば？
-            const paiIndex = convertMPSZToPaiIndex(tileStr);
-            console.log("クリックされた牌", tileStr, "index", paiIndex);
+            console.log("クリックされました");
             if (!canDiscard) return;
-            if (isRiichi) console.log("リーチ中。tingpaiSet.has:", tingpaiSet.has(paiIndex));
-            if (isRiichi && !tingpaiSet.has(paiIndex)) return;
             canDiscard = false;
             img.style.opacity = 0.5;
             img.style.pointerEvents = 'none';
 
+            const paiIndex = convertMPSZToPaiIndex(tileStr);
             showMyDiscardedTile(paiIndex);
 
             ws.send(JSON.stringify({
@@ -348,14 +289,11 @@
             }));
           };
 
-
           handDiv.appendChild(img);
         }
       }
-      if (isRiichi) {
-        updateTileInteractivity(); // ← リーチ中なら再度フィルターを適用
-      }
     }
+
     function getTileImage(paiNumber) {
       const typeIndex = Math.floor(paiNumber / 4);
       if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
@@ -363,7 +301,6 @@
       if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`;
       return `z${typeIndex - 27 + 1}.gif`;
     }
-    //10 m3 floor10/4 = 2
 
     function showOpponentDiscardedTile(pai) {
       if (opponentDiscards.children.length === 0) {
@@ -371,7 +308,7 @@
       }
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
-      img.alt = pai;
+      img.alt = `${pai}`;
       img.style.width = '40px';
       img.style.margin = '2px';
       opponentDiscards.appendChild(img);
@@ -383,7 +320,7 @@
       }
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
-      img.alt = pai;
+      img.alt = `${pai}`;
       img.style.width = '40px';
       img.style.margin = '2px';
       myDiscards.appendChild(img);
