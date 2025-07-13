@@ -213,9 +213,6 @@ app.ws('/ws', (ws, req) => {
 app.listen(port, () => {
   console.log(`🚀 サーバー起動中: http://localhost:${port}`)
 })
-app.listen(port, () => {
-  console.log('🚀 サーバー起動中: http://localhost:${port}')
-})
 
 function startGame(roomId) {
   const room = rooms[roomId];
