@@ -81,7 +81,8 @@ app.ws('/ws', (ws, req) => {
       }
       return;
     }
-*/
+
+
     if (data.type === 'reach') {
       console.log('📩 reach リクエスト受信:', data);
       const playerIndex = data.playerIndex;
@@ -123,6 +124,45 @@ app.ws('/ws', (ws, req) => {
         tingpaiList
       });
       return;
+    }
+    */
+
+    if (data.type === 'reach') {
+      const playerIndex = data.playerIndex;
+      const room = rooms[data.roomId];
+      if (!room) return;
+
+      const shoupai = room.shoupais[playerIndex];
+      const shanten = Majiang.Util.xiangting(shoupai);
+
+      let result = 'NG';
+      let tingpaiList = [];
+
+      if (shanten === 0) {
+        // 打てる牌をチェック
+        const candidates = [];
+        const shoupaiClone = Majiang.Shoupai.fromString(shoupai.toString());
+
+        for (let p of shoupaiClone._get_dapai()) {
+          const clone = Majiang.Shoupai.fromString(shoupai.toString());
+          clone.dapai(p);
+          if (Majiang.Util.xiangting(clone) === 0) {
+            candidates.push(p);
+          }
+        }
+
+        if (candidates.length > 0) {
+          result = 'OK';
+          tingpaiList = candidates.map(p => convertMPSZToPaiIndex(p.replace(/[+\-*]/g, '')));
+        }
+      }
+
+      room.players[playerIndex].send(JSON.stringify({
+        type: 'reachResult',
+        result,
+        message: result === 'OK' ? '' : 'リーチできません',
+        tingpaiList
+      }));
     }
 
     if (data.type === 'dahai') {
@@ -267,19 +307,6 @@ app.ws('/ws', (ws, req) => {
             type: 'tsumo',
             winner,
             pai: null // ツモは捨て牌が無い
-          }));
-        }
-      });
-      console.log('あがり（ツモ）');
-    }
-    if (data.type === 'tsumo') {
-      const winner = data.playerIndex;
-      room.players.forEach((player, i) => {
-        if (player.readyState === 1) {
-          player.send(JSON.stringify({
-            type: 'tsumo',
-            winner,
-            pai: null
           }));
         }
       });
