@@ -232,7 +232,7 @@
       console.log("クリックされました");
 
       // サーバーに reach メッセージを送信
-      socket.send(JSON.stringify({
+      ws.send(JSON.stringify({
         type: 'reach',
         playerIndex: myPlayerIndex,
         roomId: currentRoomId
