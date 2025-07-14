@@ -292,6 +292,7 @@ function startGame(roomId) {
 
       // リーチチェックは 14枚あるプレイヤー（＝ツモ済み）だけ
       if (shoupai._zimo && Majiang.Util.xiangting(shoupai) <= 0) {
+        console.log(`来てるー？`);
         const tingpaiList = Majiang.Util.tingpai(shoupai)
           .map(tp => convertMPSZToPaiIndex(tp.p));
 
