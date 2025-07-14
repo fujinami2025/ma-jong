@@ -291,6 +291,7 @@ function startGame(roomId) {
       console.log(`プレイヤー${i} シャンテン: ${shanten}`);
 
       if (shanten <= 0) {
+        console.log('来てる？');
         const tingpaiList = Majiang.Util.tingpai(shoupai)
           .map(tp => convertMPSZToPaiIndex(tp.p));
         console.log(`プレイヤー${i} リーチできる牌: ${tingpaiList}`);
