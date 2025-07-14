@@ -254,60 +254,61 @@ function startGame(roomId) {
   room.currentTurn = 0;
   console.log(7)
   // クライアントに初期手牌を送信
-  room.players.forEach((player, i) => {
-    const shoupai = shoupais[i];
+room.players.forEach((player, i) => {
+  const shoupai = shoupais[i];
 
-    // 🀄 初期手牌送信
-    player.send(JSON.stringify({
-      type: 'start',
-      playerIndex: i,
-      roomId,
-      handString: shoupai.toString()
-    }));
+  // 🀄 初期手牌送信
+  player.send(JSON.stringify({
+    type: 'start',
+    playerIndex: i,
+    roomId,
+    handString: shoupai.toString()
+  }));
 
-    // ✅ ツモ和了チェックは先手だけ
-    if (i === 0) {
-      const tsumoResult = Majiang.Util.hule(
-        shoupai,
-        null,
-        Majiang.Util.hule_param({
-          zhuangfeng: 0,
-          menfeng: i,
-          baopai: null,
-          changbang: 0,
-          lizhibang: 0
-        })
-      );
+  // ✅ ツモ和了チェックは先手だけ
+  if (i === 0) {
+    const tsumoResult = Majiang.Util.hule(
+      shoupai,
+      null,
+      Majiang.Util.hule_param({
+        zhuangfeng: 0,
+        menfeng: i,
+        baopai: null,
+        changbang: 0,
+        lizhibang: 0
+      })
+    );
 
-      if (tsumoResult) {
-        player.send(JSON.stringify({
-          type: 'tsumoCheck',
-          roomId,
-          playerIndex: i
-        }));
-      }
-
+    if (tsumoResult) {
+      player.send(JSON.stringify({
+        type: 'tsumoCheck',
+        roomId,
+        playerIndex: i
+      }));
+    }
+    console.log('10');
+    // ✅ リーチチェックも先手のみに行う
+    if (shoupai._zimo) {
+      console.log('11');
       const shanten = Majiang.Util.xiangting(shoupai);
-        console.log(`プレイヤー${i} シャンテン: ${shanten}`);
-
-      // リーチチェックは 14枚あるプレイヤー（＝ツモ済み）だけ
-      if (shoupai._zimo && Majiang.Util.xiangting(shoupai) <= 0) {
-        console.log(`来てるー？`);
-        const tingpaiList = Majiang.Util.tingpai(shoupai)
-          .map(tp => convertMPSZToPaiIndex(tp.p));
-
-        console.log(`プレイヤー${i} リーチできる牌: ${tingpaiList}`);
-
-        player.send(JSON.stringify({
-          type: 'riichiCheck',
-          roomId,
-          playerIndex: i,
-          tingpaiList
-        }));
+      if (shanten <= 0) {
+        console.log('12');
+        const tingpaiList = getReachableTiles(shoupai); // ← ここは関数を定義しておく必要あり
+        if (tingpaiList.length > 0) {
+          console.log('テンパイ牌'+tingpaiList);
+          player.send(JSON.stringify({
+            type: 'riichiCheck',
+            roomId,
+            playerIndex: i,
+            tingpaiList
+          }));
+        }
       }
     }
-  });
+  }
+});
 }
+
 
 
 function shuffle(array) {
@@ -324,6 +325,29 @@ function convertPaiIndexToMPSZ(pai) {
   if (typeIndex < 27) return 's' + (typeIndex - 18 + 1);
   return 'z' + (typeIndex - 27 + 1);
 }
+
+function getReachableTiles(shoupai) {
+  const reachable = new Set();
+
+  const original = shoupai.toString();
+
+  // 全ての手牌を1枚ずつ捨てて試す
+  for (let i = 0; i < shoupai._pai.length; i++) {
+    const p = shoupai._pai[i];
+
+    // コピーして打牌してみる
+    const clone = Majiang.Shoupai.fromString(original);
+    if (!clone.dapai(p)) continue;
+
+    const xiangting = Majiang.Util.xiangting(clone);
+    if (xiangting === 0) {
+      reachable.add(p);
+    }
+  }
+
+  return Array.from(reachable).map(p => convertMPSZToPaiIndex(p));
+}
+
 
 function convertShoupaiToArray(shoupai) {
   const result = []
