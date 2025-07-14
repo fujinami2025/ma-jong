@@ -136,10 +136,6 @@
 
 
       if (data.type === 'tsumoCheck') {
-        ws.send(JSON.stringify({
-          type: 'log',
-          message: '2!'
-        }));
         tsumoButton.style.display = 'inline-block';
         tsumoskipButton.style.display = 'inline-block';
         canDiscard = false; // まだ捨てられない（判定中）

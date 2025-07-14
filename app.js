@@ -292,7 +292,7 @@ function startGame(roomId) {
       handString: shoupai.toString()
     }));
     console.log('シャンテン:' + shanten);
-    if (i === 0 && shanten === 0) { // 後手はまだツモってないのでリーチ不可能
+    if (i === 0 && shanten <= 0) { // 後手はまだツモってないのでリーチ不可能
       player.send(JSON.stringify({
         type: 'reachable',
         roomId,
