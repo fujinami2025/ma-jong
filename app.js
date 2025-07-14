@@ -328,42 +328,34 @@ function convertPaiIndexToMPSZ(pai) {
 // サーバー側に置いておくユーティリティ関数
 function getReachableTiles(shoupai) {
   const reachable = new Set();
-
-  // 現在の手牌を MPSZ 文字列で取り出す（例: "m123p456z7"）
   const handStr = shoupai.toString();
-
-  // 正規表現で「m1」「m2」...「p1」...「z7」などの牌コードを抽出
   const tiles = [];
+
+  // 例: "m123p456z7" から ["m1","m2",...,"z7"] を抽出
   let suit = '';
   for (const ch of handStr) {
     if ('mpsz'.includes(ch)) {
       suit = ch;
     } else {
-      // 数字が出てきたら直前の suit と合わせて牌コード完成
       tiles.push(suit + ch);
     }
   }
-  console.log(tiles);
-  // 1 枚ずつ打牌してテンパイになるか試す
-  for (const tile of tiles) {
-    // クローン作成
-    const clone = Majiang.Shoupai.fromString(handStr);
 
-    // tile (例: "m3") を打牌
-    const ok = clone.dapai(tile);
+  for (const tile of tiles) {
+    // クローンしてチェックを無効に打牌
+    const clone = Majiang.Shoupai.fromString(handStr);
+    const ok = clone.dapai(tile, false);  // ← 第二引数を false に
     if (!ok) continue;
 
-    // 切ったあとのシャンテン数をチェック
     const xiangting = Majiang.Util.xiangting(clone);
     if (xiangting === 0) {
       reachable.add(tile);
     }
   }
 
-  // MPSZ 文字列 → クライアント用インデックス(0–135) に変換
-  return Array.from(reachable).map(tile => convertMPSZToPaiIndex(tile));
+  // MPSZ ("m3") → インデックス(0-135) に変換
+  return Array.from(reachable).map(t => convertMPSZToPaiIndex(t));
 }
-
 
 
 function convertShoupaiToArray(shoupai) {
