@@ -295,7 +295,7 @@ function startGame(roomId) {
       roomId,
       handString: shoupai.toString()
     }));
-    const shanten = Majiang.Util.xiangting(currentShoupai);
+
     console.log(`シャンテン: ${shanten}`);
 
     if (shanten <= 0) {
