@@ -91,13 +91,14 @@
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
-      if (data.type === 'reachable' && data.playerIndex === myPlayerIndex) {
-        ws.send(JSON.stringify({
-          type: 'log',
-          message: '1!'
-        }));
+      if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex) {
+        isRiichiReady = true;
+        tingpaiSet = new Set(data.tingpaiList); // ← サーバーから受け取った切れる牌のリスト
         document.getElementById('riichi-button').style.display = 'inline-block';
+
+        updateTileInteractivity(); // 🔄 牌のクリック可能性を更新
       }
+
 
       if (data.type === 'start') {
         statusDiv.style.display = 'none';
