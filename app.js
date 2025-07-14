@@ -115,27 +115,31 @@ app.ws('/ws', (ws, req) => {
         )
 
         if (nextPlayer.readyState === 1) {
+          // 1) ツモ通知
           nextPlayer.send(JSON.stringify({
             type: 'tsumo',
             playerIndex: room.currentTurn,
             roomId: data.roomId,
             handString: currentShoupai.toString()
-          }))
+          }));
 
+          // 2) シャンテン＆リーチ判定
           const shanten = Majiang.Util.xiangting(currentShoupai);
           console.log(`シャンテン: ${shanten}`);
 
           if (shanten <= 0) {
-            const tingpaiList = getReachableTiles(shoupai);
-            console.log('テンパイ牌'+tingpaiList);
+            // currentShoupai をそのまま渡す
+            const tingpaiList = getReachableTiles(currentShoupai);
+            console.log('リーチ可能牌:', tingpaiList);
+
             nextPlayer.send(JSON.stringify({
               type: 'riichiCheck',
               roomId: data.roomId,
               playerIndex: room.currentTurn,
-              tingpaiList // 👈 リーチ可能な牌（捨てればテンパイできる牌）
+              tingpaiList
             }));
           }
-
+          
           if (tsumoResult) {
             nextPlayer.send(JSON.stringify({
               type: 'tsumoCheck',
