@@ -327,27 +327,45 @@ function convertPaiIndexToMPSZ(pai) {
   return 'z' + (typeIndex - 27 + 1);
 }
 
+// サーバー側に置いておくユーティリティ関数
 function getReachableTiles(shoupai) {
   const reachable = new Set();
 
-  const original = shoupai.toString();
+  // 現在の手牌を MPSZ 文字列で取り出す（例: "m123p456z7"）
+  const handStr = shoupai.toString();
 
-  // 全ての手牌を1枚ずつ捨てて試す
-  for (let i = 0; i < shoupai._pai.length; i++) {
-    const p = shoupai._pai[i];
-
-    // コピーして打牌してみる
-    const clone = Majiang.Shoupai.fromString(original);
-    if (!clone.dapai(p)) continue;
-
-    const xiangting = Majiang.Util.xiangting(clone);
-    if (xiangting === 0) {
-      reachable.add(p);
+  // 正規表現で「m1」「m2」...「p1」...「z7」などの牌コードを抽出
+  const tiles = [];
+  let suit = '';
+  for (const ch of handStr) {
+    if ('mpsz'.includes(ch)) {
+      suit = ch;
+    } else {
+      // 数字が出てきたら直前の suit と合わせて牌コード完成
+      tiles.push(suit + ch);
     }
   }
 
-  return Array.from(reachable).map(p => convertMPSZToPaiIndex(p));
+  // 1 枚ずつ打牌してテンパイになるか試す
+  for (const tile of tiles) {
+    // クローン作成
+    const clone = Majiang.Shoupai.fromString(handStr);
+
+    // tile (例: "m3") を打牌
+    const ok = clone.dapai(tile);
+    if (!ok) continue;
+
+    // 切ったあとのシャンテン数をチェック
+    const xiangting = Majiang.Util.xiangting(clone);
+    if (xiangting === 0) {
+      reachable.add(tile);
+    }
+  }
+
+  // MPSZ 文字列 → クライアント用インデックス(0–135) に変換
+  return Array.from(reachable).map(tile => convertMPSZToPaiIndex(tile));
 }
+
 
 
 function convertShoupaiToArray(shoupai) {
