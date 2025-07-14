@@ -257,6 +257,7 @@ function startGame(roomId) {
   room.players.forEach((player, i) => {
     const shoupai = shoupais[i];
 
+    // 🀄 初期手牌送信
     player.send(JSON.stringify({
       type: 'start',
       playerIndex: i,
@@ -264,7 +265,7 @@ function startGame(roomId) {
       handString: shoupai.toString()
     }));
 
-    // 👇 先手（プレイヤー0）のみツモチェック
+    // ✅ ツモ和了チェックは先手だけ
     if (i === 0) {
       const tsumoResult = Majiang.Util.hule(
         shoupai,
@@ -285,28 +286,22 @@ function startGame(roomId) {
           playerIndex: i
         }));
       }
-    }
 
-    const shanten = Majiang.Util.xiangting(shoupai);
+      // ✅ リーチチェック
+      const shanten = Majiang.Util.xiangting(shoupai);
+      console.log(`シャンテン: ${shanten}`);
 
-    player.send(JSON.stringify({
-      type: 'start',
-      playerIndex: i,
-      roomId,
-      handString: shoupai.toString()
-    }));
-
-    console.log(`シャンテン: ${shanten}`);
-
-    if (shanten <= 0) {
-      const tingpaiList = Majiang.Util.tingpai(currentShoupai)
-      .map(tp => convertMPSZToPaiIndex(tp.p)); // Majiang表記からインデックスに変換
-      nextPlayer.send(JSON.stringify({
-        type: 'riichiCheck',
-        roomId: data.roomId,
-        playerIndex: room.currentTurn,
-        tingpaiList // 👈 リーチ可能な牌（捨てればテンパイできる牌）
-      }));
+      if (shanten <= 0) {
+        const tingpaiList = Majiang.Util.tingpai(shoupai)
+          .map(tp => convertMPSZToPaiIndex(tp.p));
+        console.log('リーチできる牌'+tingpaiList);
+        player.send(JSON.stringify({
+          type: 'riichiCheck',
+          roomId,
+          playerIndex: i,
+          tingpaiList
+        }));
+      }
     }
   });
 }
