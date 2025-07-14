@@ -126,9 +126,8 @@ app.ws('/ws', (ws, req) => {
           console.log(`シャンテン: ${shanten}`);
 
           if (shanten <= 0) {
-            const tingpaiList = Majiang.Util.tingpai(currentShoupai)
-              .map(tp => convertMPSZToPaiIndex(tp.p)); // Majiang表記からインデックスに変換
-
+            const tingpaiList = getReachableTiles(shoupai);
+            console.log('テンパイ牌'+tingpaiList);
             nextPlayer.send(JSON.stringify({
               type: 'riichiCheck',
               roomId: data.roomId,
