@@ -139,7 +139,7 @@ app.ws('/ws', (ws, req) => {
               tingpaiList
             }));
           }
-          
+
           if (tsumoResult) {
             nextPlayer.send(JSON.stringify({
               type: 'tsumoCheck',
@@ -332,35 +332,34 @@ function convertPaiIndexToMPSZ(pai) {
 // サーバー側に置いておくユーティリティ関数
 function getReachableTiles(shoupai) {
   const reachable = new Set();
-  const handStr = shoupai.toString();
-  const tiles = [];
 
-  // 例: "m123p456z7" から ["m1","m2",...,"z7"] を抽出
+  // 例: "m123p456z7" → ['m','1','2','3','p','4','5','6','z','7']
+  const handStr = shoupai.toString();
   let suit = '';
+  const tiles = [];
   for (const ch of handStr) {
     if ('mpsz'.includes(ch)) {
       suit = ch;
-    } else {
-      tiles.push(suit + ch);
+    }
+    else {
+      // 数字と直前の符号を「1m」「2m」…の形で格納
+      tiles.push(ch + suit);
     }
   }
 
   for (const tile of tiles) {
-    // クローンしてチェックを無効に打牌
+    // クローン＆ダミー打牌 (check=false)
     const clone = Majiang.Shoupai.fromString(handStr);
-    const ok = clone.dapai(tile, false);  // ← 第二引数を false に
+    const ok = clone.dapai(tile, false);
     if (!ok) continue;
-
-    const xiangting = Majiang.Util.xiangting(clone);
-    if (xiangting === 0) {
+    if (Majiang.Util.xiangting(clone) === 0) {
       reachable.add(tile);
     }
   }
   console.log(reachable);
-  // MPSZ ("m3") → インデックス(0-135) に変換
+  // 変換: '1m' → index 0, '9p' → index 35 etc.
   return Array.from(reachable).map(t => convertMPSZToPaiIndex(t));
 }
-
 
 function convertShoupaiToArray(shoupai) {
   const result = []
