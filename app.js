@@ -352,7 +352,7 @@ function getReachableTiles(shoupai) {
       reachable.add(tile);
     }
   }
-
+  console.log(reachable);
   // MPSZ ("m3") → インデックス(0-135) に変換
   return Array.from(reachable).map(t => convertMPSZToPaiIndex(t));
 }
