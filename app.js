@@ -287,22 +287,23 @@ function startGame(roomId) {
         }));
       }
 
-    const shanten = Majiang.Util.xiangting(shoupai);
-      console.log(`プレイヤー${i} シャンテン: ${shanten}`);
+      const shanten = Majiang.Util.xiangting(shoupai);
+        console.log(`プレイヤー${i} シャンテン: ${shanten}`);
 
-    // リーチチェックは 14枚あるプレイヤー（＝ツモ済み）だけ
-    if (shoupai._zimo && Majiang.Util.xiangting(shoupai) <= 0) {
-      const tingpaiList = Majiang.Util.tingpai(shoupai)
-        .map(tp => convertMPSZToPaiIndex(tp.p));
+      // リーチチェックは 14枚あるプレイヤー（＝ツモ済み）だけ
+      if (shoupai._zimo && Majiang.Util.xiangting(shoupai) <= 0) {
+        const tingpaiList = Majiang.Util.tingpai(shoupai)
+          .map(tp => convertMPSZToPaiIndex(tp.p));
 
-      console.log(`プレイヤー${i} リーチできる牌: ${tingpaiList}`);
+        console.log(`プレイヤー${i} リーチできる牌: ${tingpaiList}`);
 
-      player.send(JSON.stringify({
-        type: 'riichiCheck',
-        roomId,
-        playerIndex: i,
-        tingpaiList
-      }));
+        player.send(JSON.stringify({
+          type: 'riichiCheck',
+          roomId,
+          playerIndex: i,
+          tingpaiList
+        }));
+      }
     }
   });
 }
