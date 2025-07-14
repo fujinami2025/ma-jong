@@ -287,21 +287,20 @@ function startGame(roomId) {
         }));
       }
 
-      // ✅ リーチチェック
-      const shanten = Majiang.Util.xiangting(shoupai);
-      console.log(`シャンテン: ${shanten}`);
+  const shanten = Majiang.Util.xiangting(shoupai);
+    console.log(`プレイヤー${i} シャンテン: ${shanten}`);
 
-      if (shanten <= 0) {
-        const tingpaiList = Majiang.Util.tingpai(shoupai)
-          .map(tp => convertMPSZToPaiIndex(tp.p));
-        console.log('リーチできる牌'+tingpaiList);
-        player.send(JSON.stringify({
-          type: 'riichiCheck',
-          roomId,
-          playerIndex: i,
-          tingpaiList
-        }));
-      }
+    if (shanten <= 0) {
+      const tingpaiList = Majiang.Util.tingpai(shoupai)
+        .map(tp => convertMPSZToPaiIndex(tp.p));
+      console.log(`プレイヤー${i} リーチできる牌: ${tingpaiList}`);
+
+      player.send(JSON.stringify({
+        type: 'riichiCheck',
+        roomId,
+        playerIndex: i,
+        tingpaiList
+      }));
     }
   });
 }
