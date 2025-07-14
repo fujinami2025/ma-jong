@@ -294,8 +294,9 @@ room.players.forEach((player, i) => {
       if (shanten <= 0) {
         console.log('12');
         const tingpaiList = getReachableTiles(shoupai); // ← ここは関数を定義しておく必要あり
+        console.log('イケてる？'+tingpaiList);
         if (tingpaiList.length > 0) {
-          console.log('テンパイ牌'+tingpaiList);
+          console.log('13');
           player.send(JSON.stringify({
             type: 'riichiCheck',
             roomId,
