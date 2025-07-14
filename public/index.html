@@ -273,6 +273,9 @@
           img.style.margin = '2px';
           img.style.cursor = 'pointer';
 
+          img.classList.add('tile');
+          img.dataset.index = convertMPSZToPaiIndex(tileStr);
+
           img.onclick = () => {
             console.log("クリックされました");
             if (!canDiscard) return;
@@ -294,6 +297,7 @@
           handDiv.appendChild(img);
         }
       }
+      updateTileInteractivity();
     }
 
     function getTileImage(paiNumber) {
