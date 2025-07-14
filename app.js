@@ -257,59 +257,59 @@ function startGame(roomId) {
   room.currentTurn = 0;
   console.log(7)
   // クライアントに初期手牌を送信
-room.players.forEach((player, i) => {
-  const shoupai = shoupais[i];
+  room.players.forEach((player, i) => {
+    const shoupai = shoupais[i];
 
-  // 🀄 初期手牌送信
-  player.send(JSON.stringify({
-    type: 'start',
-    playerIndex: i,
-    roomId,
-    handString: shoupai.toString()
-  }));
+    // 🀄 初期手牌送信
+    player.send(JSON.stringify({
+      type: 'start',
+      playerIndex: i,
+      roomId,
+      handString: shoupai.toString()
+    }));
 
-  // ✅ ツモ和了チェックは先手だけ
-  if (i === 0) {
-    const tsumoResult = Majiang.Util.hule(
-      shoupai,
-      null,
-      Majiang.Util.hule_param({
-        zhuangfeng: 0,
-        menfeng: i,
-        baopai: null,
-        changbang: 0,
-        lizhibang: 0
-      })
-    );
+    // ✅ ツモ和了チェックは先手だけ
+    if (i === 0) {
+      const tsumoResult = Majiang.Util.hule(
+        shoupai,
+        null,
+        Majiang.Util.hule_param({
+          zhuangfeng: 0,
+          menfeng: i,
+          baopai: null,
+          changbang: 0,
+          lizhibang: 0
+        })
+      );
 
-    if (tsumoResult) {
-      player.send(JSON.stringify({
-        type: 'tsumoCheck',
-        roomId,
-        playerIndex: i
-      }));
-    }
-    console.log('10');
-    // ✅ リーチチェックも先手のみに行う
-    if (shoupai._zimo) {
-      console.log('11');
-      const shanten = Majiang.Util.xiangting(shoupai);
-      if (shanten <= 0) {
-        console.log('12');
-        const tingpaiList = getReachableTiles(shoupai); // ← ここは関数を定義しておく必要あり
-        if (tingpaiList.length > 0) {
-          console.log('13');
-          player.send(JSON.stringify({
-            type: 'riichiCheck',
-            roomId,
-            playerIndex: i,
-            tingpaiList
-          }));
+      if (tsumoResult) {
+        player.send(JSON.stringify({
+          type: 'tsumoCheck',
+          roomId,
+          playerIndex: i
+        }));
+      }
+      console.log('10');
+      // ✅ リーチチェックも先手のみに行う
+      if (shoupai._zimo) {
+        console.log('11');
+        const shanten = Majiang.Util.xiangting(shoupai);
+        if (shanten <= 0) {
+          console.log('12');
+          const tingpaiList = getReachableTiles(shoupai); // ← ここは関数を定義しておく必要あり
+          if (tingpaiList.length > 0) {
+            console.log('13');
+            player.send(JSON.stringify({
+              type: 'riichiCheck',
+              roomId,
+              playerIndex: i,
+              tingpaiList
+            }));
+          }
         }
       }
     }
-  }
-});
+  });
 }
 
 
@@ -343,7 +343,7 @@ function getReachableTiles(shoupai) {
     }
     else {
       // 数字と直前の符号を「1m」「2m」…の形で格納
-      tiles.push(suit + ch);
+      tiles.push(ch + suit);
     }
   }
 
