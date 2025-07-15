@@ -333,33 +333,40 @@ function convertPaiIndexToMPSZ(pai) {
 function getReachableTiles(shoupai) {
   const reachable = new Set();
 
-  // 例: "m123p456z7" → ['m','1','2','3','p','4','5','6','z','7']
+  // ① 手牌文字列を取得
   const handStr = shoupai.toString();
   let suit = '';
   const tiles = [];
+
+  // ② suit+ch で一旦 ["m1","m1",...,"p9",...] の形に格納
   for (const ch of handStr) {
     if ('mpsz'.includes(ch)) {
       suit = ch;
     }
     else {
-      // 数字と直前の符号を「1m」「2m」…の形で格納
       tiles.push(suit + ch);
     }
   }
 
+  // ③ 1 枚ずつ試し打ち
   for (const tile of tiles) {
-    // クローン＆ダミー打牌 (check=false)
     const clone = Majiang.Shoupai.fromString(handStr);
-    const ok = clone.dapai(tile, false);
-    if (!ok) continue;
+    // check=false で例外を抑制
+    if (!clone.dapai(tile, false)) continue;
     if (Majiang.Util.xiangting(clone) === 0) {
       reachable.add(tile);
     }
   }
-  console.log(reachable);
-  // 変換: '1m' → index 0, '9p' → index 35 etc.
-  return Array.from(reachable).map(t => convertMPSZToPaiIndex(t));
+
+  // ④ suit+digit → digit+suit に入れ替え、インデックス化
+  return Array.from(reachable).map(ts => {
+    // ts は "p9" など
+    const swapped = ts.charAt(1) + ts.charAt(0);  // "9p"
+    console.log('swapped'+swapped);
+    return convertMPSZToPaiIndex(swapped);
+  });
 }
+
 
 function convertShoupaiToArray(shoupai) {
   const result = []
