@@ -317,6 +317,10 @@
             if (isRiichi) { //isRiichi=true状態で牌が捨てられた=リーチ成立
               reached = true;
             }
+            if (reached) {
+              reached = false;
+              isRiichi = false;
+            }
             riichiButton.style.display = 'none'; //相手の手番になるからボタンけす
             canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
 
