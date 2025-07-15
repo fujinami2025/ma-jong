@@ -126,7 +126,7 @@
 
       if (data.type === 'dahai') {
         const img = document.createElement('img');
-        img.src = `tiles/${convertIndexToFilename(data.pai)}.png`;
+        img.src = `/dist/image/${getTileImage(data.pai)}.gif`;
         img.classList.add('tile');
 
         if (data.isRiichi) {
