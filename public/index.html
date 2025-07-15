@@ -180,6 +180,15 @@
       console.log('動いてるよー');
       document.querySelectorAll('.tile').forEach(img => {
         const index = parseInt(img.dataset.index);
+        if (reached) {
+          // リーチ後はツモ牌（最後の牌）のみ有効に
+          const lastTileIndex = convertMPSZToPaiIndex(currentHandString.slice(-2));
+          const isLastTile = index === lastTileIndex;
+          img.style.pointerEvents = isLastTile ? 'auto' : 'none';
+          img.style.opacity = isLastTile ? '1.0' : '0.5';
+          return;
+        }
+
         if (isRiichi) {
           img.style.pointerEvents = tingpaiSet.has(index) ? 'auto' : 'none';
           img.style.opacity = tingpaiSet.has(index) ? '1.0' : '0.5';
@@ -314,11 +323,6 @@
             canDiscard = false;
             if (isRiichi) { //isRiichi=true状態で牌が捨てられた=リーチ成立
               reached = true;
-              document.querySelectorAll('.tile').forEach(img => {
-                img.style.pointerEvents = 'auto';
-                img.style.opacity = '1.0';
-                img.classList.remove('disabled');
-              });
             }
             riichiButton.style.display = 'none'; //相手の手番になるからボタンけす
             canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
