@@ -309,17 +309,6 @@
           img.onclick = () => {
             console.log("クリックされました");
             if (!canDiscard) return;
-            // もしリーチ後なら
-            if (reached) {
-              // クリックした牌が最後の牌（ツモ牌）じゃなければ無視する or 警告を出す
-              const clickedPaiIndex = convertMPSZToPaiIndex(tileStr);
-              const lastPaiIndex = convertMPSZToPaiIndex(currentHandString.slice(-2)); // 例: 最後の牌を判定
-
-              if (clickedPaiIndex !== lastPaiIndex) {
-                alert('リーチ後はツモ牌のみ捨てられます');
-                return;
-              }
-            }
             canDiscard = false;
             if (isRiichi) { //isRiichi=true状態で牌が捨てられた=リーチ成立
               reached = true;
