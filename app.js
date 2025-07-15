@@ -186,7 +186,7 @@ app.ws('/ws', (ws, req) => {
             playerIndex: room.currentTurn,
             roomId: data.roomId,
             handString: room.shoupais[room.currentTurn].toString(),
-            isRiichi: room.isRiichiFlags[(room.currentTurn + 1) % 2]
+            isRiichi: room.isRiichiFlags[room.currentTurn]
           }))
         }
       } else {
