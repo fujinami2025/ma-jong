@@ -119,7 +119,7 @@
           if (data.handString) showHandFromShoupaiString(data.handString);
           canDiscard = true;
         }
-        if(data.type.isRiichi) {
+        if(data.isRiichi && data.playerIndex !== myPlayerIndex) {
           alert('相手がリーチしました');
         }
       }
