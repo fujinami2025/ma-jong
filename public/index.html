@@ -312,7 +312,14 @@
               }
             }
             canDiscard = false;
-            if(isRiichi)reached = true;
+            if (isRiichi) { //isRiichi=true状態で牌が捨てられた=リーチ成立
+              reached = true;
+              document.querySelectorAll('.tile').forEach(img => {
+                img.style.pointerEvents = 'auto';
+                img.style.opacity = '1.0';
+                img.classList.remove('disabled');
+              });
+            }
             riichiButton.style.display = 'none'; //相手の手番になるからボタンけす
             canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
 
