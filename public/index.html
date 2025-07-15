@@ -134,6 +134,11 @@
           img.style.transformOrigin = 'center center';
         }
 
+        if(data.playerIndex == myPlayerIndex) {
+          showMyDiscardedTile(data.pai);
+        }else {
+          showOpponentDiscardedTile(data.pai);
+        }
         const targetDiv = getDiscardDiv(data.playerIndex);
         targetDiv.appendChild(img);
       }
