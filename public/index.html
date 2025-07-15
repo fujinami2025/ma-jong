@@ -94,7 +94,7 @@
       const data = JSON.parse(event.data);
 
       // 受信：リーチ可能牌リスト
-      if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex) {
+      if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex && !isRiichi) {
         tingpaiList = data.tingpaiList;    // [0,4,8,…]
         console.log(tingpaiList);
         riichiButton.style.display = 'inline-block';
