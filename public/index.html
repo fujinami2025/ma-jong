@@ -286,6 +286,7 @@
           suit = ch;
         } else if (/\d/.test(ch)) {
           const tileStr = `${suit}${ch}`;
+          const isLastTile = i === handStr.length - 1; //boolean ツモかどうか
           const img = document.createElement('img');
           img.src = `/dist/image/${suit}${ch}.gif`;
           img.alt = tileStr;
@@ -296,6 +297,23 @@
           img.classList.add('tile');
           img.dataset.index = convertMPSZToPaiIndex(tileStr);
 
+          if (isRiichi) {
+            if (isLastTile) {
+              const paiIndex = convertMPSZToPaiIndex(tileStr);
+
+              img.remove(); //半透明の捨て牌もういらなくね？
+
+              showMyDiscardedTile(paiIndex);
+
+              ws.send(JSON.stringify({
+                type: 'dahai',
+                roomId: myRoomId,
+                playerIndex: myPlayerIndex,
+                pai: paiIndex
+              }));
+            };
+          }
+        } else {
           img.onclick = () => {
             console.log("クリックされました");
             if (!canDiscard) return;
@@ -316,9 +334,8 @@
               pai: paiIndex
             }));
           };
-
-          handDiv.appendChild(img);
         }
+        //handDiv.appendChild(img);
       }
       updateTileInteractivity();
     }
