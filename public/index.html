@@ -302,6 +302,7 @@
             canDiscard = false;
             img.style.opacity = 0.5;
             img.style.pointerEvents = 'none';
+            canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
 
             const paiIndex = convertMPSZToPaiIndex(tileStr);
             showMyDiscardedTile(paiIndex);
