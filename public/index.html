@@ -78,6 +78,7 @@
     let ronPendingPai = null;
     let skipRequested = false;
     let isRiichi = false;
+    let reached = false;
     let tingpaiSet = new Set();
     let currentHandString = '';
     let tingpaiList = [];
@@ -286,7 +287,6 @@
           suit = ch;
         } else if (/\d/.test(ch)) {
           const tileStr = `${suit}${ch}`;
-          const isLastTile = i === handStr.length - 1; //boolean ツモかどうか
           const img = document.createElement('img');
           img.src = `/dist/image/${suit}${ch}.gif`;
           img.alt = tileStr;
@@ -297,27 +297,22 @@
           img.classList.add('tile');
           img.dataset.index = convertMPSZToPaiIndex(tileStr);
 
-          if (isRiichi) {
-            if (isLastTile) {
-              const paiIndex = convertMPSZToPaiIndex(tileStr);
-
-              img.remove(); //半透明の捨て牌もういらなくね？
-
-              showMyDiscardedTile(paiIndex);
-
-              ws.send(JSON.stringify({
-                type: 'dahai',
-                roomId: myRoomId,
-                playerIndex: myPlayerIndex,
-                pai: paiIndex
-              }));
-            };
-          }
-        } else {
           img.onclick = () => {
             console.log("クリックされました");
             if (!canDiscard) return;
+            // もしリーチ後なら
+            if (reached) {
+              // クリックした牌が最後の牌（ツモ牌）じゃなければ無視する or 警告を出す
+              const clickedPaiIndex = convertMPSZToPaiIndex(tileStr);
+              const lastPaiIndex = convertMPSZToPaiIndex(currentHandString.slice(-2)); // 例: 最後の牌を判定
+
+              if (clickedPaiIndex !== lastPaiIndex) {
+                alert('リーチ後はツモ牌のみ捨てられます');
+                return;
+              }
+            }
             canDiscard = false;
+            if(isRiichi)reached = true;
             riichiButton.style.display = 'none'; //相手の手番になるからボタンけす
             canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
 
@@ -334,8 +329,9 @@
               pai: paiIndex
             }));
           };
+
+          handDiv.appendChild(img);
         }
-        //handDiv.appendChild(img);
       }
       updateTileInteractivity();
     }
