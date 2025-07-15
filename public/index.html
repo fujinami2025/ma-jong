@@ -82,6 +82,8 @@
     let tingpaiSet = new Set();
     let currentHandString = '';
     let tingpaiList = [];
+    let neverMyReach = true;
+    let neverElseReach = true;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
 
@@ -126,9 +128,19 @@
 
       if (data.type === 'dahai') {
         if (data.playerIndex == myPlayerIndex) {
-          showMyDiscardedTile(data.pai, data.isRiichi);
+          if (neverMyReach && data.isRiichi) {
+            newReach = false;
+            showMyDiscardedTile(data.pai, data.isRiichi);
+          } else {
+            showMyDiscardedTile(data.pai);
+          }
         } else {
-          showOpponentDiscardedTile(data.pai, data.isRiichi);
+          if (neverElseReach && data.isRiichi) {
+            newElseReach = false;
+            showOpponentDiscardedTile(data.pai, data.isRiichi);
+          } else {
+            showOpponentDiscardedTile(data.pai, data.isRiichi);
+          }
         }
       }
 
@@ -314,10 +326,6 @@
             console.log("クリックされました");
             if (!canDiscard) return;
             canDiscard = false;
-            if (reached) {
-              reached = false;
-              isRiichi = false;
-            }
             if (isRiichi) { //isRiichi=true状態で牌が捨てられた=リーチ成立
               reached = true;
             }
@@ -336,7 +344,6 @@
               isRiichi: reached
             }));
           };
-
           handDiv.appendChild(img);
         }
       }
