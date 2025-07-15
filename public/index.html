@@ -125,19 +125,10 @@
       }
 
       if (data.type === 'dahai') {
-        const img = document.createElement('img');
-        img.src = `/dist/image/${getTileImage(data.pai)}`;
-        img.classList.add('tile');
-
-        if (data.isRiichi) {
-          img.style.transform = 'rotate(90deg)';
-          img.style.transformOrigin = 'center center';
-        }
-
-        if(data.playerIndex == myPlayerIndex) {
-          showMyDiscardedTile(data.pai);
-        }else {
-          showOpponentDiscardedTile(data.pai);
+        if (data.playerIndex == myPlayerIndex) {
+          showMyDiscardedTile(data.pai, data.isRiichi);
+        } else {
+          showOpponentDiscardedTile(data.pai, data.isRiichi);
         }
       }
 
@@ -333,8 +324,6 @@
 
             img.remove(); //半透明の捨て牌もういらなくね？
 
-            //showMyDiscardedTile(paiIndex);
-
             ws.send(JSON.stringify({
               type: 'dahai',
               roomId: myRoomId,
@@ -358,7 +347,7 @@
       return `z${typeIndex - 27 + 1}.gif`;
     }
 
-    function showOpponentDiscardedTile(pai) {
+    function showOpponentDiscardedTile(pai, isRiichi = false) {
       if (opponentDiscards.children.length === 0) {
         opponentDiscards.innerHTML = '<p>相手の捨て牌:</p>';
       }
@@ -367,10 +356,14 @@
       img.alt = `${pai}`;
       img.style.width = '40px';
       img.style.margin = '2px';
+      if (isRiichi) {
+        img.style.transform = 'rotate(90deg)';
+        img.style.transformOrigin = 'center center';
+      }
       opponentDiscards.appendChild(img);
     }
 
-    function showMyDiscardedTile(pai) {
+    function showMyDiscardedTile(pai, isRiichi = false) {
       if (myDiscards.children.length === 0) {
         myDiscards.innerHTML = '<p>あなたの捨て牌:</p>';
       }
@@ -379,6 +372,10 @@
       img.alt = `${pai}`;
       img.style.width = '40px';
       img.style.margin = '2px';
+      if (isRiichi) {
+        img.style.transform = 'rotate(90deg)';
+        img.style.transformOrigin = 'center center';
+      }
       myDiscards.appendChild(img);
     }
 
