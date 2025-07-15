@@ -96,6 +96,7 @@
       // 受信：リーチ可能牌リスト
       if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex) {
         tingpaiList = data.tingpaiList;    // [0,4,8,…]
+        console.log(tingpaiList);
         riichiButton.style.display = 'inline-block';
       }
 
@@ -196,7 +197,7 @@
 
       // Set に変換しておく
       tingpaiSet = new Set(tingpaiList);
-      console.log('リーチ可能牌'+tingpaiSet);
+      console.log('リーチ可能牌' + tingpaiSet);
       // 牌画像に .tile クラスを付けている想定
       document.querySelectorAll('.tile').forEach(img => {
         const idx = parseInt(img.dataset.index, 10);
