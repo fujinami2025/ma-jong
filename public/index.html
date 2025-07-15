@@ -120,7 +120,7 @@
           canDiscard = true;
         }
         console.log("ri--" + data.isRiichi);
-        if(data.isRiichi && data.playerIndex !== myPlayerIndex) {
+        if(data.isRiichi && data.playerIndex == myPlayerIndex) {
           alert('相手がリーチしました');
         }
       }
