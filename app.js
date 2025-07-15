@@ -40,7 +40,7 @@ app.ws('/ws', (ws, req) => {
       hands: [],
       shoupais: [],
       mountain: [],
-      currentTurn: 0,
+      currentTurn: 0
     }
 
     startGame(roomId)
@@ -72,6 +72,8 @@ app.ws('/ws', (ws, req) => {
           lizhibang: 0,
         })
       )
+
+      room.isRiichiFlags[playerIndex] = data.isRiichi;
 
       if (ronResult) {
         room.players[opponentIndex].send(JSON.stringify({
@@ -121,7 +123,8 @@ app.ws('/ws', (ws, req) => {
             type: 'tsumo',
             playerIndex: room.currentTurn,
             roomId: data.roomId,
-            handString: currentShoupai.toString()
+            handString: currentShoupai.toString(),
+            isRiichi: room.isRiichiFlags[room.currentTurn]
           }));
 
           // 2) シャンテン＆リーチ判定
@@ -224,6 +227,7 @@ app.listen(port, () => {
 
 function startGame(roomId) {
   const room = rooms[roomId];
+  room.isRiichiFlags = [false, false];
   const tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
   console.log(4)

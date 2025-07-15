@@ -101,13 +101,6 @@
         riichiButton.style.display = 'inline-block';
       }
 
-      if (data.type === 'dahai') {
-        if (data.playerIndex !== myPlayerIndex && data.isRiichi) {
-          alert("相手がリーチしました！");
-        }
-      }
-
-
       if (data.type === 'start') {
         statusDiv.style.display = 'none';
         gameDiv.style.display = 'block';
@@ -125,6 +118,9 @@
           currentHandString = data.handString || currentHandString;
           if (data.handString) showHandFromShoupaiString(data.handString);
           canDiscard = true;
+        }
+        if(data.type.isRiichi) {
+          alert("相手がリーチしました");
         }
       }
 
