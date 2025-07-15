@@ -120,7 +120,7 @@
           canDiscard = true;
         }
         if (data.aitenoRiichi && data.playerIndex == myPlayerIndex) {//相手のリーチ情報
-          cosole.log("相手がリーチしました");
+          console.log("相手がリーチしました");
         }
       }
 
@@ -337,7 +337,7 @@
 
             img.remove(); //半透明の捨て牌もういらなくね？
 
-            showMyDiscardedTile(paiIndex);
+            //showMyDiscardedTile(paiIndex);
 
             ws.send(JSON.stringify({
               type: 'dahai',
