@@ -80,6 +80,8 @@
     let isRiichi = false;
     let tingpaiSet = new Set();
     let currentHandString = '';
+    let tingpaiList = [];
+
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
 
     const ws = new WebSocket(`${protocol}://${location.host}/ws`);
@@ -91,12 +93,10 @@
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
+      // 受信：リーチ可能牌リスト
       if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex) {
-        isRiichiReady = true;
-        tingpaiSet = new Set(data.tingpaiList); // ← サーバーから受け取った切れる牌のリスト
-        document.getElementById('riichi-button').style.display = 'inline-block';
-
-        updateTileInteractivity(); // 🔄 牌のクリック可能性を更新
+        tingpaiList = data.tingpaiList;    // [0,4,8,…]
+        riichiButton.style.display = 'inline-block';
       }
 
 
@@ -188,28 +188,36 @@
       });
     }
 
+    // リーチボタン押下
     riichiButton.onclick = () => {
       isRiichi = true;
       riichiButton.style.display = 'none';
-      canselButton.style.display = 'inline-block';
+      cancelButton.style.display = 'inline-block';
 
-      const shoupai = Majiang.Shoupai.fromString(currentHandString);
-      const tingpai = Majiang.Util.tingpai(shoupai);
-      tingpaiSet = new Set(tingpai.map(p => convertMPSZToPaiIndex(p)));
+      // Set に変換しておく
+      tingpaiSet = new Set(tingpaiList);
 
-      // 有効牌のみアクティブに
-      updateTileInteractivity();
+      // 牌画像に .tile クラスを付けている想定
+      document.querySelectorAll('.tile').forEach(img => {
+        const idx = parseInt(img.dataset.index, 10);
+        if (tingpaiSet.has(idx)) {
+          img.classList.remove('disabled');
+        } else {
+          img.classList.add('disabled');
+        }
+      });
     };
 
     // キャンセル
-    canselButton.onclick = () => {
+    cancelButton.onclick = () => {
       isRiichi = false;
-      canselButton.style.display = 'none';
+      cancelButton.style.display = 'none';
       riichiButton.style.display = 'inline-block';
-      tingpaiSet.clear();
 
-      // 全牌を選択可能に戻す
-      updateTileInteractivity();
+      // 全牌を有効に戻す
+      document.querySelectorAll('.tile').forEach(img => {
+        img.classList.remove('disabled');
+      });
     };
 
 
