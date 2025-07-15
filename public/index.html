@@ -129,14 +129,14 @@
       if (data.type === 'dahai') {
         if (data.playerIndex == myPlayerIndex) {
           if (neverMyReach && data.isRiichi) {
-            newReach = false;
+            neverMyReach = false;
             showMyDiscardedTile(data.pai, data.isRiichi);
           } else {
             showMyDiscardedTile(data.pai);
           }
         } else {
           if (neverElseReach && data.isRiichi) {
-            newElseReach = false;
+            neverElseReach = false;
             showOpponentDiscardedTile(data.pai, data.isRiichi);
           } else {
             showOpponentDiscardedTile(data.pai, data.isRiichi);
