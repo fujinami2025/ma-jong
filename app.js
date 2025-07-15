@@ -124,7 +124,7 @@ app.ws('/ws', (ws, req) => {
             playerIndex: room.currentTurn,
             roomId: data.roomId,
             handString: currentShoupai.toString(),
-            isRiichi: room.isRiichiFlags[(room.currentTurn + 1) % 2]
+            aitenoRiichi: room.isRiichiFlags[(room.currentTurn + 1) % 2]
           }));
 
           // 2) シャンテン＆リーチ判定
