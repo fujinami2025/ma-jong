@@ -84,6 +84,7 @@
     let tingpaiList = [];
     let neverMyReach = true;
     let neverElseReach = true;
+    let canRiichi = false;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
 
@@ -97,10 +98,15 @@
       const data = JSON.parse(event.data);
 
       // 受信：リーチ可能牌リスト
-      if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex && !isRiichi) {
+      if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex) {
         tingpaiList = data.tingpaiList;    // [0,4,8,…]
+        // Set に変換しておく
+        tingpaiSet = new Set(tingpaiList);
+        canRiichi = true;
         console.log(tingpaiList);
-        riichiButton.style.display = 'inline-block';
+        if (!isRiichi) {
+          riichiButton.style.display = 'inline-block';
+        }
       }
 
       if (data.type === 'start') {
@@ -148,6 +154,10 @@
         // ユーザーにロンするかどうか選ばせる
         ronPendingPai = data.pai;
         showRonSkipButtons();
+
+        if (canRiichi && !isRiichi) {
+          riichiButton.style.display = 'inline-block';
+        }
       }
 
       if (data.type === 'ron') {
@@ -218,11 +228,10 @@
     // リーチボタン押下
     riichiButton.onclick = () => {
       isRiichi = true;
+      canRiichi = false;
       riichiButton.style.display = 'none';
       canselButton.style.display = 'inline-block';
 
-      // Set に変換しておく
-      tingpaiSet = new Set(tingpaiList);
       console.log('リーチ可能牌:', [...tingpaiSet]);
 
       // 有効な牌だけクリック可能にする
@@ -245,6 +254,7 @@
     // キャンセル時の処理
     canselButton.onclick = () => {
       isRiichi = false;
+      canRiichi = true;
       canselButton.style.display = 'none';
       riichiButton.style.display = 'inline-block';
 
