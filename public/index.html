@@ -119,9 +119,23 @@
           if (data.handString) showHandFromShoupaiString(data.handString);
           canDiscard = true;
         }
-        if(data.aitenoRiichi && data.playerIndex == myPlayerIndex) {//相手のリーチ情報
-          alert('相手がリーチしました');
+        if (data.aitenoRiichi && data.playerIndex == myPlayerIndex) {//相手のリーチ情報
+          cosole.log("相手がリーチしました");
         }
+      }
+
+      if (data.type === 'dahai') {
+        const img = document.createElement('img');
+        img.src = `tiles/${convertIndexToFilename(data.pai)}.png`;
+        img.classList.add('tile');
+
+        if (data.isRiichi) {
+          img.style.transform = 'rotate(90deg)';
+          img.style.transformOrigin = 'center center';
+        }
+
+        const targetDiv = getDiscardDiv(data.playerIndex);
+        targetDiv.appendChild(img);
       }
 
       if (data.type === 'ronCheck') {
