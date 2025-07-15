@@ -185,7 +185,8 @@ app.ws('/ws', (ws, req) => {
             type: 'tsumo',
             playerIndex: room.currentTurn,
             roomId: data.roomId,
-            handString: room.shoupais[room.currentTurn].toString()
+            handString: room.shoupais[room.currentTurn].toString(),
+            isRiichi: room.isRiichiFlags[room.currentTurn]
           }))
         }
       } else {
