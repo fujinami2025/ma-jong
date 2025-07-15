@@ -196,7 +196,7 @@
 
       // Set に変換しておく
       tingpaiSet = new Set(tingpaiList);
-
+      console.log('リーチ可能牌'+tingpaiSet);
       // 牌画像に .tile クラスを付けている想定
       document.querySelectorAll('.tile').forEach(img => {
         const idx = parseInt(img.dataset.index, 10);
