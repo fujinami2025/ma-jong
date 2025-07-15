@@ -102,11 +102,14 @@
       }
 
       if (data.type === 'dahai') {
+        console.log("dahai");
         if (data.playerIndex !== myPlayerIndex) {
+          console.log(data.isRiichi);
+          console.log(!!data.isRiichi);
+
 
           if (data.isRiichi) {
             console.log("相手がリーチしました！");
-            
           }
         }
       }
