@@ -76,12 +76,6 @@ app.ws('/ws', (ws, req) => {
       room.isRiichiFlags[playerIndex] = data.isRiichi;
 
       if (ronResult) {
-        room.players[opponentIndex].send(JSON.stringify({
-          type: 'ronCheck',
-          pai: data.pai,
-          fromPlayer: playerIndex,
-          roomId: data.roomId
-        }))
         room.players.forEach((player) => {
           if (player.readyState === 1) {
             player.send(JSON.stringify({
@@ -92,6 +86,14 @@ app.ws('/ws', (ws, req) => {
             }))
           }
         })
+        
+        room.players[opponentIndex].send(JSON.stringify({
+          type: 'ronCheck',
+          pai: data.pai,
+          fromPlayer: playerIndex,
+          roomId: data.roomId
+        }))
+
         return;
       }
 
