@@ -298,7 +298,7 @@ function startGame(roomId) {
           console.log('12');
           const tingpaiList = getReachableTiles(shoupai); // ← ここは関数を定義しておく必要あり
           if (tingpaiList.length > 0) {
-            console.log('13');
+            console.log('tingpaiList:'+tingpaiList);
             player.send(JSON.stringify({
               type: 'riichiCheck',
               roomId,
