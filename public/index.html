@@ -300,6 +300,7 @@
             console.log("クリックされました");
             if (!canDiscard) return;
             canDiscard = false;
+            riichiButton.style.display = 'none'; //相手の手番になるからボタンけす
             canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
 
             const paiIndex = convertMPSZToPaiIndex(tileStr);
