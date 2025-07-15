@@ -382,11 +382,11 @@
       img.src = `/dist/image/${getTileImage(pai)}`;
       img.alt = `${pai}`;
       img.style.width = '40px';
+      img.style.margin = '2px';
       if (isRiichi) {
         img.style.transform = 'rotate(90deg)';
         img.style.transformOrigin = 'center center';
       }
-      img.style.margin = '2px';
       myDiscards.appendChild(img);
     }
 

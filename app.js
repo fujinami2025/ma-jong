@@ -82,19 +82,20 @@ app.ws('/ws', (ws, req) => {
           fromPlayer: playerIndex,
           roomId: data.roomId
         }))
-        return
+        room.players.forEach((player) => {
+          if (player.readyState === 1) {
+            player.send(JSON.stringify({
+              type: 'dahai',
+              playerIndex,
+              pai: data.pai,
+              isRiichi: data.isRiichi
+            }))
+          }
+        })
+        return;
       }
 
-      room.players.forEach((player) => {
-        if (player.readyState === 1) {
-          player.send(JSON.stringify({
-            type: 'dahai',
-            playerIndex,
-            pai: data.pai,
-            isRiichi: data.isRiichi
-          }))
-        }
-      })
+
 
       room.currentTurn = (room.currentTurn + 1) % 2
       const nextPlayer = room.players[room.currentTurn]
