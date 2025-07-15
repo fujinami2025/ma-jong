@@ -197,13 +197,19 @@
 
       // Set に変換しておく
       tingpaiSet = new Set(tingpaiList);
-      console.log('リーチ可能牌' + tingpaiSet);
-      // 牌画像に .tile クラスを付けている想定
+      console.log('リーチ可能牌:', [...tingpaiSet]);
+
+      // 有効な牌だけクリック可能にする
       document.querySelectorAll('.tile').forEach(img => {
         const idx = parseInt(img.dataset.index, 10);
+
         if (tingpaiSet.has(idx)) {
+          img.style.pointerEvents = 'auto';
+          img.style.opacity = '1.0';
           img.classList.remove('disabled');
         } else {
+          img.style.pointerEvents = 'none';
+          img.style.opacity = '0.5';
           img.classList.add('disabled');
         }
       });
