@@ -343,7 +343,7 @@ function getReachableTiles(shoupai) {
     }
     else {
       // 数字と直前の符号を「1m」「2m」…の形で格納
-      tiles.push(ch + suit);
+      tiles.push(suit + ch);
     }
   }
 
