@@ -40,7 +40,7 @@ app.ws('/ws', (ws, req) => {
       hands: [],
       shoupais: [],
       mountain: [],
-      currentTurn: 0
+      currentTurn: 0,
     }
 
     startGame(roomId)
@@ -88,7 +88,8 @@ app.ws('/ws', (ws, req) => {
           player.send(JSON.stringify({
             type: 'dahai',
             playerIndex,
-            pai: data.pai
+            pai: data.pai,
+            isRiichi: data.isRiichi
           }))
         }
       })
@@ -298,7 +299,7 @@ function startGame(roomId) {
           console.log('12');
           const tingpaiList = getReachableTiles(shoupai); // ← ここは関数を定義しておく必要あり
           if (tingpaiList.length > 0) {
-            console.log('tingpaiList:'+tingpaiList);
+            console.log('tingpaiList:' + tingpaiList);
             player.send(JSON.stringify({
               type: 'riichiCheck',
               roomId,
@@ -362,7 +363,7 @@ function getReachableTiles(shoupai) {
   return Array.from(reachable).map(ts => {
     // ts は "p9" など
     const swapped = ts.charAt(1) + ts.charAt(0);  // "9p"
-    console.log('swapped'+swapped);
+    console.log('swapped' + swapped);
     return convertMPSZToPaiIndex(swapped);
   });
 }
