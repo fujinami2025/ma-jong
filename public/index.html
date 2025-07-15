@@ -216,16 +216,19 @@
     };
 
     // キャンセル
-    canselButton.onclick = () => {
+    // キャンセル時の処理
+    cancelButton.onclick = () => {
       isRiichi = false;
-      canselButton.style.display = 'none';
+      cancelButton.style.display = 'none';
       riichiButton.style.display = 'inline-block';
 
-      // 全牌を有効に戻す
+      // 全牌を再び有効に戻す
       document.querySelectorAll('.tile').forEach(img => {
+        img.style.pointerEvents = 'auto';
+        img.style.opacity = '1.0';
         img.classList.remove('disabled');
       });
-    };
+    }
 
 
     ronButton.onclick = () => {
