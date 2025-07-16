@@ -34,6 +34,23 @@
       box-sizing: border-box;
     }
 
+    #discard-container {
+      width: 40vw;
+      height: 40vw;
+      background: rgba(200, 200, 200, 0.3);
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 8px;
+    }
+
     #opponent-discards,
     #my-discards {
       display: flex;
@@ -62,10 +79,8 @@
     }
 
     #score-container {
-      width: 30vw;
-      /* 正方形の幅 */
-      height: 30vw;
-      /* 正方形の高さ（幅と同じにして正方形に） */
+      width: 20vw;
+      height: 20vw;
       background: rgba(22, 115, 255, 0.9);
       position: fixed;
       top: 50%;
@@ -73,9 +88,7 @@
       transform: translate(-50%, -50%);
       display: flex;
       flex-direction: column;
-      /* 縦に並べる */
       justify-content: space-between;
-      /* 上下にスペースを開ける */
       padding: 10px;
       color: rgb(246, 255, 0);
       font-weight: bold;
@@ -84,9 +97,9 @@
     }
 
     #score-top {
-       text-align: center;
-       transform: rotate(180deg);
-       font-size: 2rem;
+      text-align: center;
+      transform: rotate(180deg);
+      font-size: 2rem;
     }
 
     #score-bottom {
@@ -107,12 +120,15 @@
   <div id="game" style="display: none;">
     <p>ルームID: <span id="room"></span></p>
 
-    <div id="opponent-discards" style="margin-bottom: 10px;"></div>
+    <div id="discard-container">
+      <div id="opponent-discards" style="margin-bottom: 10px;"></div>
+      <div id="my-discards" style="margin-bottom: 10px;"></div>
+    </div>
+
     <div id="score-container">
       <div id="score-top"><span id="score-0">25000</span></div>
       <div id="score-bottom"><span id="score-1">25000</span></div>
     </div>
-    <div id="my-discards" style="margin-bottom: 10px;"></div>
     <div id="hand-display"></div>
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
