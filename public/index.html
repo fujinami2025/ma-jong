@@ -154,14 +154,8 @@
     <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
     <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
   </div>
-  <div id="result-modal"
-    style="display:none; position: fixed; top: 0; left: 0; width:100vw; height:100vh; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; text-align: center;">
-      <p id="result-message" style="white-space: pre-line; font-size: 1.2em;"></p>
-      <button id="result-ok">OK</button>
-    </div>
-  </div>
-  
+
+
   <script>
     const statusDiv = document.getElementById('status');
     const startDiv = document.getElementById('start');
@@ -622,6 +616,13 @@
       okBtn.addEventListener('click', onClose);
     }
   </script>
+  <div id="result-modal"
+    style="display:none; position: fixed; top: 0; left: 0; width:100vw; height:100vh; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; text-align: center;">
+      <p id="result-message" style="white-space: pre-line; font-size: 1.2em;"></p>
+      <button id="result-ok">OK</button>
+    </div>
+  </div>
 </body>
 
 </html>
