@@ -99,7 +99,7 @@ app.ws('/ws', (ws, req) => {
       console.log(' room.baopai:', room.baopai, ' room.fubaopai:', room.fubaopai);
       console.log('————————————————————');
 
-      const ronResult = Majiang.Util.hule(
+      /*const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
         Majiang.Util.hule_param({
@@ -110,7 +110,7 @@ app.ws('/ws', (ws, req) => {
           changbang: room.changbang || 0,
           lizhibang: room.lizhibang || 0,
         })
-      );
+      );*/
       console.dir(ronResult, { depth: null });
       // リーチ情報更新
       room.isRiichiFlags[playerIndex] = data.isRiichi;
