@@ -87,7 +87,7 @@ app.ws('/ws', (ws, req) => {
           lizhibang: room.lizhibang || 0,
         })
       );
-      console.dir(ronResult, { depth: null, colors: true });
+      console.dir(ronResult, { depth: null });
       // リーチ情報更新
       room.isRiichiFlags[playerIndex] = data.isRiichi;
 
