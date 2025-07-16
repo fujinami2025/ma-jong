@@ -68,8 +68,8 @@ app.ws('/ws', (ws, req) => {
         Majiang.Util.hule_param({
           zhuangfeng: 0,
           menfeng: opponentIndex,
-          baopai: room.baopai || [],
-          fubaopai: room.fubaopai || [],
+          baopai: room.baopai || ["9p"],
+          fubaopai: room.fubaopai || ["8p"],
           changbang: room.changbang || 0,
           lizhibang: room.lizhibang || 0,
         })
@@ -100,7 +100,7 @@ app.ws('/ws', (ws, req) => {
         }));
         return; // ロン処理を優先するためツモには進まない
       }
-      
+
       // ツモフェーズに進む
       room.currentTurn = (playerIndex + 1) % 2;
 
