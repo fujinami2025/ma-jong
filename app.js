@@ -91,16 +91,16 @@ app.ws('/ws', (ws, req) => {
       });
 
       // ロン可能なら、相手にronCheckを送ってロン判断を任せる
-      if (ronResult) {
+      if (ronResult && ronResult.defen && ronResult.defen.point > 0) {
         room.players[opponentIndex].send(JSON.stringify({
           type: 'ronCheck',
           pai: data.pai,
           fromPlayer: playerIndex,
           roomId: data.roomId
         }));
-        return; // ツモ処理は相手がロンしないと判断してから
+        return; // ロン処理を優先するためツモには進まない
       }
-
+      
       // ツモフェーズに進む
       room.currentTurn = (playerIndex + 1) % 2;
 
