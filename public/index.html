@@ -173,6 +173,18 @@
       <div id="score-bottom"><span id="score-1">25000</span></div>
     </div>
 <<<<<<< HEAD
+    <<<<<<< HEAD <div id="hand-display">
+  </div>
+  <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
+  <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
+  <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
+  <button id="tsumoskip-button" style="display:none;">スキップ</button>
+  <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
+  <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
+  =======
+  <div id="hand-display"></div>
+=======
+<<<<<<< HEAD
     <div id="hand-display"></div>
 <<<<<<< HEAD
 =======
@@ -184,7 +196,17 @@
     <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
 =======
     <div id="hand-display"></div>
+>>>>>>> 
 
+<<<<<<< HEAD
+  <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
+  <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
+  <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
+  <button id="tsumoskip-button" style="display:none;">スキップ</button>
+  <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
+  <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
+  >>>>>>> 876e766e0078abde60163549cd747f466bb5b284
+=======
 >>>>>>> c97466b801042951986f1614c5406cd57b5ff0d5
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
@@ -193,6 +215,7 @@
     <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
     <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
 >>>>>>> 876e766e0078abde60163549cd747f466bb5b284
+>>>>>>> ec35f199ab9cd28803c1c5616762f5274811820c
   </div>
 
 
@@ -645,6 +668,22 @@
       modal.style.display = 'flex';
       resultModalCallback = callback || null;
     }
+    document.addEventListener('DOMContentLoaded', () => {
+      const okBtn = document.getElementById('result-ok');
+      const modal = document.getElementById('result-modal');
+
+      if (okBtn && modal) {
+        modal.style.display = 'none';
+        okBtn.onclick = () => {
+          modal.style.display = 'none';
+          if (typeof resultModalCallback === 'function') {
+            resultModalCallback();
+            resultModalCallback = null;
+          }
+        };
+      }
+    });
+
   </script>
   <div id="result-modal"
     style="display:none; position: fixed; top: 0; left: 0; width:100vw; height:100vh; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
@@ -653,6 +692,7 @@
       <button id="result-ok">OK</button>
     </div>
   </div>
+
 </body>
 
 </html>
