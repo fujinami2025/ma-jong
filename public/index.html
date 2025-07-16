@@ -86,21 +86,6 @@
       padding: 8px;
       border-top: 1px solid #ccc;
       z-index: 10;
-      position: relative;
-      flex-direction: column;
-      align-items: center;
-    }
-
-
-    #button-container {
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-      z-index: 20;
     }
 
     .tile {
@@ -161,15 +146,14 @@
       <div id="score-top"><span id="score-0">25000</span></div>
       <div id="score-bottom"><span id="score-1">25000</span></div>
     </div>
-    <div id="hand-display">
-      <div id="button-container">
-        <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
-        <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
-        <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
-        <button id="tsumoskip-button" style="display:none;">スキップ</button>
-        <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
-        <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
-      </div>
+    <div id="hand-display"></div>
+    <div id="button-container">
+    <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
+    <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
+    <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
+    <button id="tsumoskip-button" style="display:none;">スキップ</button>
+    <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
+    <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
     </div>
   </div>
 
