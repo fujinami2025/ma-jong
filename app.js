@@ -13,6 +13,7 @@ app.use(express.static('public'))
 let waitingPlayers = []
 let roomCounter = 1
 let waitingCount = 0
+let scores = [];
 const rooms = {}
 
 app.ws('/ws', (ws, req) => {
@@ -225,7 +226,7 @@ function startGame(roomId) {
   const tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
   console.log(4)
-
+ room.scores = [25000, 25000];
 
   // 🔧 テスト用固定牌構成
   const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, /*予備:*/ 5, 6]; // プレイヤー0
