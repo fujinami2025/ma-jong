@@ -63,10 +63,13 @@ app.ws('/ws', (ws, req) => {
       const oppShoupai = room.shoupais[opponentIndex];
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
-      if (room.isRiichiFlags[opponentIndex]) {
-        oppShoupai.lizhi(); // ← ここが必要！
+      if (!(oppShoupai instanceof Majiang.Shoupai)) {
+        oppShoupai = new Majiang.Shoupai(oppShoupai.toString());
       }
-
+      if (room.isRiichiFlags[opponentIndex]) {
+        oppShoupai.lizhi();
+      }
+      
       const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
