@@ -255,6 +255,7 @@
         if (myPlayerIndex === room.oya) {
           canDiscard = true;  // 親なら最初から捨て可能にする
         }
+        console.log('canDiscard:' + canDiscard);
         // ✅ 必要に応じてUIリセット処理もここで追加
         tsumoButton.style.display = 'none';
         ronButton.style.display = 'none';
@@ -400,7 +401,6 @@
     }
 
     function updateTileInteractivity() {
-      console.log('vanDiscard:'+canDiscard);
       document.querySelectorAll('.tile').forEach(img => {
         const index = parseInt(img.dataset.index);
         if (reached) {
@@ -530,6 +530,7 @@
           img.dataset.index = convertMPSZToPaiIndex(tileStr);
 
           img.onclick = () => {
+            console.log('canDiscard:' + canDiscard);
             console.log("クリックされました");
             if (!canDiscard) return;
             canDiscard = false;
