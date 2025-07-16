@@ -252,9 +252,6 @@
         neverElseReach = true;
         myDiscards.innerHTML = '';
         opponentDiscards.innerHTML = '';
-        if (myPlayerIndex === room.oya) {
-          canDiscard = true;  // 親なら最初から捨て可能にする
-        }
         console.log('canDiscard:' + canDiscard);
         // ✅ 必要に応じてUIリセット処理もここで追加
         tsumoButton.style.display = 'none';
@@ -276,6 +273,10 @@
         currentHandString = data.handString || '';
         if (data.handString) showHandFromShoupaiString(data.handString);
       }
+
+      console.log('受信データ:', data);
+      console.log('myple:', myPlayerIndex);
+      console.log('dataple:', data.playerIndex);
 
       if (data.type === 'tsumo') {
         if (data.playerIndex === myPlayerIndex) {
