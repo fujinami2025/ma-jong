@@ -148,8 +148,8 @@ app.ws('/ws', (ws, req) => {
       // 点数を加減（room.scores[] に得点保持していると仮定）
       room.scores[winnerIndex] += scoreDelta;
       room.scores[loserIndex] -= scoreDelta;
-      console.log('winner:'+room.scores[winnerIndex]);
-      console.log('loser:'+room.scores[loserIndex]);
+      console.log('winner:' + room.scores[winnerIndex]);
+      console.log('loser:' + room.scores[loserIndex]);
       console.log('ron' + 6);
 
       // 両者に通知
@@ -167,7 +167,9 @@ app.ws('/ws', (ws, req) => {
               fan: defen.fan,
               point: defen.point,
               han: huleData.han,
-              yaku: huleData.yaku.map(y => `${y.name}(${y.fu || y.fan})`)  // 役一覧
+              yaku: Array.isArray(huleData.yaku)
+                ? huleData.yaku.map(y => `${y.name}(${y.fu || y.fan})`)
+                : []
             }
           }));
         }
@@ -228,7 +230,7 @@ function startGame(roomId) {
   const tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
   console.log(4)
- room.scores = [25000, 25000];
+  room.scores = [25000, 25000];
 
   // 🔧 テスト用固定牌構成
   const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, /*予備:*/ 5, 6]; // プレイヤー0
