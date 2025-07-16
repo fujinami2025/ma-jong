@@ -69,27 +69,28 @@ app.ws('/ws', (ws, req) => {
         return;
       }
 
-      // 文字列かどうかで処理を分けて、安全に Shoupai を作成
+      let rawShoupai = room.shoupais[opponentIndex];
       let oppShoupai;
-      try {
-        oppShoupai = new Majiang.Shoupai(
-          typeof rawShoupai === 'string' ? rawShoupai : rawShoupai.toString()
-        );
-      } catch (e) {
-        console.error("Shoupai の再構築に失敗:", rawShoupai, e);
+
+      if (rawShoupai instanceof Majiang.Shoupai) {
+        // すでにShoupaiインスタンスならそのまま使う
+        oppShoupai = rawShoupai;
+      } else if (typeof rawShoupai === 'string') {
+        // 文字列なら再構築
+        oppShoupai = new Majiang.Shoupai(rawShoupai);
+      } else if (rawShoupai && typeof rawShoupai.toString === 'function') {
+        // 文字列化できるオブジェクトなら
+        oppShoupai = new Majiang.Shoupai(rawShoupai.toString());
+      } else {
+        console.error("Shoupaiの再構築に失敗:", rawShoupai);
         return;
       }
 
       // リーチ状態の反映（サーバー側フラグを利用）
       if (room.isRiichiFlags[opponentIndex]) {
-        try {
-          oppShoupai.lizhi();
-        } catch (e) {
-          console.error("lizhi() 呼び出しに失敗:", e);
-        }
+        oppShoupai.lizhi();  // これはShoupaiインスタンスでしか使えません
       }
-
-
+      
       const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
