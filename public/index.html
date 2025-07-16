@@ -107,13 +107,6 @@
       z-index: 10;
     }
 
-    .tile {
-      /*ウィンドウサイズに合わせる*/
-      width: 5vw;
-      margin: 2px;
-      cursor: pointer;
-    }
-
     #score-container {
       width: 15vw;
       height: 15vw;
@@ -143,15 +136,30 @@
       font-size: 2vw;
     }
 
+    .tile {
+      /*ウィンドウサイズに合わせる*/
+      width: 5vw;
+      margin: 2px;
+      cursor: pointer;
+    }
+
     .tile-img {
       width: 5vw;
       margin: 2px;
       transition: transform 0.3s ease;
     }
 
+    .tile-img:hover {
+      transform: translateY(-5px);
+    }
+
     .tile-img.riichi {
       transform: rotate(90deg);
       transform-origin: center center;
+    }
+
+    .tile-img.tsumo {
+      transform: translateY(-5px);
     }
   </style>
 </head>
@@ -576,7 +584,7 @@
       img.alt = `${pai}`;
       img.classList.add('tile-img');
       if (isRiichi) img.classList.add('riichi');
-      myDiscards.appendChild(img);
+      opponentDiscards.appendChild(img);
     }
 
     function showMyDiscardedTile(pai, isRiichi = false) {
@@ -588,7 +596,7 @@
       img.alt = `${pai}`;
       img.classList.add('tile-img');
       if (isRiichi) img.classList.add('riichi');
-      opponentDiscards.appendChild(img);
+      myDiscards.appendChild(img);
     }
 
     ws.onclose = () => {
