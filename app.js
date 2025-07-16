@@ -191,7 +191,9 @@ app.ws('/ws', (ws, req) => {
             huleDetail: {
               point: huleData.defen,
               han: huleData.han || 0,  // hanがあれば、なければ0
-              yaku: yakuList
+                yaku: Array.isArray(huleData.hupai)
+    ? huleData.hupai.map(y => `${y.name}(${y.fanshu||''})`)
+    : []
             }
           }));
         }
