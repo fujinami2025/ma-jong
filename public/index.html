@@ -497,6 +497,17 @@
       return tileIndex * 4; // 常に0番目のインスタンス
     }
 
+    function convertIndexToMPSZ(index) {
+      const tile = Math.floor(index / 4);  // 0〜33 の牌番号
+      const num = (tile % 9) + 1;
+      const suitIndex = Math.floor(tile / 9);
+
+      const suits = ['m', 'p', 's', 'z'];
+      const suit = suits[suitIndex];
+
+      return `${suit}${num}`;
+    }
+
     function updateScoreDisplay(newScores) {
       // プレイヤーの数だけループ（今回は2人用）
       newScores.forEach((score, index) => {

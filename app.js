@@ -199,6 +199,12 @@ app.ws('/ws', (ws, req) => {
           }));
         }
       });
+      setTimeout(() => {
+        // 親交代や局数進行もここで調整してから再開
+        room.oya = (room.oya + 1) % 2;
+        room.kyoku++;
+        startGame(roomId);
+      }, 3000);
     }
 
 
@@ -273,6 +279,12 @@ app.ws('/ws', (ws, req) => {
           }));
         }
       });
+      setTimeout(() => {
+        // 親交代や局数進行もここで調整してから再開
+        room.oya = (room.oya + 1) % 2;
+        room.kyoku++;
+        startGame(roomId);
+      }, 3000);
     }
 
     if (data.type === 'log') {
@@ -296,10 +308,15 @@ app.listen(port, () => {
 function startGame(roomId) {
   const room = rooms[roomId];
   room.isRiichiFlags = [false, false];
+  room.kyoku = room.kyoku || 1;
+  room.bakaze = room.bakaze || 0;
+  room.oya = room.oya ?? 0;
+  room.lizhibang = room.lizhibang || 0;
+  room.changbang = room.changbang || 0;
+  if (!room.scores) room.scores = [25000, 25000];
   const tiles = Array.from({ length: 136 }, (_, i) => i);
   shuffle(tiles);
   console.log(4)
-  room.scores = [25000, 25000];
 
   // 🔧 テスト用固定牌構成
   const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, /*予備:*/ 5, 6]; // プレイヤー0
