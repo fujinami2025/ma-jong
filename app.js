@@ -87,7 +87,7 @@ app.ws('/ws', (ws, req) => {
           lizhibang: room.lizhibang || 0,
         })
       );
-
+      console.log("ronResult:"+ronResult);
       // リーチ情報更新
       room.isRiichiFlags[playerIndex] = data.isRiichi;
 
