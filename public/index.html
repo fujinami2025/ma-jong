@@ -185,11 +185,13 @@
           const handStr = Array.isArray(data.winnerHand)
             ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
             : '';
-          `相手がロンしました。\n` +
+          alert(
+            `相手がロンしました。\n` +
             `放銃牌: ${ronPai}\n` +
             `点数: -${point}点\n` +
             `役: ${yakuList}\n` +
             `相手の手牌: ${handStr}`
+          )
         }
 
         // スコア更新（あれば）
@@ -217,16 +219,18 @@
         const yakuList = Array.isArray(data.huleDetail?.yaku)
           ? data.huleDetail.yaku.join(', ')
           : '役不明';
-        const handStr = Array.isArray(data.winnerHand)
-          ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
-          : '';
         if (winner === myPlayerIndex) {
           alert(`🎉 ツモあがり！\n点数: +${point}\n役: ${yakuList}`);
         } else {
-          `相手がツモ和了しました。\n` +
+          const handStr = Array.isArray(data.winnerHand)
+            ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
+            : '';
+          alert(
+            `相手がツモ和了しました。\n` +
             `点数: -${point}点\n` +
             `役: ${yakuList}\n` +
             `相手の手牌: ${handStr}`
+          );
         }
 
         // スコア表示を更新
