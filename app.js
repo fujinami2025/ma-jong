@@ -124,6 +124,7 @@ app.ws('/ws', (ws, req) => {
 
 
     if (data.type === 'ron') {
+      const roomId = data.roomId;
       const winnerIndex = data.playerIndex;
       const loserIndex  = (winnerIndex + 1) % 2;
       const winnerHand = convertShoupaiToArray(room.shoupais[winnerIndex]);
@@ -224,6 +225,7 @@ app.ws('/ws', (ws, req) => {
     }
 
     if (data.type === 'tsumo') {
+      const roomId = data.roomId;
       const winnerIndex = data.playerIndex;
       const loserIndex  = (winnerIndex + 1) % 2;
       const winnerShoupai = room.shoupais[winnerIndex];
