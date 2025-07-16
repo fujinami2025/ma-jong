@@ -124,7 +124,6 @@ app.ws('/ws', (ws, req) => {
       console.log('🈳 山が尽きました（流局）');
     }
   }
-});
 
     if (data.type === 'ron') {
       const winnerIndex = data.playerIndex;
