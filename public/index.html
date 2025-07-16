@@ -632,16 +632,17 @@
     }
 
     function updateScoreDisplay(newScores) {
-      // プレイヤーの数だけループ（今回は2人用）
-      newScores.forEach((score, index) => {
-        const scoreElement = document.getElementById(`score-${index}`);
-        if (scoreElement) {
-          scoreElement.textContent = score;
-        } else {
-          console.warn(`スコア表示要素 score-${index} が見つかりません`);
-        }
-      });
+      if (myPlayerIndex === 0) {
+        // 自分がプレイヤー0なら、score-1が下、score-0が上
+        document.getElementById('score-0').textContent = newScores[1]; // 相手（上）
+        document.getElementById('score-1').textContent = newScores[0]; // 自分（下）
+      } else {
+        // 自分がプレイヤー1なら、score-0が下、score-1が上
+        document.getElementById('score-0').textContent = newScores[0]; // 自分（下）
+        document.getElementById('score-1').textContent = newScores[1]; // 相手（上）
+      }
     }
+
 
 
     function showResultModal(message, callback) {
