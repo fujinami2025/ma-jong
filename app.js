@@ -15,7 +15,7 @@ let roomCounter = 1
 let waitingCount = 0
 let scores = [];
 const rooms = {}
-
+let lizhibang=0;
 app.ws('/ws', (ws, req) => {
   console.log('🔌 新しいクライアントが接続しました')
 
@@ -55,13 +55,18 @@ app.ws('/ws', (ws, req) => {
     const playerIndex = data.playerIndex
 
     if (data.type === 'dahai') {
+    if (data.isRiichi && !room.isRiichiFlags[playerIndex]) {
+      // ここでのみ棒を増やす
+      room.lizhibang = (room.lizhibang || 0) + 1;
+    }
+    // フラグ更新
+    room.isRiichiFlags[playerIndex] = data.isRiichi;
+
       const shoupai = room.shoupais[playerIndex];
       const paiStr = convertPaiIndexToMPSZ(data.pai);
       shoupai.dapai(paiStr);
 
       const opponentIndex = (playerIndex + 1) % 2;
-      const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
-
       const rawShoupai = room.shoupais[opponentIndex];
       const oppShoupai = Majiang.Shoupai.fromString(rawShoupai.toString());
 
@@ -87,7 +92,8 @@ app.ws('/ws', (ws, req) => {
       room.isRiichiFlags[playerIndex] = data.isRiichi;
 
       // 全プレイヤーに打牌を通知
-      room.players.forEach((player) => {
+      // ─── (B) 打牌通知 ───
+      room.players.forEach(player => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
             type: 'dahai',
@@ -98,19 +104,48 @@ app.ws('/ws', (ws, req) => {
         }
       });
 
-      // ロン可能なら、相手にronCheckを送ってロン判断を任せる
-      if (ronResult && ronResult.defen && ronResult.defen.point > 0) {
+      // ─── (C) ロン判定 ───
+      const opponentIndex = (playerIndex + 1) % 2;
+      const rawShoupai = room.shoupais[opponentIndex];
+      const oppShoupai = new Majiang.Shoupai(typeof rawShoupai === 'string' 
+        ? rawShoupai 
+        : rawShoupai.toString());
+
+      // リーチ状態を反映（インスタンスに直接セット）
+      if (room.isRiichiFlags[opponentIndex]) {
+        oppShoupai._lizhi = true;
+      }
+
+      // リーチ棒本数は常にルームの供託棒数を使う
+      const lizhibang = room.lizhibang || 0;
+
+      const ronResult = Majiang.Util.hule(
+        oppShoupai,
+        convertPaiIndexToMPSZ(data.pai) + '-',
+        Majiang.Util.hule_param({
+          zhuangfeng: 0,
+          menfeng: opponentIndex,
+          baopai: room.baopai || [],
+          fubaopai: room.fubaopai || [],
+          changbang: room.changbang || 0,
+          lizhibang   // ← ここで供託棒を渡す
+        })
+      );
+
+      if (ronResult && ronResult.defen && ronResult.defen > 0) {
         room.players[opponentIndex].send(JSON.stringify({
           type: 'ronCheck',
           pai: data.pai,
           fromPlayer: playerIndex,
           roomId: data.roomId
         }));
-        return; // ロン処理を優先するためツモには進まない
+        return;
       }
 
-      // ツモフェーズに進む
-      room.currentTurn = (playerIndex + 1) % 2;
+      // ─── (D) ツモフェーズへ ───
+      room.currentTurn = opponentIndex;
+      handleTsumoPhase(room, room.currentTurn, data);
+    }
 
       if (room.mountain.length > 0) {
         const nextPai = room.mountain.shift();
