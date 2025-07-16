@@ -62,13 +62,33 @@ app.ws('/ws', (ws, req) => {
       const opponentIndex = (playerIndex + 1) % 2;
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
-      // 1. 再構築する
-      const oppShoupai = new Majiang.Shoupai(room.shoupais[opponentIndex]);
+      let rawShoupai = room.shoupais[opponentIndex];
 
-      // 2. リーチしていたらマークする
-      if (room.isRiichiFlags[opponentIndex]) {
-        oppShoupai.lizhi();
+      if (!rawShoupai) {
+        console.error("Shoupaiが未定義です：", opponentIndex);
+        return;
       }
+
+      // 文字列かどうかで処理を分けて、安全に Shoupai を作成
+      let oppShoupai;
+      try {
+        oppShoupai = new Majiang.Shoupai(
+          typeof rawShoupai === 'string' ? rawShoupai : rawShoupai.toString()
+        );
+      } catch (e) {
+        console.error("Shoupai の再構築に失敗:", rawShoupai, e);
+        return;
+      }
+
+      // リーチ状態の反映（サーバー側フラグを利用）
+      if (room.isRiichiFlags[opponentIndex]) {
+        try {
+          oppShoupai.lizhi();
+        } catch (e) {
+          console.error("lizhi() 呼び出しに失敗:", e);
+        }
+      }
+
 
       const ronResult = Majiang.Util.hule(
         oppShoupai,
