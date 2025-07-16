@@ -55,109 +55,76 @@ app.ws('/ws', (ws, req) => {
     const playerIndex = data.playerIndex
 
     if (data.type === 'dahai') {
+    // ─── (A) リーチフラグ更新＆供託棒増加 ───
     if (data.isRiichi && !room.isRiichiFlags[playerIndex]) {
-      // ここでのみ棒を増やす
       room.lizhibang = (room.lizhibang || 0) + 1;
     }
-    // フラグ更新
     room.isRiichiFlags[playerIndex] = data.isRiichi;
 
-      const shoupai = room.shoupais[playerIndex];
-      const paiStr = convertPaiIndexToMPSZ(data.pai);
-      shoupai.dapai(paiStr);
-
-      const opponentIndex = (playerIndex + 1) % 2;
-      const rawShoupai = room.shoupais[opponentIndex];
-      const oppShoupai = Majiang.Shoupai.fromString(rawShoupai.toString());
-      if (room.isRiichiFlags[opponentIndex]) oppShoupai._lizhi = true;
-
-      // 捨牌文字列
-      const ronPaiStr = convertPaiIndexToMPSZ(data.pai) + '-';
-
-      // (1) ベースの判定パラメータを作る
-      const param = Majiang.Util.hule_param({
-        zhuangfeng: 0,
-        menfeng: opponentIndex,
-        baopai: room.baopai || [],
-        fubaopai: room.fubaopai || [],
-        changbang: room.changbang || 0,
-        lizhibang: room.lizhibang || 0
-      });
-
-      // (2) リーチ役を手動でセット
-      if (room.isRiichiFlags[opponentIndex]) {
-        param.hupai.lizhi = 1;
-      }
-
-      // (3) ロン判定
-      const ronResult = Majiang.Util.hule(
-        oppShoupai,
-        paiStr + '-',
-        param
-      );
-
-      // (4) デバッグ出力
-      console.dir(param, { depth: null });
-      console.dir(ronResult, { depth: null });
-      console.log(' → ronResult:', ronResult);    // ここが undefined になる
-      console.log(' room.isRiichiFlags:', room.isRiichiFlags);
-      console.log(' room.lizhibang:', room.lizhibang);
-      console.log(' room.baopai:', room.baopai, ' room.fubaopai:', room.fubaopai);
-      console.log('————————————————————');
-
-      /*const ronResult = Majiang.Util.hule(
-        oppShoupai,
-        paiStr + '-',
-        Majiang.Util.hule_param({
-          zhuangfeng: 0,
-          menfeng: opponentIndex,
-          baopai: room.baopai || ["p9"],
-          fubaopai: room.fubaopai || ["p8"],
-          changbang: room.changbang || 0,
-          lizhibang: room.lizhibang || 0,
-        })
-      );*/
-      console.dir(ronResult, { depth: null });
-      // リーチ情報更新
-      room.isRiichiFlags[playerIndex] = data.isRiichi;
-
-      // 全プレイヤーに打牌を通知
-      room.players.forEach((player) => {
-        if (player.readyState === 1) {
-          player.send(JSON.stringify({
-            type: 'dahai',
-            playerIndex,
-            pai: data.pai,
-            isRiichi: data.isRiichi
-          }));
-        }
-      });
-
-      // ロン可能なら、相手にronCheckを送ってロン判断を任せる
-      if (ronResult && ronResult.defen && ronResult.defen.point > 0) {
-        room.players[opponentIndex].send(JSON.stringify({
-          type: 'ronCheck',
+    // ─── (B) 全プレイヤーに打牌通知 ───
+    room.players.forEach((player) => {
+      if (player.readyState === 1) {
+        player.send(JSON.stringify({
+          type: 'dahai',
+          playerIndex,
           pai: data.pai,
-          fromPlayer: playerIndex,
-          roomId: data.roomId
+          isRiichi: data.isRiichi
         }));
-        return; // ロン処理を優先するためツモには進まない
       }
+    });
 
-      // ツモフェーズに進む
-      room.currentTurn = (playerIndex + 1) % 2;
-
-      if (room.mountain.length > 0) {
-        const nextPai = room.mountain.shift();
-        const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
-        room.shoupais[room.currentTurn].zimo(nextPaiStr);
-
-        handleTsumoPhase(room, room.currentTurn, data);
-      } else {
-        console.log('🈳 山が尽きました（流局）');
-      }
+    // ─── (C) ロン判定 ───
+    const opponentIndex = (playerIndex + 1) % 2;
+    const rawShoupai = room.shoupais[opponentIndex];
+    // Shoupaiインスタンスを安全に再構築
+    const oppShoupai = new Majiang.Shoupai(
+      typeof rawShoupai === 'string'
+        ? rawShoupai
+        : rawShoupai.toString()
+    );
+    // 内部フラグにリーチ状態を反映
+    if (room.isRiichiFlags[opponentIndex]) {
+      oppShoupai._lizhi = true;
     }
 
+    // 判定用パラメータを作成し、リーチ役を手動セット
+    const param = Majiang.Util.hule_param({
+      zhuangfeng: 0,
+      menfeng: opponentIndex,
+      baopai: room.baopai || [],
+      fubaopai: room.fubaopai || [],
+      changbang: room.changbang || 0,
+      lizhibang: room.lizhibang || 0
+    });
+    param.hupai.lizhi = room.isRiichiFlags[opponentIndex] ? 1 : 0;
+
+    // 捨牌文字列
+    const ronPaiStr = convertPaiIndexToMPSZ(data.pai) + '-';
+    const ronResult = Majiang.Util.hule(oppShoupai, ronPaiStr, param);
+
+    // ロン可能なら相手にronCheckを送信して処理を終える
+    if (ronResult && ronResult.defen > 0) {
+      room.players[opponentIndex].send(JSON.stringify({
+        type: 'ronCheck',
+        pai: data.pai,
+        fromPlayer: playerIndex,
+        roomId: data.roomId
+      }));
+      return;
+    }
+
+    // ─── (D) ツモフェーズへ ───
+    room.currentTurn = opponentIndex;
+    if (room.mountain.length > 0) {
+      const nextPai = room.mountain.shift();
+      const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
+      room.shoupais[room.currentTurn].zimo(nextPaiStr);
+      handleTsumoPhase(room, room.currentTurn, data);
+    } else {
+      console.log('🈳 山が尽きました（流局）');
+    }
+  }
+});
 
     if (data.type === 'ron') {
       const winnerIndex = data.playerIndex;
