@@ -85,12 +85,6 @@ app.ws('/ws', (ws, req) => {
       const ronPaiStr = convertPaiIndexToMPSZ(data.pai) + '-';
       const ronResult = Majiang.Util.hule(oppShoupai, ronPaiStr, param);
 
-      console.log(' → ronResult:', ronResult);    // ここが undefined になる
-      console.log(' room.isRiichiFlags:', room.isRiichiFlags);
-      console.log(' room.lizhibang:', room.lizhibang);
-      console.log(' room.baopai:', room.baopai, ' room.fubaopai:', room.fubaopai);
-      console.log('————————————————————');
-
       // 全プレイヤーに打牌を通知
       room.players.forEach((player) => {
         if (player.readyState === 1) {
@@ -113,7 +107,7 @@ app.ws('/ws', (ws, req) => {
         }));
         return;
       }
-      
+
       // ツモフェーズに進む
       room.currentTurn = (playerIndex + 1) % 2;
 
@@ -131,43 +125,55 @@ app.ws('/ws', (ws, req) => {
 
     if (data.type === 'ron') {
       const winnerIndex = data.playerIndex;
-      const loserIndex = (winnerIndex + 1) % 2;
-      console.log('ron' + 1);
+      const loserIndex  = (winnerIndex + 1) % 2;
+
+      // ログ用
+      console.log('ron1');
+
+      // 和了者の手牌
       const winnerShoupai = room.shoupais[winnerIndex];
-      const paiStr = convertPaiIndexToMPSZ(data.pai); // 例: "p3"
-      console.log('ron' + 2);
-      const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
+      const paiStr        = convertPaiIndexToMPSZ(data.pai); // 例: "p3"
+      console.log('ron2');
+
+      // ─── (1) param を受け取る ───
+      const param = Majiang.Util.hule_param({
+        zhuangfeng: 0,              // 東場
+        menfeng:    winnerIndex,    // 自風
+        baopai:     room.baopai    || [],  
+        fubaopai:   room.fubaopai  || [],
+        changbang:  room.changbang || 0,
+        lizhibang:  room.lizhibang || 0  // 供託棒
+      });
+
+      // ─── (2) リーチ役を加算 ───
+      param.hupai.lizhi = room.isRiichiFlags[winnerIndex] ? 1 : 0;
+
+      // ─── (3) 和了判定 ───
       const huleData = Majiang.Util.hule(
         winnerShoupai,
-        paiStr + '-',  // ロン判定用（ツモなら null）
-        Majiang.Util.hule_param({
-          zhuangfeng: 0,       // 場風（東場＝0）
-          menfeng: winnerIndex, // 自風（自分の座席）
-          baopai: room.baopai || ["p9"],       // ドラ牌配列（例: ["p5"]）
-          fubaopai: room.fubaopai || ["p8"],   // 裏ドラ
-          changbang: room.changbang || 0,  // 連荘棒数
-          lizhibang: lizhibang          //リーチ棒の数
-        })
+        paiStr + '-',
+        param
       );
-      console.log("huleData:", JSON.stringify(huleData, null, 2));
+
+      console.log('huleData:', JSON.stringify(huleData, null, 2));
       console.log('あがり（ユーザー操作によるロン）');
 
       if (!huleData) {
         console.log('※和了条件を満たしていないため点数計算なし');
         return;
       }
-      console.log('ron' + 4);
+      console.log('ron4');
 
-      // 得点情報を取得
-      const scoreDelta = huleData.defen;
-      console.log('ron' + 5);
+      // ─── (4) 点数加減 ───
+      const scoreDelta = huleData.defen;  // 2400 など
+      console.log('ron5');
 
-      // 点数を加減（room.scores[] に得点保持していると仮定）
       room.scores[winnerIndex] += scoreDelta;
-      room.scores[loserIndex] -= scoreDelta;
-      console.log('winner:' + room.scores[winnerIndex]);
-      console.log('loser:' + room.scores[loserIndex]);
-      console.log('ron' + 6);
+      room.scores[loserIndex]  -= scoreDelta;
+
+      console.log(`winner: ${room.scores[winnerIndex]}`, `loser: ${room.scores[loserIndex]}`);
+      console.log('ron6');
+      
       const yakuList = Array.isArray(huleData.hupai)
         ? huleData.hupai.map(y => `${y.name}（${y.fanshu || '？'}翻）`).join('、')
         : '役なし';
