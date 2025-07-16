@@ -23,6 +23,16 @@
       align-items: center;
     }
 
+    #start,
+    #status {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
     #game {
       flex: 1;
       width: 100%;
@@ -68,9 +78,10 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(22, 115, 255, 0.9);
+      background: rgba(3, 53, 128, 0.9);
       padding: 6px 10px;
       width: 30vw;
+      aspect-ratio: 1 / 1;
       height: auto;
       max-width: 90vw;
       box-sizing: border-box;
@@ -91,8 +102,8 @@
 
     <div id="opponent-discards" style="margin-bottom: 10px;"></div>
     <div id="score-container">
-      <p style="transform: rotate(180deg);"><span id="score-1">25000</span></p>
-      <p><span id="score-0">25000</span></p>
+      <p style="text-align: center; transform: rotate(180deg);"><span id="score-1">25000</span></p>
+      <p style="text-align: center;"><span id="score-0">25000</span></p>
     </div>
     <div id="my-discards" style="margin-bottom: 10px;"></div>
     <div id="hand-display"></div>
