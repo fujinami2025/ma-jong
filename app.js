@@ -60,8 +60,6 @@ app.ws('/ws', (ws, req) => {
       shoupai.dapai(paiStr);
 
       const opponentIndex = (playerIndex + 1) % 2;
-      const oppShoupai = room.shoupais[opponentIndex];
-      console.log('oppShoupai'+oppShoupai);
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
       // 1. 再構築する
