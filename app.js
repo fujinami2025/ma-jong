@@ -62,10 +62,8 @@ app.ws('/ws', (ws, req) => {
       const opponentIndex = (playerIndex + 1) % 2;
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
-      let rawShoupai = room.shoupais[opponentIndex];
-      let oppShoupai = rawShoupai instanceof Majiang.Shoupai
-        ? rawShoupai
-        : new Majiang.Shoupai(rawShoupai.toString());
+      const rawShoupai = room.shoupais[opponentIndex];
+      const oppShoupai = Majiang.Shoupai.fromString(rawShoupai.toString());
 
       // リーチ状態を手動で反映
       if (room.isRiichiFlags[opponentIndex]) {
