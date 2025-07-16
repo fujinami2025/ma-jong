@@ -84,7 +84,7 @@ app.ws('/ws', (ws, req) => {
           baopai: room.baopai || ["p9"],
           fubaopai: room.fubaopai || ["p8"],
           changbang: room.changbang || 0,
-          lizhibang: room.lizhibang || lizhibang,
+          lizhibang: room.lizhibang || 0,
         })
       );
 
@@ -92,8 +92,7 @@ app.ws('/ws', (ws, req) => {
       room.isRiichiFlags[playerIndex] = data.isRiichi;
 
       // 全プレイヤーに打牌を通知
-      // ─── (B) 打牌通知 ───
-      room.players.forEach(player => {
+      room.players.forEach((player) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
             type: 'dahai',
@@ -104,48 +103,19 @@ app.ws('/ws', (ws, req) => {
         }
       });
 
-      // ─── (C) ロン判定 ───
-      const opponentIndex = (playerIndex + 1) % 2;
-      const rawShoupai = room.shoupais[opponentIndex];
-      const oppShoupai = new Majiang.Shoupai(typeof rawShoupai === 'string' 
-        ? rawShoupai 
-        : rawShoupai.toString());
-
-      // リーチ状態を反映（インスタンスに直接セット）
-      if (room.isRiichiFlags[opponentIndex]) {
-        oppShoupai._lizhi = true;
-      }
-
-      // リーチ棒本数は常にルームの供託棒数を使う
-      const lizhibang = room.lizhibang || 0;
-
-      const ronResult = Majiang.Util.hule(
-        oppShoupai,
-        convertPaiIndexToMPSZ(data.pai) + '-',
-        Majiang.Util.hule_param({
-          zhuangfeng: 0,
-          menfeng: opponentIndex,
-          baopai: room.baopai || [],
-          fubaopai: room.fubaopai || [],
-          changbang: room.changbang || 0,
-          lizhibang   // ← ここで供託棒を渡す
-        })
-      );
-
-      if (ronResult && ronResult.defen && ronResult.defen > 0) {
+      // ロン可能なら、相手にronCheckを送ってロン判断を任せる
+      if (ronResult && ronResult.defen && ronResult.defen.point > 0) {
         room.players[opponentIndex].send(JSON.stringify({
           type: 'ronCheck',
           pai: data.pai,
           fromPlayer: playerIndex,
           roomId: data.roomId
         }));
-        return;
+        return; // ロン処理を優先するためツモには進まない
       }
 
-      // ─── (D) ツモフェーズへ ───
-      room.currentTurn = opponentIndex;
-      handleTsumoPhase(room, room.currentTurn, data);
-    }
+      // ツモフェーズに進む
+      room.currentTurn = (playerIndex + 1) % 2;
 
       if (room.mountain.length > 0) {
         const nextPai = room.mountain.shift();
