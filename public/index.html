@@ -76,64 +76,25 @@
       margin: 6px 0;
     }
 
-    #ron-button {
-      position: fixed;
-      bottom: calc(5vw + 16px + 8px);
+    #button-container {
+      position: absolute;
+      /* 手牌のコンテナの上に重ねるためにabsolute */
+      top: 0;
+      /* 手牌の上に配置（調整が必要） */
       left: 50%;
       transform: translateX(-50%);
-      z-index: 20;
       display: flex;
       gap: 8px;
+      /* ボタン間の隙間 */
+      z-index: 100;
+      /* 手牌より上に表示 */
     }
 
-    #skip-button {
-      position: fixed;
-      bottom: calc(5vw + 16px + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      display: flex;
-      gap: 8px;
-    }
-
-    #tsumo-button {
-      position: fixed;
-      bottom: calc(5vw + 16px + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      display: flex;
-      gap: 8px;
-    }
-
-    #tsumoskip-button {
-      position: fixed;
-      bottom: calc(5vw + 16px + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      display: flex;
-      gap: 8px;
-    }
-
-    #riichi-button {
-      position: fixed;
-      bottom: calc(5vw + 16px + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      display: flex;
-      gap: 8px;
-    }
-
-    #cancel-riichi-button {
-      position: fixed;
-      bottom: calc(5vw + 16px + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      display: flex;
-      gap: 8px;
+    #button-container button {
+      margin-top: 0;
+      /* まとまりをよくする */
+      display: inline-block;
+      /* 横並び */
     }
 
     #hand-display {
@@ -218,12 +179,14 @@
       <div id="score-bottom"><span id="score-1">25000</span></div>
     </div>
     <div id="hand-display"></div>
-    <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
-    <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
-    <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
-    <button id="tsumoskip-button" style="display:none;">スキップ</button>
-    <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
-    <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
+    <div id="button-container">
+      <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
+      <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
+      <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
+      <button id="tsumoskip-button" style="display:none;">スキップ</button>
+      <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
+      <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
+    </div>
   </div>
   </div>
 
