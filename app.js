@@ -61,6 +61,7 @@ app.ws('/ws', (ws, req) => {
 
       const opponentIndex = (playerIndex + 1) % 2;
       const oppShoupai = room.shoupais[opponentIndex];
+      const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
       const ronResult = Majiang.Util.hule(
         oppShoupai,
@@ -71,7 +72,7 @@ app.ws('/ws', (ws, req) => {
           baopai: room.baopai || ["p9"],
           fubaopai: room.fubaopai || ["p8"],
           changbang: room.changbang || 0,
-          lizhibang: room.lizhibang || 0,
+          lizhibang: room.lizhibang || lizhibang,
         })
       );
 
