@@ -141,8 +141,7 @@ app.ws('/ws', (ws, req) => {
       console.log('ron' + 4);
 
       // 得点情報を取得
-      const defen = huleData.defen; // { fu: 30, fan: 3, point: 3900 } など
-      const scoreDelta = defen.point;
+      const scoreDelta = huleData.defen;
       console.log('ron' + 5);
 
       // 点数を加減（room.scores[] に得点保持していると仮定）
@@ -163,13 +162,9 @@ app.ws('/ws', (ws, req) => {
             scoreDelta,
             newScores: room.scores,
             huleDetail: {
-              fu: defen.fu,
-              fan: defen.fan,
-              point: defen.point,
-              han: huleData.han,
-              yaku: Array.isArray(huleData.yaku)
-                ? huleData.yaku.map(y => `${y.name}(${y.fu || y.fan})`)
-                : []
+              point: huleData.defen,
+              han: huleData.han || 0,  // hanがあれば、なければ0
+              yaku: yakuList
             }
           }));
         }
