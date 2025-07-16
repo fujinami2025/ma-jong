@@ -339,14 +339,16 @@ function startGame(roomId) {
   }
   console.log(5)
   // 先手（player 0）にもう1枚ツモ
+  // 親プレイヤー（room.oya）に1枚ツモ
   const firstDraw = mountain.shift();
-  shoupais[0].zimo(convertPaiIndexToMPSZ(firstDraw));
+  shoupais[room.oya].zimo(convertPaiIndexToMPSZ(firstDraw));
 
+  // 親のターンからスタート
   console.log(6)
   // 状態をルームに保存
   room.shoupais = shoupais;
   room.mountain = mountain;
-  room.currentTurn = 0;
+  room.currentTurn = room.oya;
   console.log(7)
   // クライアントに初期手牌を送信
   room.players.forEach((player, i) => {
