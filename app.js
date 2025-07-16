@@ -15,7 +15,7 @@ let roomCounter = 1
 let waitingCount = 0
 let scores = [];
 const rooms = {}
-let lizhibang = 0;
+let lizhibang=0;
 app.ws('/ws', (ws, req) => {
   console.log('🔌 新しいクライアントが接続しました')
 
@@ -55,12 +55,12 @@ app.ws('/ws', (ws, req) => {
     const playerIndex = data.playerIndex
 
     if (data.type === 'dahai') {
-      if (data.isRiichi && !room.isRiichiFlags[playerIndex]) {
-        // ここでのみ棒を増やす
-        room.lizhibang = (room.lizhibang || 0) + 1;
-      }
-      // フラグ更新
-      room.isRiichiFlags[playerIndex] = data.isRiichi;
+    if (data.isRiichi && !room.isRiichiFlags[playerIndex]) {
+      // ここでのみ棒を増やす
+      room.lizhibang = (room.lizhibang || 0) + 1;
+    }
+    // フラグ更新
+    room.isRiichiFlags[playerIndex] = data.isRiichi;
 
       const shoupai = room.shoupais[playerIndex];
       const paiStr = convertPaiIndexToMPSZ(data.pai);
@@ -126,24 +126,24 @@ app.ws('/ws', (ws, req) => {
     if (data.type === 'ron') {
       const roomId = data.roomId;
       const winnerIndex = data.playerIndex;
-      const loserIndex = (winnerIndex + 1) % 2;
+      const loserIndex  = (winnerIndex + 1) % 2;
       const winnerHand = convertShoupaiToArray(room.shoupais[winnerIndex]);
       // ログ用
       console.log('ron1');
 
       // 和了者の手牌
       const winnerShoupai = room.shoupais[winnerIndex];
-      const paiStr = convertPaiIndexToMPSZ(data.pai); // 例: "p3"
+      const paiStr        = convertPaiIndexToMPSZ(data.pai); // 例: "p3"
       console.log('ron2');
 
       // ─── (1) param を受け取る ───
       const param = Majiang.Util.hule_param({
         zhuangfeng: 0,              // 東場
-        menfeng: winnerIndex,    // 自風
-        baopai: room.baopai || [],
-        fubaopai: room.fubaopai || [],
-        changbang: room.changbang || 0,
-        lizhibang: room.lizhibang || 0  // 供託棒
+        menfeng:    winnerIndex,    // 自風
+        baopai:     room.baopai    || [],  
+        fubaopai:   room.fubaopai  || [],
+        changbang:  room.changbang || 0,
+        lizhibang:  room.lizhibang || 0  // 供託棒
       });
 
       // ─── (2) リーチ役を加算 ───
@@ -170,11 +170,11 @@ app.ws('/ws', (ws, req) => {
       console.log('ron5');
 
       room.scores[winnerIndex] += scoreDelta;
-      room.scores[loserIndex] -= scoreDelta;
+      room.scores[loserIndex]  -= scoreDelta;
 
       console.log(`winner: ${room.scores[winnerIndex]}`, `loser: ${room.scores[loserIndex]}`);
       console.log('ron6');
-
+      
       const yakuList = Array.isArray(huleData.hupai)
         ? huleData.hupai.map(y => `${y.name}（${y.fanshu || '？'}翻）`).join('、')
         : '役なし';
@@ -192,9 +192,9 @@ app.ws('/ws', (ws, req) => {
             huleDetail: {
               point: huleData.defen,
               han: huleData.han || 0,  // hanがあれば、なければ0
-              yaku: Array.isArray(huleData.hupai)
-                ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
-                : []
+                yaku: Array.isArray(huleData.hupai)
+    ? huleData.hupai.map(y => `${y.name}(${y.fanshu||''})`)
+    : []
             },
             winnerHand
           }));
@@ -227,17 +227,17 @@ app.ws('/ws', (ws, req) => {
     if (data.type === 'tsumo') {
       const roomId = data.roomId;
       const winnerIndex = data.playerIndex;
-      const loserIndex = (winnerIndex + 1) % 2;
+      const loserIndex  = (winnerIndex + 1) % 2;
       const winnerShoupai = room.shoupais[winnerIndex];
       const winnerHand = convertShoupaiToArray(room.shoupais[winnerIndex]);
       // ─── (A) 判定用パラメータを受け取る ───
       const param = Majiang.Util.hule_param({
-        zhuangfeng: 0,
-        menfeng: winnerIndex,
-        baopai: room.baopai || [],
-        fubaopai: room.fubaopai || [],
-        changbang: room.changbang || 0,
-        lizhibang: room.lizhibang || 0  // 供託棒数
+        zhuangfeng:   0,
+        menfeng:      winnerIndex,
+        baopai:       room.baopai    || [],
+        fubaopai:     room.fubaopai  || [],
+        changbang:    room.changbang || 0,
+        lizhibang:    room.lizhibang || 0  // 供託棒数
       });
       // ─── (B) リーチ役を手動で加算 ───
       param.hupai.lizhi = room.isRiichiFlags[winnerIndex] ? 1 : 0;
@@ -257,7 +257,7 @@ app.ws('/ws', (ws, req) => {
       // ─── (D) 点数加減 ───
       const scoreDelta = huleData.defen;
       room.scores[winnerIndex] += scoreDelta;
-      room.scores[loserIndex] -= scoreDelta;
+      room.scores[loserIndex]  -= scoreDelta;
 
       console.log(`ツモ和了：プレイヤー${winnerIndex}、点数：${scoreDelta}`);
       console.log('新しいスコア:', room.scores);
@@ -267,15 +267,15 @@ app.ws('/ws', (ws, req) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
             type: 'tsumoResult',
-            winner: winnerIndex,
-            loser: loserIndex,
+            winner:     winnerIndex,
+            loser:      loserIndex,
             scoreDelta,
-            newScores: room.scores,
+            newScores:  room.scores,
             huleDetail: {
               point: huleData.defen,
-              yaku: Array.isArray(huleData.hupai)
-                ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
-                : []
+              yaku:  Array.isArray(huleData.hupai)
+                      ? huleData.hupai.map(y => `${y.name}(${y.fanshu||''})`)
+                      : []
             },
             winnerHand
           }));
@@ -320,11 +320,22 @@ function startGame(roomId) {
   shuffle(tiles);
   console.log(4)
 
-  // 手牌と山の準備
-  const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
-  const mountain = tiles.slice(26); // 残りは山へ
+  // 固定手牌（テスト用）
+  const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, 5, 6];
+  const fixedHand1 = [7, 16, 38, 39, 41, 45, 49, 54, 58, 62, 66, 69, 70];
 
-  // shoupai オブジェクトに変換
+  // 親によって手牌を割り当てる
+  const hands = [];
+  if (room.oya === 0) {
+    hands[0] = fixedHand0;
+    hands[1] = fixedHand1;
+  } else {
+    hands[0] = fixedHand1;
+    hands[1] = fixedHand0;
+  }
+
+  //const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
+  const mountain = [108, ...tiles.slice(27)];
   const shoupais = [];
 
   for (let i = 0; i < 2; i++) {
@@ -332,8 +343,8 @@ function startGame(roomId) {
     console.log(handString);
     const sp = Majiang.Shoupai.fromString(handString);
     shoupais.push(sp);
+    console.log('配牌 ${i}:, sp.toString()');
   }
-
   console.log(5)
   // 先手（player 0）にもう1枚ツモ
   // 親プレイヤー（room.oya）に1枚ツモ
