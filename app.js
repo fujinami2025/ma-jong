@@ -113,27 +113,21 @@ app.ws('/ws', (ws, req) => {
     if (data.type === 'ron') {
       const winnerIndex = data.playerIndex;
       const loserIndex = (winnerIndex + 1) % 2;
-      console.log('ron'+1);
+      console.log('ron' + 1);
       const winnerShoupai = room.shoupais[winnerIndex];
-      const paiStr = convertPaiIndexToMPSZ(data.pai); // 例: "m1"
-      console.log('ron'+2);
+      const paiStr = convertPaiIndexToMPSZ(data.pai); // 例: "p3"
+      console.log('ron' + 2);
 
-      // 手牌にロン牌を加える（シミュレーション用）
-      const tempShoupai = Majiang.Shoupai.fromString(winnerShoupai.toString());
-      tempShoupai.zimo(paiStr); // 通常はツモでしか使わないが、hule() は null でロン判定できる
-      console.log('ron'+3);
-
-      // 和了判定＆詳細
       const huleData = Majiang.Util.hule(
-        tempShoupai,
-        paiStr + '-',  // ロンの形式
+        winnerShoupai,
+        paiStr + '-',  // ロン判定用（ツモなら null）
         Majiang.Util.hule_param({
           zhuangfeng: 0,
           menfeng: winnerIndex,
-          baopai: room.baopai || [],       // ドラ（未設定なら空配列）
-          fubaopai: room.fubaopai || [],   // 裏ドラ（リーチ時に考慮）
-          changbang: room.changbang || 0, // 連荘
-          lizhibang: room.lizhibang || 0  // リーチ棒
+          baopai: room.baopai || [],
+          fubaopai: room.fubaopai || [],
+          changbang: room.changbang || 0,
+          lizhibang: room.lizhibang || 0
         })
       );
 
@@ -143,17 +137,17 @@ app.ws('/ws', (ws, req) => {
         console.log('※和了条件を満たしていないため点数計算なし');
         return;
       }
-      console.log('ron'+4);
+      console.log('ron' + 4);
 
       // 得点情報を取得
       const defen = huleData.defen; // { fu: 30, fan: 3, point: 3900 } など
       const scoreDelta = defen.point;
-      console.log('ron'+5);
+      console.log('ron' + 5);
 
       // 点数を加減（room.scores[] に得点保持していると仮定）
       room.scores[winnerIndex] += scoreDelta;
       room.scores[loserIndex] -= scoreDelta;
-      console.log('ron'+6);
+      console.log('ron' + 6);
 
       // 両者に通知
       room.players.forEach((player, index) => {
