@@ -23,16 +23,6 @@
       align-items: center;
     }
 
-    #start,
-    #status {
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-    }
-
     #game {
       flex: 1;
       width: 100%;
@@ -256,20 +246,24 @@
         const point = data.huleDetail?.point ?? '???';
         const yakuList = Array.isArray(data.huleDetail?.yaku) ? data.huleDetail.yaku.join(', ') : '役不明';
 
-        if (data.winner === myPlayerIndex) {
-          alert(`🎉 あなたがロンしました！\n獲得牌: ${ronPai}\n点数: ${point}点\n役: ${yakuList}`);
-        } else {
-          const handStr = Array.isArray(data.winnerHand)
-            ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
-            : '';
-          alert(
-            `相手がロンしました。\n` +
-            `放銃牌: ${ronPai}\n` +
-            `点数: -${point}点\n` +
-            `役: ${yakuList}\n` +
-            `相手の手牌: ${handStr}`
-          )
-        }
+if (data.winner === myPlayerIndex) {
+  showResultModal(
+    `🎉 あなたがロンしました！\n獲得牌: ${ronPai}\n点数: ${point}点\n役: ${yakuList}`,
+    () => {
+      // OK後の処理（例：次局の開始など）
+    }
+  );
+} else {
+  const handStr = Array.isArray(data.winnerHand)
+    ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
+    : '';
+  showResultModal(
+    `相手がロンしました。\n放銃牌: ${ronPai}\n点数: -${point}点\n役: ${yakuList}\n相手の手牌: ${handStr}`,
+    () => {
+      // OK後の処理（必要に応じて）
+    }
+  );
+}
 
         // スコア更新（あれば）
         if (Array.isArray(data.newScores)) {
@@ -297,16 +291,21 @@
           ? data.huleDetail.yaku.join(', ')
           : '役不明';
         if (winner === myPlayerIndex) {
-          alert(`🎉 ツモあがり！\n点数: +${point}\n役: ${yakuList}`);
+          showResultModal(
+            `🎉 ツモあがり！\n点数: +${point}\n役: ${yakuList}`,
+            () => {
+              // OKボタンが押された後にやる処理（必要に応じて追加）
+            }
+          );
         } else {
           const handStr = Array.isArray(data.winnerHand)
             ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
             : '';
-          alert(
-            `相手がツモ和了しました。\n` +
-            `点数: -${point}点\n` +
-            `役: ${yakuList}\n` +
-            `相手の手牌: ${handStr}`
+          showResultModal(
+            `相手がツモ和了しました。\n点数: -${point}点\n役: ${yakuList}\n相手の手牌: ${handStr}`,
+            () => {
+              // OK後に行う処理（例：手牌初期化、スコア更新後のアニメ等）
+            }
           );
         }
 
@@ -567,6 +566,21 @@
       });
     }
 
+    function showResultModal(text, callback) {
+      const modal = document.getElementById('resultModal');
+      const resultText = document.getElementById('resultText');
+      const okBtn = document.getElementById('modalOkBtn');
+
+      resultText.textContent = text;
+      modal.style.display = 'flex';
+
+      function onClose() {
+        modal.style.display = 'none';
+        okBtn.removeEventListener('click', onClose);
+        if (callback) callback();
+      }
+      okBtn.addEventListener('click', onClose);
+    }
   </script>
 </body>
 
