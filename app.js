@@ -148,6 +148,8 @@ app.ws('/ws', (ws, req) => {
       // 点数を加減（room.scores[] に得点保持していると仮定）
       room.scores[winnerIndex] += scoreDelta;
       room.scores[loserIndex] -= scoreDelta;
+      console.log('winner:'+room.scores[winnerIndex]);
+      console.log('loser:'+room.scores[loserIndex]);
       console.log('ron' + 6);
 
       // 両者に通知
