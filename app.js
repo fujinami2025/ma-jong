@@ -99,12 +99,12 @@ app.ws('/ws', (ws, req) => {
       room.currentTurn = (room.currentTurn + 1) % 2
       const nextPlayer = room.players[room.currentTurn]
 
+      room.currentTurn = (playerIndex + 1) % 2;
       if (room.mountain.length > 0) {
         const nextPai = room.mountain.shift();
         const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
         room.shoupais[room.currentTurn].zimo(nextPaiStr);
-        room.currentTurn = (room.currentTurn + 1) % 2;
-        handleTsumoPhase(room, data);  // ←ここ
+        handleTsumoPhase(room, room.currentTurn, data);
       } else {
         console.log('🈳 山が尽きました（流局）');
       }
@@ -133,12 +133,12 @@ app.ws('/ws', (ws, req) => {
         const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
         room.shoupais[room.currentTurn].zimo(nextPaiStr);
 
-        handleTsumoPhase(room, data);  // ←ここ
+        handleTsumoPhase(room, room.currentTurn, data);
       } else {
         console.log('🈳 山が尽きました（流局）');
       }
     }
-    
+
     if (data.type === 'tsumo') {
       const winner = data.playerIndex
       room.players.forEach((player) => {
@@ -263,56 +263,55 @@ function startGame(roomId) {
   });
 }
 
-function handleTsumoPhase(room, data) {
-  const nextPlayer = room.players[room.currentTurn];
-  const currentShoupai = room.shoupais[room.currentTurn];
+function handleTsumoPhase(room, playerIndex, data) {
+  const player = room.players[playerIndex];
+  const shoupai = room.shoupais[playerIndex];
 
   const tsumoResult = Majiang.Util.hule(
-    currentShoupai,
+    shoupai,
     null,
     Majiang.Util.hule_param({
       zhuangfeng: 0,
-      menfeng: room.currentTurn,
+      menfeng: playerIndex,
       baopai: null,
       changbang: 0,
       lizhibang: 0,
     })
   );
 
-  if (nextPlayer.readyState === 1) {
-    nextPlayer.send(JSON.stringify({
+  if (player.readyState === 1) {
+    player.send(JSON.stringify({
       type: 'tsumo',
-      playerIndex: room.currentTurn,
+      playerIndex,
       roomId: data.roomId,
-      handString: currentShoupai.toString(),
-      aitenoRiichi: room.isRiichiFlags[(room.currentTurn + 1) % 2]
+      handString: shoupai.toString(),
+      aitenoRiichi: room.isRiichiFlags[(playerIndex + 1) % 2]
     }));
 
-    const shanten = Majiang.Util.xiangting(currentShoupai);
+    const shanten = Majiang.Util.xiangting(shoupai);
     console.log(`シャンテン: ${shanten}`);
 
     if (shanten <= 0) {
-      const tingpaiList = getReachableTiles(currentShoupai);
+      const tingpaiList = getReachableTiles(shoupai);
       console.log('リーチ可能牌:', tingpaiList);
 
-      nextPlayer.send(JSON.stringify({
+      player.send(JSON.stringify({
         type: 'riichiCheck',
         roomId: data.roomId,
-        playerIndex: room.currentTurn,
+        playerIndex,
         tingpaiList
       }));
     }
 
     if (tsumoResult) {
-      nextPlayer.send(JSON.stringify({
+      player.send(JSON.stringify({
         type: 'tsumoCheck',
         roomId: data.roomId,
-        playerIndex: room.currentTurn
+        playerIndex
       }));
     }
   }
 }
-
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
