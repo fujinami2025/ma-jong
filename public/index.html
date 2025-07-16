@@ -637,33 +637,42 @@
       modal.style.display = 'flex';
       resultModalCallback = callback || null;
     }
+
+    function showResultModal(message, callback) {
+      const modal = document.getElementById('result-modal');
+      const messageElem = document.getElementById('result-message');
+      const okBtn = document.getElementById('result-ok');
+
+      if (!modal || !messageElem || !okBtn) return; // 安全チェック
+
+      messageElem.textContent = message;
+      modal.style.display = 'flex';
+      resultModalCallback = callback || null;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const okBtn = document.getElementById('result-ok');
+      const modal = document.getElementById('result-modal');
+
+      if (okBtn && modal) {
+        okBtn.onclick = () => {
+          modal.style.display = 'none';
+          if (typeof resultModalCallback === 'function') {
+            resultModalCallback();
+            resultModalCallback = null;
+          }
+        };
+      }
+    });
   </script>
-  <div id="result-modal"
-    style="display:none; position: fixed; top: 0; left: 0; width:100vw; height:100vh; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+  <div id="result-modal" style="display:none; position: fixed; top: 0; left: 0; width:100vw; height:100vh;
+            background-color: rgba(0,0,0,0.5); z-index: 1000;
+            align-items: center; justify-content: center;">
+
     <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; text-align: center;">
       <p id="result-message" style="white-space: pre-line; font-size: 1.2em;"></p>
       <button id="result-ok">OK</button>
     </div>
-    =======
-    messageElem.textContent = message;
-    modal.style.display = 'flex';
-    resultModalCallback = callback || null;
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-    const okBtn = document.getElementById('result-ok');
-    const modal = document.getElementById('result-modal');
-
-    if (okBtn && modal) {
-    modal.style.display = 'none';
-    okBtn.onclick = () => {
-    modal.style.display = 'none';
-    if (typeof resultModalCallback === 'function') {
-    resultModalCallback();
-    resultModalCallback = null;
-    }
-    };
-    }
-    });
   </div>
 </body>
 
