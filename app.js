@@ -333,12 +333,25 @@ function startGame(roomId) {
     const sp = Majiang.Shoupai.fromString(handString);
     shoupais.push(sp);
   }
-
-  console.log(5)
-  // 先手（player 0）にもう1枚ツモ
-  // 親プレイヤー（room.oya）に1枚ツモ
+  // 先手（親プレイヤー）に1枚ツモ
   const firstDraw = mountain.shift();
   shoupais[room.oya].zimo(convertPaiIndexToMPSZ(firstDraw));
+
+  // 保存
+  room.shoupais = shoupais;
+  room.mountain = mountain;
+  room.currentTurn = room.oya;
+
+  // 親プレイヤーに "tsumo" を送る ← これを追加
+  const parentPlayer = room.players[room.oya];
+  const parentShoupai = shoupais[room.oya];
+
+  parentPlayer.send(JSON.stringify({
+    type: 'tsumo',
+    roomId,
+    playerIndex: room.oya,
+    handString: parentShoupai.toString()
+  }));
 
   // 親のターンからスタート
   console.log(6)
