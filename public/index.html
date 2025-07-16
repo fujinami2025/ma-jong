@@ -113,7 +113,11 @@
 
       if (data.type === 'start') {
         statusDiv.style.display = 'none';
-        showGameAfterStartMessage();
+        startDiv.style.display = 'block';
+        setTimeout(() => {
+          startDiv.style.display = "none";
+          gameDiv.style.display = "block";
+        }, 2000); // 2000ms = 2秒
         myPlayerIndex = data.playerIndex;
         myRoomId = data.roomId;
         playerSpan.textContent = myPlayerIndex;
@@ -449,13 +453,6 @@
       });
     }
 
-    function showGameAfterStartMessage() {
-      // 2秒後にゲーム画面を表示
-      setTimeout(() => {
-        startDiv.style.display = "none"; // 対戦スタートメッセージを消す
-        gameDiv.style.display = "block";    // ゲーム画面を表示
-      }, 2000); // 2000ms = 2秒
-    }
   </script>
 </body>
 
