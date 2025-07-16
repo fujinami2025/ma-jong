@@ -150,7 +150,9 @@ app.ws('/ws', (ws, req) => {
       console.log('winner:' + room.scores[winnerIndex]);
       console.log('loser:' + room.scores[loserIndex]);
       console.log('ron' + 6);
-
+      const yakuList = Array.isArray(huleData.hupai)
+        ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
+        : [];
       // 両者に通知
       room.players.forEach((player, index) => {
         if (player.readyState === 1) {
