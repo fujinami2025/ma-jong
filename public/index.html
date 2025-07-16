@@ -64,16 +64,20 @@
     #opponent-discards {
       transform: rotate(180deg);
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       justify-content: center;
       margin: 6px 0;
+      justify-content: flex-start;
     }
 
     #my-discards {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       justify-content: center;
       margin: 6px 0;
+      justify-content: flex-start;
     }
 
     #button-container {
