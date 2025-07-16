@@ -131,6 +131,7 @@ app.ws('/ws', (ws, req) => {
           lizhibang: room.lizhibang || 0   // リーチ棒数
         })
       );
+      console.log("huleData:", JSON.stringify(huleData, null, 2));
       console.log('あがり（ユーザー操作によるロン）');
 
       if (!huleData) {
