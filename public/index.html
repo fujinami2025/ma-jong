@@ -48,6 +48,10 @@
       <div id="opponent-discards" style="margin-bottom: 10px;"></div>
       <div id="my-discards" style="margin-bottom: 10px;"></div>
       <div id="hand-display"></div>
+      <div id="score-container">
+        <p>あなたの点数: <span id="score-0">25000</span></p>
+        <p>相手の点数: <span id="score-1">25000</span></p>
+      </div>
     </div>
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
@@ -152,10 +156,20 @@
 
       if (data.type === 'ron') {
         hideRonSkipButtons();
+
+        const ronPai = convertMPSZToPaiIndex(data.pai);
+        const point = data.huleDetail?.point ?? '???';
+        const yakuList = Array.isArray(data.huleDetail?.yaku) ? data.huleDetail.yaku.join(', ') : '役不明';
+
         if (data.winner === myPlayerIndex) {
-          alert('🎉 あなたがロンしました！獲得牌: ' + convertMPSZToPaiIndex(data.pai));
+          alert(`🎉 あなたがロンしました！\n獲得牌: ${ronPai}\n点数: ${point}点\n役: ${yakuList}`);
         } else {
-          alert('相手がロンしました。');
+          alert(`相手がロンしました。\n放銃牌: ${ronPai}\n点数: -${point}点\n役: ${yakuList}`);
+        }
+
+        // スコア更新（あれば）
+        if (Array.isArray(data.newScores)) {
+          updateScoreDisplay(data.newScores); // ← 自作関数でスコア表示を更新するようにする
         }
       }
 
@@ -405,6 +419,17 @@
       return tileIndex * 4; // 常に0番目のインスタンス
     }
 
+    function updateScoreDisplay(newScores) {
+      // プレイヤーの数だけループ（今回は2人用）
+      newScores.forEach((score, index) => {
+        const scoreElement = document.getElementById(`score-${index}`);
+        if (scoreElement) {
+          scoreElement.textContent = score;
+        } else {
+          console.warn(`スコア表示要素 score-${index} が見つかりません`);
+        }
+      });
+    }
   </script>
 </body>
 
