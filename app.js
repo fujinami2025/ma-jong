@@ -153,6 +153,7 @@ app.ws('/ws', (ws, req) => {
       const yakuList = Array.isArray(huleData.hupai)
         ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
         : [];
+      console.log('yakuList'+yakuList);
       // 両者に通知
       room.players.forEach((player, index) => {
         if (player.readyState === 1) {
