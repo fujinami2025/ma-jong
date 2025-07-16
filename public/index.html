@@ -76,6 +76,21 @@
       margin: 6px 0;
     }
 
+    #ron-button,
+    #skip-button,
+    #tsumo-button,
+    #tsumoskip-button,
+    #riichi-button,
+    #cancel-riichi-button {
+      position: fixed;
+      bottom: calc(5vw + 16px + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
     #hand-display {
       position: fixed;
       bottom: 0;
@@ -116,12 +131,12 @@
     #score-top {
       text-align: center;
       transform: rotate(180deg);
-      font-size: 2rem;
+      font-size: 2vw;
     }
 
     #score-bottom {
       text-align: center;
-      font-size: 2rem;
+      font-size: 2vw;
     }
 
     .tile-img {
@@ -159,6 +174,8 @@
     </div>
 <<<<<<< HEAD
     <div id="hand-display"></div>
+<<<<<<< HEAD
+=======
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
     <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
@@ -168,6 +185,7 @@
 =======
     <div id="hand-display"></div>
 
+>>>>>>> c97466b801042951986f1614c5406cd57b5ff0d5
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
     <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
