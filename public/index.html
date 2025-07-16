@@ -39,9 +39,12 @@
 <body>
   <div id="status">サーバーに接続中...</div>
 
-  <div id="game" style="display: none;">
+  <div id="start" style="display: none;">
     <h2>対戦スタート！</h2>
     <p>あなたは <span id="player"></span> プレイヤーです。</p>
+  </div>
+
+  <div id="game" style="display: none;">
     <p>ルームID: <span id="room"></span></p>
 
     <div id="discards-container">
@@ -63,6 +66,7 @@
 
   <script>
     const statusDiv = document.getElementById('status');
+    const startDiv = document.getElementById('start');
     const gameDiv = document.getElementById('game');
     const playerSpan = document.getElementById('player');
     const roomSpan = document.getElementById('room');
@@ -109,7 +113,7 @@
 
       if (data.type === 'start') {
         statusDiv.style.display = 'none';
-        gameDiv.style.display = 'block';
+        showGameAfterStartMessage();
         myPlayerIndex = data.playerIndex;
         myRoomId = data.roomId;
         playerSpan.textContent = myPlayerIndex;
@@ -443,6 +447,14 @@
           console.warn(`スコア表示要素 score-${index} が見つかりません`);
         }
       });
+    }
+
+    function showGameAfterStartMessage() {
+      // 2秒後にゲーム画面を表示
+      setTimeout(() => {
+        startDiv.style.display = "none"; // 対戦スタートメッセージを消す
+        gameDiv.style.display = "block";    // ゲーム画面を表示
+      }, 2000); // 2000ms = 2秒
     }
   </script>
 </body>
