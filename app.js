@@ -63,13 +63,6 @@ app.ws('/ws', (ws, req) => {
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
       let rawShoupai = room.shoupais[opponentIndex];
-
-      if (!rawShoupai) {
-        console.error("Shoupaiが未定義です：", opponentIndex);
-        return;
-      }
-
-      let rawShoupai = room.shoupais[opponentIndex];
       let oppShoupai;
 
       if (rawShoupai instanceof Majiang.Shoupai) {
@@ -90,7 +83,7 @@ app.ws('/ws', (ws, req) => {
       if (room.isRiichiFlags[opponentIndex]) {
         oppShoupai.lizhi();  // これはShoupaiインスタンスでしか使えません
       }
-      
+
       const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
