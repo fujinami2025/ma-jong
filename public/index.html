@@ -72,19 +72,36 @@
     }
 
     #score-container {
+      width: 30vw;
+      /* 正方形の幅 */
+      height: 30vw;
+      /* 正方形の高さ（幅と同じにして正方形に） */
+      background: rgba(22, 115, 255, 0.9);
       position: fixed;
-      color: rgb(246, 255, 0);
-      font-weight: bold;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(3, 53, 128, 0.9);
-      padding: 6px 10px;
-      width: 30vw;
-      aspect-ratio: 1 / 1;
-      height: auto;
-      max-width: 90vw;
+      display: flex;
+      flex-direction: column;
+      /* 縦に並べる */
+      justify-content: space-between;
+      /* 上下にスペースを開ける */
+      padding: 10px;
+      color: rgb(246, 255, 0);
+      font-weight: bold;
       box-sizing: border-box;
+      border-radius: 8px;
+    }
+
+    #score-top {
+       text-align: center;
+       transform: rotate(180deg);
+       font-size: 2rem;
+    }
+
+    #score-bottom {
+      text-align: center;
+      font-size: 2rem;
     }
   </style>
 </head>
@@ -102,8 +119,8 @@
 
     <div id="opponent-discards" style="margin-bottom: 10px;"></div>
     <div id="score-container">
-      <p style="text-align: center; transform: rotate(180deg);"><span id="score-1">25000</span></p>
-      <p style="text-align: center;"><span id="score-0">25000</span></p>
+      <div id="score-top"><span id="score-0">25000</span></div>
+      <div id="score-bottom"><span id="score-1">25000</span></div>
     </div>
     <div id="my-discards" style="margin-bottom: 10px;"></div>
     <div id="hand-display"></div>
