@@ -74,7 +74,7 @@ app.ws('/ws', (ws, req) => {
       // 捨牌文字列
       const ronPaiStr = convertPaiIndexToMPSZ(data.pai) + '-';
 
-      // パラメータ
+      // (1) ベースの判定パラメータを作る
       const param = Majiang.Util.hule_param({
         zhuangfeng: 0,
         menfeng: opponentIndex,
@@ -84,27 +84,21 @@ app.ws('/ws', (ws, req) => {
         lizhibang: room.lizhibang || 0
       });
 
-      console.log('🧐 【DEBUG ron判定】');
-      console.log(' rawShoupai:', rawShoupai);
-      console.log(' oppShoupai.toString():', oppShoupai.toString());
-      console.log(' oppShoupai._lizhi:', oppShoupai._lizhi);
-      console.log(' ronPaiStr:', ronPaiStr);
-      console.log(' param:', JSON.stringify(param));
-        
+      // (2) リーチ役を手動でセット
+      if (room.isRiichiFlags[opponentIndex]) {
+        param.hupai.lizhi = 1;
+      }
+
+      // (3) ロン判定
       const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
-        Majiang.Util.hule_param({
-          zhuangfeng: 0,
-          menfeng: opponentIndex,
-          baopai: room.baopai || [],
-          fubaopai: room.fubaopai || [],
-          changbang: room.changbang || 0,
-          lizhibang: room.lizhibang || 0,
-          // ← ここで「役としてのリーチ」を1翻分加算
-          hupai: { lizhi: room.isRiichiFlags[opponentIndex] ? 1 : 0 }
-        })
+        param
       );
+
+      // (4) デバッグ出力
+      console.dir(param, { depth: null });
+      console.dir(ronResult, { depth: null });
       console.log(' → ronResult:', ronResult);    // ここが undefined になる
       console.log(' room.isRiichiFlags:', room.isRiichiFlags);
       console.log(' room.lizhibang:', room.lizhibang);
