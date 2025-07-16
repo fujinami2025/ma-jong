@@ -126,7 +126,7 @@ app.ws('/ws', (ws, req) => {
     if (data.type === 'ron') {
       const winnerIndex = data.playerIndex;
       const loserIndex  = (winnerIndex + 1) % 2;
-
+      const winnerHand = convertShoupaiToArray(room.shoupais[winnerIndex]);
       // ログ用
       console.log('ron1');
 
@@ -194,7 +194,8 @@ app.ws('/ws', (ws, req) => {
                 yaku: Array.isArray(huleData.hupai)
     ? huleData.hupai.map(y => `${y.name}(${y.fanshu||''})`)
     : []
-            }
+            },
+            winnerHand
           }));
         }
       });
@@ -220,7 +221,7 @@ app.ws('/ws', (ws, req) => {
       const winnerIndex = data.playerIndex;
       const loserIndex  = (winnerIndex + 1) % 2;
       const winnerShoupai = room.shoupais[winnerIndex];
-
+      const winnerHand = convertShoupaiToArray(room.shoupais[winnerIndex]);
       // ─── (A) 判定用パラメータを受け取る ───
       const param = Majiang.Util.hule_param({
         zhuangfeng:   0,
@@ -267,12 +268,13 @@ app.ws('/ws', (ws, req) => {
               yaku:  Array.isArray(huleData.hupai)
                       ? huleData.hupai.map(y => `${y.name}(${y.fanshu||''})`)
                       : []
-            }
+            },
+            winnerHand
           }));
         }
       });
     }
-    
+
     if (data.type === 'log') {
       console.log(`🪵 クライアントログ: ${data.message}`)
       return
