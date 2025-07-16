@@ -61,15 +61,16 @@ app.ws('/ws', (ws, req) => {
 
       const opponentIndex = (playerIndex + 1) % 2;
       const oppShoupai = room.shoupais[opponentIndex];
+      console.log('oppShoupai'+oppShoupai);
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
       if (!(oppShoupai instanceof Majiang.Shoupai)) {
-        oppShoupai = new Majiang.Shoupai(oppShoupai.toString());
+        oppShoupai = getReachableTiles(oppShoupai);
       }
       if (room.isRiichiFlags[opponentIndex]) {
         oppShoupai.lizhi();
       }
-      
+
       const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
