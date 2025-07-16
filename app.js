@@ -69,11 +69,35 @@ app.ws('/ws', (ws, req) => {
       const opponentIndex = (playerIndex + 1) % 2;
       const rawShoupai = room.shoupais[opponentIndex];
       const oppShoupai = Majiang.Shoupai.fromString(rawShoupai.toString());
+      if (room.isRiichiFlags[opponentIndex]) oppShoupai._lizhi = true;
 
-      // リーチ状態を手動で反映
-      if (room.isRiichiFlags[opponentIndex]) {
-        oppShoupai._lizhi = true;
-      }
+      // 捨牌文字列
+      const ronPaiStr = convertPaiIndexToMPSZ(data.pai) + '-';
+
+      // パラメータ
+      const param = Majiang.Util.hule_param({
+        zhuangfeng: 0,
+        menfeng: opponentIndex,
+        baopai: room.baopai || [],
+        fubaopai: room.fubaopai || [],
+        changbang: room.changbang || 0,
+        lizhibang: room.lizhibang || 0
+      });
+
+      console.log('🧐 【DEBUG ron判定】');
+      console.log(' rawShoupai:', rawShoupai);
+      console.log(' oppShoupai.toString():', oppShoupai.toString());
+      console.log(' oppShoupai._lizhi:', oppShoupai._lizhi);
+      console.log(' ronPaiStr:', ronPaiStr);
+      console.log(' param:', JSON.stringify(param));
+        
+      const ronResult = Majiang.Util.hule(oppShoupai, ronPaiStr, param);
+
+      console.log(' → ronResult:', ronResult);    // ここが undefined になる
+      console.log(' room.isRiichiFlags:', room.isRiichiFlags);
+      console.log(' room.lizhibang:', room.lizhibang);
+      console.log(' room.baopai:', room.baopai, ' room.fubaopai:', room.fubaopai);
+      console.log('————————————————————');
 
       const ronResult = Majiang.Util.hule(
         oppShoupai,
