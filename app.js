@@ -63,6 +63,10 @@ app.ws('/ws', (ws, req) => {
       const oppShoupai = room.shoupais[opponentIndex];
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
+      if (room.isRiichiFlags[opponentIndex]) {
+        oppShoupai.lizhi(); // ← ここが必要！
+      }
+
       const ronResult = Majiang.Util.hule(
         oppShoupai,
         paiStr + '-',
@@ -157,8 +161,8 @@ app.ws('/ws', (ws, req) => {
       console.log('loser:' + room.scores[loserIndex]);
       console.log('ron' + 6);
       const yakuList = Array.isArray(huleData.hupai)
-        ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
-        : [];
+        ? huleData.hupai.map(y => `${y.name}（${y.fanshu || '？'}翻）`).join('、')
+        : '役なし';
       console.log('yakuList' + yakuList);
       // 両者に通知
       room.players.forEach((player, index) => {
@@ -201,6 +205,7 @@ app.ws('/ws', (ws, req) => {
       const loserIndex = (winnerIndex + 1) % 2;
       const winnerShoupai = room.shoupais[winnerIndex];
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
+
 
       const huleData = Majiang.Util.hule(
         winnerShoupai,
