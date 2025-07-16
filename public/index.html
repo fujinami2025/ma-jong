@@ -23,6 +23,16 @@
       align-items: center;
     }
 
+    #start,
+    #status {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
     #game {
       flex: 1;
       width: 100%;
@@ -521,7 +531,7 @@
 
     function showOpponentDiscardedTile(pai, isRiichi = false) {
       if (opponentDiscards.children.length === 0) {
-        opponentDiscards.innerHTML = '<p>相手の捨て牌:</p>';
+        opponentDiscards.innerHTML = '';
       }
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
@@ -537,7 +547,7 @@
 
     function showMyDiscardedTile(pai, isRiichi = false) {
       if (myDiscards.children.length === 0) {
-        myDiscards.innerHTML = '<p>あなたの捨て牌:</p>';
+        myDiscards.innerHTML = '';
       }
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
