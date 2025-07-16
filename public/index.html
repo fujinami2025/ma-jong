@@ -37,7 +37,6 @@
       flex: 1;
       width: 100%;
       display: flex;
-      background: rgba(1, 70, 127, 0.3);
       flex-direction: column;
       justify-content: center;
       align-items: center;
@@ -48,6 +47,7 @@
     #discard-container {
       width: 40vw;
       height: 40vw;
+      background: rgba(200, 200, 200, 0.3);
       position: fixed;
       top: 50%;
       left: 50%;
@@ -116,12 +116,23 @@
     #score-top {
       text-align: center;
       transform: rotate(180deg);
-      font-size: 5vw;
+      font-size: 2rem;
     }
 
     #score-bottom {
       text-align: center;
-      font-size: 5vw;
+      font-size: 2rem;
+    }
+
+    .tile-img {
+      width: 5vw;
+      margin: 2px;
+      transition: transform 0.3s ease;
+    }
+
+    .tile-img.riichi {
+      transform: rotate(90deg);
+      transform-origin: center center;
     }
   </style>
 </head>
@@ -146,6 +157,15 @@
       <div id="score-top"><span id="score-0">25000</span></div>
       <div id="score-bottom"><span id="score-1">25000</span></div>
     </div>
+<<<<<<< HEAD
+    <div id="hand-display"></div>
+    <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
+    <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
+    <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
+    <button id="tsumoskip-button" style="display:none;">スキップ</button>
+    <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
+    <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
+=======
     <div id="hand-display"></div>
 
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
@@ -154,6 +174,7 @@
     <button id="tsumoskip-button" style="display:none;">スキップ</button>
     <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
     <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
+>>>>>>> 876e766e0078abde60163549cd747f466bb5b284
   </div>
 
 
@@ -185,6 +206,7 @@
     let tingpaiList = [];
     let neverMyReach = true;
     let neverElseReach = true;
+    let resultModalCallback = null;
 
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
 
@@ -538,13 +560,9 @@
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
       img.alt = `${pai}`;
-      img.style.width = '5vw';
-      img.style.margin = '2px';
-      if (isRiichi) {
-        img.style.transform = 'rotate(90deg)';
-        img.style.transformOrigin = 'center center';
-      }
-      opponentDiscards.appendChild(img);
+      img.classList.add('tile-img');
+      if (isRiichi) img.classList.add('riichi');
+      myDiscards.appendChild(img);
     }
 
     function showMyDiscardedTile(pai, isRiichi = false) {
@@ -554,13 +572,9 @@
       const img = document.createElement('img');
       img.src = `/dist/image/${getTileImage(pai)}`;
       img.alt = `${pai}`;
-      img.style.width = '5vw';
-      img.style.margin = '2px';
-      if (isRiichi) {
-        img.style.transform = 'rotate(90deg)';
-        img.style.transformOrigin = 'center center';
-      }
-      myDiscards.appendChild(img);
+      img.classList.add('tile-img');
+      if (isRiichi) img.classList.add('riichi');
+      opponentDiscards.appendChild(img);
     }
 
     ws.onclose = () => {
@@ -601,20 +615,17 @@
       });
     }
 
-    function showResultModal(text, callback) {
-      const modal = document.getElementById('resultModal');
-      const resultText = document.getElementById('resultText');
-      const okBtn = document.getElementById('modalOkBtn');
 
-      resultText.textContent = text;
+    function showResultModal(message, callback) {
+      const modal = document.getElementById('result-modal');
+      const messageElem = document.getElementById('result-message');
+      const okBtn = document.getElementById('result-ok');
+
+      if (!modal || !messageElem || !okBtn) return;  // 安全チェック
+
+      messageElem.textContent = message;
       modal.style.display = 'flex';
-
-      function onClose() {
-        modal.style.display = 'none';
-        okBtn.removeEventListener('click', onClose);
-        if (callback) callback();
-      }
-      okBtn.addEventListener('click', onClose);
+      resultModalCallback = callback || null;
     }
   </script>
   <div id="result-modal"
