@@ -522,6 +522,7 @@
       console.log("🀄 再描画対象の手牌:", handStr);
       handDiv.innerHTML = '';
       let suit = '';
+      let haisuu = 0;
 
       for (let i = 0; i < handStr.length; i++) {
         const ch = handStr[i];
@@ -536,7 +537,8 @@
           img.style.margin = '2px';
           img.style.cursor = 'pointer';
           img.classList.add('tile');
-          console.log(i);
+          haisuu++;
+          console.log(haisuu);
           if (i == 17) {
             console.log("tsumo"); //途中です。
             img.classList.add('tsumo');
