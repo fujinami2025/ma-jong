@@ -55,75 +55,79 @@ app.ws('/ws', (ws, req) => {
     const playerIndex = data.playerIndex
 
     if (data.type === 'dahai') {
-    // ─── (A) リーチフラグ更新＆供託棒増加 ───
     if (data.isRiichi && !room.isRiichiFlags[playerIndex]) {
+      // ここでのみ棒を増やす
       room.lizhibang = (room.lizhibang || 0) + 1;
     }
+    // フラグ更新
     room.isRiichiFlags[playerIndex] = data.isRiichi;
 
-    // ─── (B) 全プレイヤーに打牌通知 ───
-    room.players.forEach((player) => {
-      if (player.readyState === 1) {
-        player.send(JSON.stringify({
-          type: 'dahai',
-          playerIndex,
+      const shoupai = room.shoupais[playerIndex];
+      const paiStr = convertPaiIndexToMPSZ(data.pai);
+      shoupai.dapai(paiStr);
+
+      const opponentIndex = (playerIndex + 1) % 2;
+      const rawShoupai = room.shoupais[opponentIndex];
+      const oppShoupai = Majiang.Shoupai.fromString(rawShoupai.toString());
+      if (room.isRiichiFlags[opponentIndex]) oppShoupai._lizhi = true;
+
+      const param = Majiang.Util.hule_param({
+        zhuangfeng: 0,
+        menfeng: opponentIndex,
+        baopai: room.baopai || [],
+        fubaopai: room.fubaopai || [],
+        changbang: room.changbang || 0,
+        lizhibang: room.lizhibang || 0
+      });
+      param.hupai.lizhi = room.isRiichiFlags[opponentIndex] ? 1 : 0;
+
+      // 捨牌文字列
+      const ronPaiStr = convertPaiIndexToMPSZ(data.pai) + '-';
+      const ronResult = Majiang.Util.hule(oppShoupai, ronPaiStr, param);
+
+      console.log(' → ronResult:', ronResult);    // ここが undefined になる
+      console.log(' room.isRiichiFlags:', room.isRiichiFlags);
+      console.log(' room.lizhibang:', room.lizhibang);
+      console.log(' room.baopai:', room.baopai, ' room.fubaopai:', room.fubaopai);
+      console.log('————————————————————');
+
+      // 全プレイヤーに打牌を通知
+      room.players.forEach((player) => {
+        if (player.readyState === 1) {
+          player.send(JSON.stringify({
+            type: 'dahai',
+            playerIndex,
+            pai: data.pai,
+            isRiichi: data.isRiichi
+          }));
+        }
+      });
+
+      // ロン可能なら相手にronCheckを送信して処理を終える
+      if (ronResult && ronResult.defen > 0) {
+        room.players[opponentIndex].send(JSON.stringify({
+          type: 'ronCheck',
           pai: data.pai,
-          isRiichi: data.isRiichi
+          fromPlayer: playerIndex,
+          roomId: data.roomId
         }));
+        return;
       }
-    });
+      
+      // ツモフェーズに進む
+      room.currentTurn = (playerIndex + 1) % 2;
 
-    // ─── (C) ロン判定 ───
-    const opponentIndex = (playerIndex + 1) % 2;
-    const rawShoupai = room.shoupais[opponentIndex];
-    // Shoupaiインスタンスを安全に再構築
-    const oppShoupai = new Majiang.Shoupai(
-      typeof rawShoupai === 'string'
-        ? rawShoupai
-        : rawShoupai.toString()
-    );
-    // 内部フラグにリーチ状態を反映
-    if (room.isRiichiFlags[opponentIndex]) {
-      oppShoupai._lizhi = true;
+      if (room.mountain.length > 0) {
+        const nextPai = room.mountain.shift();
+        const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
+        room.shoupais[room.currentTurn].zimo(nextPaiStr);
+
+        handleTsumoPhase(room, room.currentTurn, data);
+      } else {
+        console.log('🈳 山が尽きました（流局）');
+      }
     }
 
-    // 判定用パラメータを作成し、リーチ役を手動セット
-    const param = Majiang.Util.hule_param({
-      zhuangfeng: 0,
-      menfeng: opponentIndex,
-      baopai: room.baopai || [],
-      fubaopai: room.fubaopai || [],
-      changbang: room.changbang || 0,
-      lizhibang: room.lizhibang || 0
-    });
-    param.hupai.lizhi = room.isRiichiFlags[opponentIndex] ? 1 : 0;
-
-    // 捨牌文字列
-    const ronPaiStr = convertPaiIndexToMPSZ(data.pai) + '-';
-    const ronResult = Majiang.Util.hule(oppShoupai, ronPaiStr, param);
-
-    // ロン可能なら相手にronCheckを送信して処理を終える
-    if (ronResult && ronResult.defen > 0) {
-      room.players[opponentIndex].send(JSON.stringify({
-        type: 'ronCheck',
-        pai: data.pai,
-        fromPlayer: playerIndex,
-        roomId: data.roomId
-      }));
-      return;
-    }
-
-    // ─── (D) ツモフェーズへ ───
-    room.currentTurn = opponentIndex;
-    if (room.mountain.length > 0) {
-      const nextPai = room.mountain.shift();
-      const nextPaiStr = convertPaiIndexToMPSZ(nextPai);
-      room.shoupais[room.currentTurn].zimo(nextPaiStr);
-      handleTsumoPhase(room, room.currentTurn, data);
-    } else {
-      console.log('🈳 山が尽きました（流局）');
-    }
-  }
 
     if (data.type === 'ron') {
       const winnerIndex = data.playerIndex;
