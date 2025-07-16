@@ -367,7 +367,7 @@ function startGame(roomId) {
     }));
 
     // ✅ ツモ和了チェックは先手だけ
-    if (i === 0) {
+    if (i === room.oya) {
       const tsumoResult = Majiang.Util.hule(
         shoupai,
         null,
