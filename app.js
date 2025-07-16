@@ -123,15 +123,14 @@ app.ws('/ws', (ws, req) => {
         winnerShoupai,
         paiStr + '-',  // ロン判定用（ツモなら null）
         Majiang.Util.hule_param({
-          zhuangfeng: 0,
-          menfeng: winnerIndex,
-          baopai: room.baopai || [],
-          fubaopai: room.fubaopai || [],
-          changbang: room.changbang || 0,
-          lizhibang: room.lizhibang || 0
+          zhuangfeng: 0,       // 場風（東場＝0）
+          menfeng: winnerIndex, // 自風（自分の座席）
+          baopai: room.baopai || ["p9"],       // ドラ牌配列（例: ["p5"]）
+          fubaopai: room.fubaopai || ["p8"],   // 裏ドラ
+          changbang: room.changbang || 0,  // 連荘棒数
+          lizhibang: room.lizhibang || 0   // リーチ棒数
         })
       );
-
       console.log('あがり（ユーザー操作によるロン）');
 
       if (!huleData) {
