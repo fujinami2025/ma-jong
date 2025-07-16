@@ -9,6 +9,8 @@
     body {
       height: 100%;
       margin: 0;
+      min-width: 400px;
+      min-height: 300px;
     }
 
     body {
@@ -68,6 +70,10 @@
       transform: translate(-50%, -50%);
       background: rgba(22, 115, 255, 0.9);
       padding: 6px 10px;
+      width: 30vw;
+      height: auto;
+      max-width: 90vw;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -163,7 +169,7 @@
         ronButton.style.display = 'none';
         riichiButton.style.display = 'none';
         skipButton.style.display = 'none';
-        
+
         statusDiv.style.display = 'none';
         startDiv.style.display = 'block';
         setTimeout(() => {
