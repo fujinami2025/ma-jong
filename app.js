@@ -64,9 +64,10 @@ app.ws('/ws', (ws, req) => {
       console.log('oppShoupai'+oppShoupai);
       const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
-      if (!(oppShoupai instanceof Majiang.Shoupai)) {
-        oppShoupai = getReachableTiles(oppShoupai);
-      }
+      // 1. 再構築する
+      const oppShoupai = new Majiang.Shoupai(room.shoupais[opponentIndex]);
+
+      // 2. リーチしていたらマークする
       if (room.isRiichiFlags[opponentIndex]) {
         oppShoupai.lizhi();
       }
