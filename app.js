@@ -464,12 +464,9 @@ function getReachableTiles(shoupai) {
   }
 
   // ④ suit+digit → digit+suit に入れ替え、インデックス化
-  return Array.from(reachable).map(ts => {
-    // ts は "p9" など
-    const swapped = ts.charAt(1) + ts.charAt(0);  // "9p"
-    console.log('swapped' + swapped);
-    return convertMPSZToPaiIndex(swapped);
-  });
+  return Array.from(reachable)
+    .filter(p => Majiang.Shoupai.valid_pai(p))  // 不正牌フィルタ
+    .map(p => convertMPSZToPaiIndex(p));        // 変換（MPSZ形式のままで渡す）
 }
 
 
