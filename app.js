@@ -346,9 +346,13 @@ function startGame(roomId) {
   // 親のターンからスタート
   console.log(6)
   // 状態をルームに保存
+  // 状態をルームに保存
   room.shoupais = shoupais;
   room.mountain = mountain;
   room.currentTurn = room.oya;
+
+  // 🔁 捨て牌をリセット
+  room.shoupais.forEach(sp => sp._he = []);
   console.log(7)
   // クライアントに初期手牌を送信
   room.players.forEach((player, i) => {
