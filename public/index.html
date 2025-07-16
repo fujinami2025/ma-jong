@@ -207,7 +207,7 @@
 
     let myPlayerIndex = null;
     let myRoomId = null;
-    let canDiscard = true;
+    let canDiscard = false;
     let ronPendingPai = null;
     let skipRequested = false;
     let isRiichi = false;
@@ -278,9 +278,8 @@
         if (data.playerIndex === myPlayerIndex) {
           currentHandString = data.handString || currentHandString;
           if (data.handString) showHandFromShoupaiString(data.handString);
+          canDiscard = true;
         }
-      } else {
-        canDiscard = false;
       }
 
       if (data.type === 'dahai') {
