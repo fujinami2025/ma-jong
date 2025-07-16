@@ -239,6 +239,8 @@
 
       if (data.type === 'start') {
         // 🔁 クライアント状態リセット
+        myPlayerIndex = data.playerIndex;
+        myRoomId = data.roomId;
         ronPendingPai = null;
         skipRequested = false;
         isRiichi = false;
@@ -398,7 +400,7 @@
     }
 
     function updateTileInteractivity() {
-      console.log('動いてるよー');
+      console.log('vanDiscard:'+canDiscard);
       document.querySelectorAll('.tile').forEach(img => {
         const index = parseInt(img.dataset.index);
         if (reached) {
