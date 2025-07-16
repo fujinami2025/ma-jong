@@ -320,11 +320,19 @@ function startGame(roomId) {
   shuffle(tiles);
   console.log(4)
 
-  // 🔧 テスト用固定牌構成
-  const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, /*予備:*/ 5, 6]; // プレイヤー0
-  const fixedHand1 = [7, 16, 38, 39, 41, 45, 49, 54, 58, 62, 66, 69, 70]; // プレイヤー1 (即ロン用)
-  const hands = [fixedHand0, fixedHand1]
+  // 固定手牌（テスト用）
+  const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, 5, 6];
+  const fixedHand1 = [7, 16, 38, 39, 41, 45, 49, 54, 58, 62, 66, 69, 70];
 
+  // 親によって手牌を割り当てる
+  const hands = [];
+  if (room.oya === 0) {
+    hands[0] = fixedHand0;
+    hands[1] = fixedHand1;
+  } else {
+    hands[0] = fixedHand1;
+    hands[1] = fixedHand0;
+  }
 
   //const hands = [tiles.slice(0, 13), tiles.slice(13, 26)];
   const mountain = [108, ...tiles.slice(27)];
@@ -351,8 +359,9 @@ function startGame(roomId) {
   room.mountain = mountain;
   room.currentTurn = room.oya;
 
-  // 🔁 捨て牌をリセット
-  room.shoupais.forEach(sp => sp._he = []);
+  room.shoupais.forEach(shoupai => {
+    shoupai._he = [];  // 捨て牌配列を空にリセット
+  });
   console.log(7)
   // クライアントに初期手牌を送信
   room.players.forEach((player, i) => {
