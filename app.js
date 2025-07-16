@@ -68,8 +68,8 @@ app.ws('/ws', (ws, req) => {
         Majiang.Util.hule_param({
           zhuangfeng: 0,
           menfeng: opponentIndex,
-          baopai: room.baopai || ["9p"],
-          fubaopai: room.fubaopai || ["8p"],
+          baopai: room.baopai || ["p9"],
+          fubaopai: room.fubaopai || ["p8"],
           changbang: room.changbang || 0,
           lizhibang: room.lizhibang || 0,
         })
