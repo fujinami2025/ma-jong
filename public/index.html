@@ -77,24 +77,18 @@
     }
 
     #button-container {
-      position: absolute;
-      /* 手牌のコンテナの上に重ねるためにabsolute */
-      top: 0;
-      /* 手牌の上に配置（調整が必要） */
+      position: fixed;
+      bottom: 70px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       gap: 8px;
-      /* ボタン間の隙間 */
       z-index: 100;
-      /* 手牌より上に表示 */
     }
 
     #button-container button {
       margin-top: 0;
-      /* まとまりをよくする */
       display: inline-block;
-      /* 横並び */
     }
 
     #hand-display {
