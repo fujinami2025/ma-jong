@@ -91,8 +91,20 @@ app.ws('/ws', (ws, req) => {
       console.log(' ronPaiStr:', ronPaiStr);
       console.log(' param:', JSON.stringify(param));
         
-      const ronResult = Majiang.Util.hule(oppShoupai, ronPaiStr, param);
-
+      const ronResult = Majiang.Util.hule(
+        oppShoupai,
+        paiStr + '-',
+        Majiang.Util.hule_param({
+          zhuangfeng: 0,
+          menfeng: opponentIndex,
+          baopai: room.baopai || [],
+          fubaopai: room.fubaopai || [],
+          changbang: room.changbang || 0,
+          lizhibang: room.lizhibang || 0,
+          // ← ここで「役としてのリーチ」を1翻分加算
+          hupai: { lizhi: room.isRiichiFlags[opponentIndex] ? 1 : 0 }
+        })
+      );
       console.log(' → ronResult:', ronResult);    // ここが undefined になる
       console.log(' room.isRiichiFlags:', room.isRiichiFlags);
       console.log(' room.lizhibang:', room.lizhibang);
