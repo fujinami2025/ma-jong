@@ -218,22 +218,26 @@ app.ws('/ws', (ws, req) => {
 
     if (data.type === 'tsumo') {
       const winnerIndex = data.playerIndex;
-      const loserIndex = (winnerIndex + 1) % 2;
+      const loserIndex  = (winnerIndex + 1) % 2;
       const winnerShoupai = room.shoupais[winnerIndex];
-      const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
+      // ─── (A) 判定用パラメータを受け取る ───
+      const param = Majiang.Util.hule_param({
+        zhuangfeng:   0,
+        menfeng:      winnerIndex,
+        baopai:       room.baopai    || [],
+        fubaopai:     room.fubaopai  || [],
+        changbang:    room.changbang || 0,
+        lizhibang:    room.lizhibang || 0  // 供託棒数
+      });
+      // ─── (B) リーチ役を手動で加算 ───
+      param.hupai.lizhi = room.isRiichiFlags[winnerIndex] ? 1 : 0;
 
+      // ─── (C) ツモ和了判定 ───
       const huleData = Majiang.Util.hule(
         winnerShoupai,
-        null, // ツモなので null
-        Majiang.Util.hule_param({
-          zhuangfeng: 0,
-          menfeng: winnerIndex,
-          baopai: room.baopai || [],
-          fubaopai: room.fubaopai || [],
-          changbang: room.changbang || 0,
-          lizhibang: lizhibang
-        })
+        null,  // ツモなので second arg は null
+        param
       );
 
       if (!huleData) {
@@ -241,35 +245,34 @@ app.ws('/ws', (ws, req) => {
         return;
       }
 
+      // ─── (D) 点数加減 ───
       const scoreDelta = huleData.defen;
-
-      // 点数加減（ロンと同様）
       room.scores[winnerIndex] += scoreDelta;
-      room.scores[loserIndex] -= scoreDelta;
+      room.scores[loserIndex]  -= scoreDelta;
 
       console.log(`ツモ和了：プレイヤー${winnerIndex}、点数：${scoreDelta}`);
       console.log('新しいスコア:', room.scores);
 
-      // 両者に通知
+      // ─── (E) クライアント通知 ───
       room.players.forEach((player, index) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
             type: 'tsumoResult',
-            winner: winnerIndex,
-            loser: loserIndex,
+            winner:     winnerIndex,
+            loser:      loserIndex,
             scoreDelta,
-            newScores: room.scores,
+            newScores:  room.scores,
             huleDetail: {
-              point: scoreDelta,
-              yaku: Array.isArray(huleData.hupai)
-                ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
-                : []
+              point: huleData.defen,
+              yaku:  Array.isArray(huleData.hupai)
+                      ? huleData.hupai.map(y => `${y.name}(${y.fanshu||''})`)
+                      : []
             }
           }));
         }
       });
     }
-
+    
     if (data.type === 'log') {
       console.log(`🪵 クライアントログ: ${data.message}`)
       return
