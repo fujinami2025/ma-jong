@@ -76,11 +76,56 @@
       margin: 6px 0;
     }
 
-    #ron-button,
-    #skip-button,
-    #tsumo-button,
-    #tsumoskip-button,
-    #riichi-button,
+    #ron-button {
+      position: fixed;
+      bottom: calc(5vw + 16px + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
+    #skip-button {
+      position: fixed;
+      bottom: calc(5vw + 16px + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
+    #tsumo-button {
+      position: fixed;
+      bottom: calc(5vw + 16px + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
+    #tsumoskip-button {
+      position: fixed;
+      bottom: calc(5vw + 16px + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
+    #riichi-button {
+      position: fixed;
+      bottom: calc(5vw + 16px + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+
     #cancel-riichi-button {
       position: fixed;
       bottom: calc(5vw + 16px + 8px);
@@ -175,6 +220,11 @@
 <<<<<<< HEAD
     <<<<<<< HEAD <div id="hand-display">
   </div>
+  <<<<<<< HEAD=======<button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
+=======
+<<<<<<< HEAD
+    <<<<<<< HEAD <div id="hand-display">
+  </div>
   <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
   <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
   <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
@@ -189,15 +239,19 @@
 <<<<<<< HEAD
 =======
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
+>>>>>>> a64c061151d734cb9978e50f1a1ca9c368a78b49
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
     <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
     <button id="tsumoskip-button" style="display:none;">スキップ</button>
     <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
     <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
-=======
+    =======
     <div id="hand-display"></div>
 >>>>>>> ec35f199ab9cd28803c1c5616762f5274811820c
 
+<<<<<<< HEAD
+    >>>>>>> c97466b801042951986f1614c5406cd57b5ff0d5
+=======
 <<<<<<< HEAD
   <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
   <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
@@ -208,462 +262,481 @@
   >>>>>>> 876e766e0078abde60163549cd747f466bb5b284
 =======
 >>>>>>> c97466b801042951986f1614c5406cd57b5ff0d5
+>>>>>>> a64c061151d734cb9978e50f1a1ca9c368a78b49
     <button id="ron-button" style="display:none; margin-top:10px;">ロン</button>
     <button id="skip-button" style="display:none; margin-top:10px;">スキップ</button>
     <button id="tsumo-button" style="display:none; margin-top:10px;">ツモ</button>
     <button id="tsumoskip-button" style="display:none;">スキップ</button>
     <button id="riichi-button" style="display:none; margin-top:10px;">リーチ</button>
     <button id="cancel-riichi-button" style="display:none; margin-top:10px;">キャンセル</button>
+<<<<<<< HEAD
+    >>>>>>> 876e766e0078abde60163549cd747f466bb5b284
+    </div>
+=======
 >>>>>>> 876e766e0078abde60163549cd747f466bb5b284
 >>>>>>> ec35f199ab9cd28803c1c5616762f5274811820c
   </div>
+>>>>>>> a64c061151d734cb9978e50f1a1ca9c368a78b49
 
 
-  <script>
-    const statusDiv = document.getElementById('status');
-    const startDiv = document.getElementById('start');
-    const gameDiv = document.getElementById('game');
-    const playerSpan = document.getElementById('player');
-    const roomSpan = document.getElementById('room');
-    const handDiv = document.getElementById('hand-display');
-    const opponentDiscards = document.getElementById('opponent-discards');
-    const myDiscards = document.getElementById('my-discards');
-    const ronButton = document.getElementById('ron-button');
-    const skipButton = document.getElementById('skip-button');
-    const tsumoButton = document.getElementById('tsumo-button');
-    const tsumoskipButton = document.getElementById("tsumoskip-button");
-    const riichiButton = document.getElementById('riichi-button');
-    const canselButton = document.getElementById('cancel-riichi-button');
+    <script>
+      const statusDiv = document.getElementById('status');
+      const startDiv = document.getElementById('start');
+      const gameDiv = document.getElementById('game');
+      const playerSpan = document.getElementById('player');
+      const roomSpan = document.getElementById('room');
+      const handDiv = document.getElementById('hand-display');
+      const opponentDiscards = document.getElementById('opponent-discards');
+      const myDiscards = document.getElementById('my-discards');
+      const ronButton = document.getElementById('ron-button');
+      const skipButton = document.getElementById('skip-button');
+      const tsumoButton = document.getElementById('tsumo-button');
+      const tsumoskipButton = document.getElementById("tsumoskip-button");
+      const riichiButton = document.getElementById('riichi-button');
+      const canselButton = document.getElementById('cancel-riichi-button');
 
-    let myPlayerIndex = null;
-    let myRoomId = null;
-    let canDiscard = false;
-    let ronPendingPai = null;
-    let skipRequested = false;
-    let isRiichi = false;
-    let reached = false;
-    let tingpaiSet = new Set();
-    let currentHandString = '';
-    let tingpaiList = [];
-    let neverMyReach = true;
-    let neverElseReach = true;
-    let resultModalCallback = null;
+      let myPlayerIndex = null;
+      let myRoomId = null;
+      let canDiscard = false;
+      let ronPendingPai = null;
+      let skipRequested = false;
+      let isRiichi = false;
+      let reached = false;
+      let tingpaiSet = new Set();
+      let currentHandString = '';
+      let tingpaiList = [];
+      let neverMyReach = true;
+      let neverElseReach = true;
+      let resultModalCallback = null;
 
-    const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+      const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
 
-    const ws = new WebSocket(`${protocol}://${location.host}/ws`);
+      const ws = new WebSocket(`${protocol}://${location.host}/ws`);
 
-    ws.onopen = () => {
-      statusDiv.textContent = '待機中… 他のプレイヤーを待っています。';
-    };
+      ws.onopen = () => {
+        statusDiv.textContent = '待機中… 他のプレイヤーを待っています。';
+      };
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
 
-      // 受信：リーチ可能牌リスト
-      if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex && !isRiichi) {
-        tingpaiList = data.tingpaiList;    // [0,4,8,…]
-        console.log(tingpaiList);
-        riichiButton.style.display = 'inline-block';
-      }
+        // 受信：リーチ可能牌リスト
+        if (data.type === 'riichiCheck' && data.playerIndex === myPlayerIndex && !isRiichi) {
+          tingpaiList = data.tingpaiList;    // [0,4,8,…]
+          console.log(tingpaiList);
+          riichiButton.style.display = 'inline-block';
+        }
 
-      if (data.type === 'start') {
-        // 🔁 クライアント状態リセット
-        canDiscard = false;
-        ronPendingPai = null;
-        skipRequested = false;
-        isRiichi = false;
-        reached = false;
-        tingpaiSet = new Set();
-        currentHandString = '';
-        tingpaiList = [];
-        neverMyReach = true;
-        neverElseReach = true;
-        myDiscards.innerHTML = '';
-        opponentDiscards.innerHTML = '';
-        // ✅ 必要に応じてUIリセット処理もここで追加
-        tsumoButton.style.display = 'none';
-        ronButton.style.display = 'none';
-        riichiButton.style.display = 'none';
-        skipButton.style.display = 'none';
+        if (data.type === 'start') {
+          // 🔁 クライアント状態リセット
+          canDiscard = false;
+          ronPendingPai = null;
+          skipRequested = false;
+          isRiichi = false;
+          reached = false;
+          tingpaiSet = new Set();
+          currentHandString = '';
+          tingpaiList = [];
+          neverMyReach = true;
+          neverElseReach = true;
+          myDiscards.innerHTML = '';
+          opponentDiscards.innerHTML = '';
+          // ✅ 必要に応じてUIリセット処理もここで追加
+          tsumoButton.style.display = 'none';
+          ronButton.style.display = 'none';
+          riichiButton.style.display = 'none';
+          skipButton.style.display = 'none';
 
-        statusDiv.style.display = 'none';
-        startDiv.style.display = 'block';
-        setTimeout(() => {
-          startDiv.style.display = "none";
-          gameDiv.style.display = "block";
-        }, 2000); // 2000ms = 2秒
-        myPlayerIndex = data.playerIndex;
-        myRoomId = data.roomId;
-        playerSpan.textContent = myPlayerIndex;
-        roomSpan.textContent = myRoomId;
+          statusDiv.style.display = 'none';
+          startDiv.style.display = 'block';
+          setTimeout(() => {
+            startDiv.style.display = "none";
+            gameDiv.style.display = "block";
+          }, 2000); // 2000ms = 2秒
+          myPlayerIndex = data.playerIndex;
+          myRoomId = data.roomId;
+          playerSpan.textContent = myPlayerIndex;
+          roomSpan.textContent = myRoomId;
 
-        currentHandString = data.handString || '';
-        if (data.handString) showHandFromShoupaiString(data.handString);
-      }
-
-      if (data.type === 'tsumo') {
-        if (data.playerIndex === myPlayerIndex) {
-          currentHandString = data.handString || currentHandString;
+          currentHandString = data.handString || '';
           if (data.handString) showHandFromShoupaiString(data.handString);
-          canDiscard = true;
         }
-        if (data.aitenoRiichi) {//相手のリーチ情報
-          console.log("相手がリーチしました");
-        }
-      }
 
-      if (data.type === 'dahai') {
-        if (data.playerIndex == myPlayerIndex) {
-          if (neverMyReach && data.isRiichi) {
-            neverMyReach = false;
-            showMyDiscardedTile(data.pai, data.isRiichi);
-          } else {
-            showMyDiscardedTile(data.pai);
+        if (data.type === 'tsumo') {
+          if (data.playerIndex === myPlayerIndex) {
+            currentHandString = data.handString || currentHandString;
+            if (data.handString) showHandFromShoupaiString(data.handString);
+            canDiscard = true;
           }
-        } else {
-          if (neverElseReach && data.isRiichi) {
-            neverElseReach = false;
-            showOpponentDiscardedTile(data.pai, data.isRiichi);
-          } else {
-            showOpponentDiscardedTile(data.pai);
+          if (data.aitenoRiichi) {//相手のリーチ情報
+            console.log("相手がリーチしました");
           }
         }
-      }
 
-      if (data.type === 'ronCheck') {
-        // ユーザーにロンするかどうか選ばせる
-        ronPendingPai = data.pai;
-        showRonSkipButtons();
-      }
-
-      if (data.type === 'ron') {
-        hideRonSkipButtons();
-
-        const ronPai = convertMPSZToPaiIndex(data.pai);
-        const point = data.huleDetail?.point ?? '???';
-        const yakuList = Array.isArray(data.huleDetail?.yaku) ? data.huleDetail.yaku.join(', ') : '役不明';
-
-        if (data.winner === myPlayerIndex) {
-          showResultModal(
-            `🎉 あなたがロンしました！\n獲得牌: ${ronPai}\n点数: ${point}点\n役: ${yakuList}`,
-            () => {
-              // OK後の処理（例：次局の開始など）
+        if (data.type === 'dahai') {
+          if (data.playerIndex == myPlayerIndex) {
+            if (neverMyReach && data.isRiichi) {
+              neverMyReach = false;
+              showMyDiscardedTile(data.pai, data.isRiichi);
+            } else {
+              showMyDiscardedTile(data.pai);
             }
-          );
-        } else {
-          const handStr = Array.isArray(data.winnerHand)
-            ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
-            : '';
-          showResultModal(
-            `相手がロンしました。\n放銃牌: ${ronPai}\n点数: -${point}点\n役: ${yakuList}\n相手の手牌: ${handStr}`,
-            () => {
-              // OK後の処理（必要に応じて）
+          } else {
+            if (neverElseReach && data.isRiichi) {
+              neverElseReach = false;
+              showOpponentDiscardedTile(data.pai, data.isRiichi);
+            } else {
+              showOpponentDiscardedTile(data.pai);
             }
-          );
+          }
         }
 
-        // スコア更新（あれば）
-        if (Array.isArray(data.newScores)) {
-          updateScoreDisplay(data.newScores); // ← 自作関数でスコア表示を更新するようにする
+        if (data.type === 'ronCheck') {
+          // ユーザーにロンするかどうか選ばせる
+          ronPendingPai = data.pai;
+          showRonSkipButtons();
         }
+
+        if (data.type === 'ron') {
+          hideRonSkipButtons();
+
+          const ronPai = convertMPSZToPaiIndex(data.pai);
+          const point = data.huleDetail?.point ?? '???';
+          const yakuList = Array.isArray(data.huleDetail?.yaku) ? data.huleDetail.yaku.join(', ') : '役不明';
+
+          if (data.winner === myPlayerIndex) {
+            showResultModal(
+              `🎉 あなたがロンしました！\n獲得牌: ${ronPai}\n点数: ${point}点\n役: ${yakuList}`,
+              () => {
+                // OK後の処理（例：次局の開始など）
+              }
+            );
+          } else {
+            const handStr = Array.isArray(data.winnerHand)
+              ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
+              : '';
+            showResultModal(
+              `相手がロンしました。\n放銃牌: ${ronPai}\n点数: -${point}点\n役: ${yakuList}\n相手の手牌: ${handStr}`,
+              () => {
+                // OK後の処理（必要に応じて）
+              }
+            );
+          }
+
+          // スコア更新（あれば）
+          if (Array.isArray(data.newScores)) {
+            updateScoreDisplay(data.newScores); // ← 自作関数でスコア表示を更新するようにする
+          }
+        }
+
+
+        if (data.type === 'tsumoCheck') {
+          tsumoButton.style.display = 'inline-block';
+          tsumoskipButton.style.display = 'inline-block';
+          canDiscard = false; // まだ捨てられない（判定中）
+        }
+
+        if (data.type === 'tsumoResult') {
+          // ボタン非表示（念のため）
+          tsumoButton.style.display = 'none';
+          ronButton.style.display = 'none';
+          skipButton.style.display = 'none';
+
+          const winner = data.winner;
+          const loser = data.loser;
+          const point = data.huleDetail?.point ?? '???';
+          const yakuList = Array.isArray(data.huleDetail?.yaku)
+            ? data.huleDetail.yaku.join(', ')
+            : '役不明';
+          if (winner === myPlayerIndex) {
+            showResultModal(
+              `🎉 ツモあがり！\n点数: +${point}\n役: ${yakuList}`,
+              () => {
+                // OKボタンが押された後にやる処理（必要に応じて追加）
+              }
+            );
+          } else {
+            const handStr = Array.isArray(data.winnerHand)
+              ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
+              : '';
+            showResultModal(
+              `相手がツモ和了しました。\n点数: -${point}点\n役: ${yakuList}\n相手の手牌: ${handStr}`,
+              () => {
+                // OK後に行う処理（例：手牌初期化、スコア更新後のアニメ等）
+              }
+            );
+          }
+
+          // スコア表示を更新
+          if (Array.isArray(data.newScores)) {
+            updateScoreDisplay(data.newScores);
+          }
+        }
+
+        if (data.type === 'waiting') {
+          statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`;
+        }
+      };
+
+      function showRonSkipButtons() {
+        ronButton.style.display = 'inline-block';
+        skipButton.style.display = 'inline-block';
       }
 
-
-      if (data.type === 'tsumoCheck') {
-        tsumoButton.style.display = 'inline-block';
-        tsumoskipButton.style.display = 'inline-block';
-        canDiscard = false; // まだ捨てられない（判定中）
-      }
-
-      if (data.type === 'tsumoResult') {
-        // ボタン非表示（念のため）
-        tsumoButton.style.display = 'none';
+      function hideRonSkipButtons() {
         ronButton.style.display = 'none';
         skipButton.style.display = 'none';
-
-        const winner = data.winner;
-        const loser = data.loser;
-        const point = data.huleDetail?.point ?? '???';
-        const yakuList = Array.isArray(data.huleDetail?.yaku)
-          ? data.huleDetail.yaku.join(', ')
-          : '役不明';
-        if (winner === myPlayerIndex) {
-          showResultModal(
-            `🎉 ツモあがり！\n点数: +${point}\n役: ${yakuList}`,
-            () => {
-              // OKボタンが押された後にやる処理（必要に応じて追加）
-            }
-          );
-        } else {
-          const handStr = Array.isArray(data.winnerHand)
-            ? data.winnerHand.map(idx => convertIndexToMPSZ(idx)).join(' ')
-            : '';
-          showResultModal(
-            `相手がツモ和了しました。\n点数: -${point}点\n役: ${yakuList}\n相手の手牌: ${handStr}`,
-            () => {
-              // OK後に行う処理（例：手牌初期化、スコア更新後のアニメ等）
-            }
-          );
-        }
-
-        // スコア表示を更新
-        if (Array.isArray(data.newScores)) {
-          updateScoreDisplay(data.newScores);
-        }
       }
 
-      if (data.type === 'waiting') {
-        statusDiv.textContent = `待機中… 現在 ${data.count} 人が待機しています。`;
+      function updateTileInteractivity() {
+        console.log('動いてるよー');
+        document.querySelectorAll('.tile').forEach(img => {
+          const index = parseInt(img.dataset.index);
+          if (reached) {
+            // リーチ後はツモ牌（最後の牌）のみ有効に
+            const lastTileIndex = convertMPSZToPaiIndex(currentHandString.slice(-2));
+            const isLastTile = index === lastTileIndex;
+            img.style.pointerEvents = isLastTile ? 'auto' : 'none';
+            img.style.opacity = isLastTile ? '1.0' : '0.5';
+            return;
+          }
+
+          if (isRiichi) {
+            img.style.pointerEvents = tingpaiSet.has(index) ? 'auto' : 'none';
+            img.style.opacity = tingpaiSet.has(index) ? '1.0' : '0.5';
+          } else {
+            img.style.pointerEvents = 'auto';
+            img.style.opacity = '1.0';
+          }
+        });
       }
-    };
 
-    function showRonSkipButtons() {
-      ronButton.style.display = 'inline-block';
-      skipButton.style.display = 'inline-block';
-    }
+      // リーチボタン押下
+      riichiButton.onclick = () => {
+        isRiichi = true;
+        riichiButton.style.display = 'none';
+        canselButton.style.display = 'inline-block';
 
-    function hideRonSkipButtons() {
-      ronButton.style.display = 'none';
-      skipButton.style.display = 'none';
-    }
+        // Set に変換しておく
+        tingpaiSet = new Set(tingpaiList);
+        console.log('リーチ可能牌:', [...tingpaiSet]);
 
-    function updateTileInteractivity() {
-      console.log('動いてるよー');
-      document.querySelectorAll('.tile').forEach(img => {
-        const index = parseInt(img.dataset.index);
-        if (reached) {
-          // リーチ後はツモ牌（最後の牌）のみ有効に
-          const lastTileIndex = convertMPSZToPaiIndex(currentHandString.slice(-2));
-          const isLastTile = index === lastTileIndex;
-          img.style.pointerEvents = isLastTile ? 'auto' : 'none';
-          img.style.opacity = isLastTile ? '1.0' : '0.5';
-          return;
-        }
+        // 有効な牌だけクリック可能にする
+        document.querySelectorAll('.tile').forEach(img => {
+          const idx = parseInt(img.dataset.index, 10);
 
-        if (isRiichi) {
-          img.style.pointerEvents = tingpaiSet.has(index) ? 'auto' : 'none';
-          img.style.opacity = tingpaiSet.has(index) ? '1.0' : '0.5';
-        } else {
-          img.style.pointerEvents = 'auto';
-          img.style.opacity = '1.0';
-        }
-      });
-    }
+          if (tingpaiSet.has(idx)) {
+            img.style.pointerEvents = 'auto';
+            img.style.opacity = '1.0';
+            img.classList.remove('disabled');
+          } else {
+            img.style.pointerEvents = 'none';
+            img.style.opacity = '0.5';
+            img.classList.add('disabled');
+          }
+        });
+      };
 
-    // リーチボタン押下
-    riichiButton.onclick = () => {
-      isRiichi = true;
-      riichiButton.style.display = 'none';
-      canselButton.style.display = 'inline-block';
+      // キャンセル
+      // キャンセル時の処理
+      canselButton.onclick = () => {
+        isRiichi = false;
+        canselButton.style.display = 'none';
+        riichiButton.style.display = 'inline-block';
 
-      // Set に変換しておく
-      tingpaiSet = new Set(tingpaiList);
-      console.log('リーチ可能牌:', [...tingpaiSet]);
-
-      // 有効な牌だけクリック可能にする
-      document.querySelectorAll('.tile').forEach(img => {
-        const idx = parseInt(img.dataset.index, 10);
-
-        if (tingpaiSet.has(idx)) {
+        // 全牌を再び有効に戻す
+        document.querySelectorAll('.tile').forEach(img => {
           img.style.pointerEvents = 'auto';
           img.style.opacity = '1.0';
           img.classList.remove('disabled');
-        } else {
-          img.style.pointerEvents = 'none';
-          img.style.opacity = '0.5';
-          img.classList.add('disabled');
+        });
+      }
+
+
+      ronButton.onclick = () => {
+        if (ronPendingPai !== null) {
+          ws.send(JSON.stringify({
+            type: 'ron',
+            roomId: myRoomId,
+            playerIndex: myPlayerIndex,
+            pai: ronPendingPai
+          }));
+          ronPendingPai = null;
         }
-      });
-    };
+        hideRonSkipButtons();
+      };
 
-    // キャンセル
-    // キャンセル時の処理
-    canselButton.onclick = () => {
-      isRiichi = false;
-      canselButton.style.display = 'none';
-      riichiButton.style.display = 'inline-block';
+      tsumoButton.onclick = () => {
+        tsumoButton.style.display = 'none';
+        tsumoskipButton.style.display = 'none';
 
-      // 全牌を再び有効に戻す
-      document.querySelectorAll('.tile').forEach(img => {
-        img.style.pointerEvents = 'auto';
-        img.style.opacity = '1.0';
-        img.classList.remove('disabled');
-      });
-    }
-
-
-    ronButton.onclick = () => {
-      if (ronPendingPai !== null) {
         ws.send(JSON.stringify({
-          type: 'ron',
+          type: 'tsumo',
           roomId: myRoomId,
-          playerIndex: myPlayerIndex,
-          pai: ronPendingPai
+          playerIndex: myPlayerIndex
+        }));
+      };
+
+      tsumoskipButton.onclick = () => {
+        tsumoButton.style.display = 'none';
+        tsumoskipButton.style.display = 'none';
+
+        // ツモスキップ → 通常の打牌に移行
+        canDiscard = true;
+      };
+
+      // スキップを押した場合
+      skipButton.onclick = () => {
+        hideRonSkipButtons();
+        ws.send(JSON.stringify({
+          type: 'skip',
+          roomId: myRoomId,
+          playerIndex: myPlayerIndex
         }));
         ronPendingPai = null;
-      }
-      hideRonSkipButtons();
-    };
+      };
 
-    tsumoButton.onclick = () => {
-      tsumoButton.style.display = 'none';
-      tsumoskipButton.style.display = 'none';
+      function showHandFromShoupaiString(handStr) {
+        currentHandString = handStr;
+        console.log("🀄 再描画対象の手牌:", handStr);
+        handDiv.innerHTML = '';
+        let suit = '';
 
-      ws.send(JSON.stringify({
-        type: 'tsumo',
-        roomId: myRoomId,
-        playerIndex: myPlayerIndex
-      }));
-    };
+        for (let i = 0; i < handStr.length; i++) {
+          const ch = handStr[i];
+          if ('mpsz'.includes(ch)) {
+            suit = ch;
+          } else if (/\d/.test(ch)) {
+            const tileStr = `${suit}${ch}`;
+            const img = document.createElement('img');
+            img.src = `/dist/image/${suit}${ch}.gif`;
+            img.alt = tileStr;
+            img.style.width = '5vw';
+            img.style.margin = '2px';
+            img.style.cursor = 'pointer';
 
-    tsumoskipButton.onclick = () => {
-      tsumoButton.style.display = 'none';
-      tsumoskipButton.style.display = 'none';
+            img.classList.add('tile');
+            img.dataset.index = convertMPSZToPaiIndex(tileStr);
 
-      // ツモスキップ → 通常の打牌に移行
-      canDiscard = true;
-    };
+            img.onclick = () => {
+              console.log("クリックされました");
+              if (!canDiscard) return;
+              canDiscard = false;
+              if (isRiichi) { //isRiichi=true状態で牌が捨てられた=リーチ成立
+                reached = true;
+              }
+              riichiButton.style.display = 'none'; //相手の手番になるからボタンけす
+              canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
 
-    // スキップを押した場合
-    skipButton.onclick = () => {
-      hideRonSkipButtons();
-      ws.send(JSON.stringify({
-        type: 'skip',
-        roomId: myRoomId,
-        playerIndex: myPlayerIndex
-      }));
-      ronPendingPai = null;
-    };
+              const paiIndex = convertMPSZToPaiIndex(tileStr);
 
-    function showHandFromShoupaiString(handStr) {
-      currentHandString = handStr;
-      console.log("🀄 再描画対象の手牌:", handStr);
-      handDiv.innerHTML = '';
-      let suit = '';
+              img.remove(); //半透明の捨て牌もういらなくね？
 
-      for (let i = 0; i < handStr.length; i++) {
-        const ch = handStr[i];
-        if ('mpsz'.includes(ch)) {
-          suit = ch;
-        } else if (/\d/.test(ch)) {
-          const tileStr = `${suit}${ch}`;
-          const img = document.createElement('img');
-          img.src = `/dist/image/${suit}${ch}.gif`;
-          img.alt = tileStr;
-          img.style.width = '5vw';
-          img.style.margin = '2px';
-          img.style.cursor = 'pointer';
-
-          img.classList.add('tile');
-          img.dataset.index = convertMPSZToPaiIndex(tileStr);
-
-          img.onclick = () => {
-            console.log("クリックされました");
-            if (!canDiscard) return;
-            canDiscard = false;
-            if (isRiichi) { //isRiichi=true状態で牌が捨てられた=リーチ成立
-              reached = true;
-            }
-            riichiButton.style.display = 'none'; //相手の手番になるからボタンけす
-            canselButton.style.display = 'none'; //リーチ後にキャンセルボタンを消す
-
-            const paiIndex = convertMPSZToPaiIndex(tileStr);
-
-            img.remove(); //半透明の捨て牌もういらなくね？
-
-            ws.send(JSON.stringify({
-              type: 'dahai',
-              roomId: myRoomId,
-              playerIndex: myPlayerIndex,
-              pai: paiIndex,
-              isRiichi: reached
-            }));
-          };
-          handDiv.appendChild(img);
+              ws.send(JSON.stringify({
+                type: 'dahai',
+                roomId: myRoomId,
+                playerIndex: myPlayerIndex,
+                pai: paiIndex,
+                isRiichi: reached
+              }));
+            };
+            handDiv.appendChild(img);
+          }
         }
+        updateTileInteractivity();
       }
-      updateTileInteractivity();
-    }
 
-    function getTileImage(paiNumber) {
-      const typeIndex = Math.floor(paiNumber / 4);
-      if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
-      if (typeIndex < 18) return `p${typeIndex - 9 + 1}.gif`;
-      if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`;
-      return `z${typeIndex - 27 + 1}.gif`;
-    }
-
-    function showOpponentDiscardedTile(pai, isRiichi = false) {
-      if (opponentDiscards.children.length === 0) {
-        opponentDiscards.innerHTML = '';
+      function getTileImage(paiNumber) {
+        const typeIndex = Math.floor(paiNumber / 4);
+        if (typeIndex < 9) return `m${typeIndex + 1}.gif`;
+        if (typeIndex < 18) return `p${typeIndex - 9 + 1}.gif`;
+        if (typeIndex < 27) return `s${typeIndex - 18 + 1}.gif`;
+        return `z${typeIndex - 27 + 1}.gif`;
       }
-      const img = document.createElement('img');
-      img.src = `/dist/image/${getTileImage(pai)}`;
-      img.alt = `${pai}`;
-      img.classList.add('tile-img');
-      if (isRiichi) img.classList.add('riichi');
-      myDiscards.appendChild(img);
-    }
 
-    function showMyDiscardedTile(pai, isRiichi = false) {
-      if (myDiscards.children.length === 0) {
-        myDiscards.innerHTML = '';
-      }
-      const img = document.createElement('img');
-      img.src = `/dist/image/${getTileImage(pai)}`;
-      img.alt = `${pai}`;
-      img.classList.add('tile-img');
-      if (isRiichi) img.classList.add('riichi');
-      opponentDiscards.appendChild(img);
-    }
-
-    ws.onclose = () => {
-      statusDiv.textContent = 'サーバーとの接続が切断されました。';
-    };
-
-    function convertMPSZToPaiIndex(paiStr) {
-      const num = parseInt(paiStr[1]);
-      const suit = paiStr[0];
-      let base = 0;
-      if (suit === 'p') base = 9;
-      else if (suit === 's') base = 18;
-      else if (suit === 'z') base = 27;
-      const tileIndex = base + num - 1;
-      return tileIndex * 4; // 常に0番目のインスタンス
-    }
-
-    function convertIndexToMPSZ(index) {
-      const tile = Math.floor(index / 4);  // 0〜33 の牌番号
-      const num = (tile % 9) + 1;
-      const suitIndex = Math.floor(tile / 9);
-
-      const suits = ['m', 'p', 's', 'z'];
-      const suit = suits[suitIndex];
-
-      return `${suit}${num}`;
-    }
-
-    function updateScoreDisplay(newScores) {
-      // プレイヤーの数だけループ（今回は2人用）
-      newScores.forEach((score, index) => {
-        const scoreElement = document.getElementById(`score-${index}`);
-        if (scoreElement) {
-          scoreElement.textContent = score;
-        } else {
-          console.warn(`スコア表示要素 score-${index} が見つかりません`);
+      function showOpponentDiscardedTile(pai, isRiichi = false) {
+        if (opponentDiscards.children.length === 0) {
+          opponentDiscards.innerHTML = '';
         }
-      });
-    }
+        const img = document.createElement('img');
+        img.src = `/dist/image/${getTileImage(pai)}`;
+        img.alt = `${pai}`;
+        img.classList.add('tile-img');
+        if (isRiichi) img.classList.add('riichi');
+        myDiscards.appendChild(img);
+      }
+
+      function showMyDiscardedTile(pai, isRiichi = false) {
+        if (myDiscards.children.length === 0) {
+          myDiscards.innerHTML = '';
+        }
+        const img = document.createElement('img');
+        img.src = `/dist/image/${getTileImage(pai)}`;
+        img.alt = `${pai}`;
+        img.classList.add('tile-img');
+        if (isRiichi) img.classList.add('riichi');
+        opponentDiscards.appendChild(img);
+      }
+
+      ws.onclose = () => {
+        statusDiv.textContent = 'サーバーとの接続が切断されました。';
+      };
+
+      function convertMPSZToPaiIndex(paiStr) {
+        const num = parseInt(paiStr[1]);
+        const suit = paiStr[0];
+        let base = 0;
+        if (suit === 'p') base = 9;
+        else if (suit === 's') base = 18;
+        else if (suit === 'z') base = 27;
+        const tileIndex = base + num - 1;
+        return tileIndex * 4; // 常に0番目のインスタンス
+      }
+
+      function convertIndexToMPSZ(index) {
+        const tile = Math.floor(index / 4);  // 0〜33 の牌番号
+        const num = (tile % 9) + 1;
+        const suitIndex = Math.floor(tile / 9);
+
+        const suits = ['m', 'p', 's', 'z'];
+        const suit = suits[suitIndex];
+
+        return `${suit}${num}`;
+      }
+
+      function updateScoreDisplay(newScores) {
+        // プレイヤーの数だけループ（今回は2人用）
+        newScores.forEach((score, index) => {
+          const scoreElement = document.getElementById(`score-${index}`);
+          if (scoreElement) {
+            scoreElement.textContent = score;
+          } else {
+            console.warn(`スコア表示要素 score-${index} が見つかりません`);
+          }
+        });
+      }
 
 
-    function showResultModal(message, callback) {
-      const modal = document.getElementById('result-modal');
-      const messageElem = document.getElementById('result-message');
-      const okBtn = document.getElementById('result-ok');
+      function showResultModal(message, callback) {
+        const modal = document.getElementById('result-modal');
+        const messageElem = document.getElementById('result-message');
+        const okBtn = document.getElementById('result-ok');
 
-      if (!modal || !messageElem || !okBtn) return;  // 安全チェック
+        if (!modal || !messageElem || !okBtn) return;  // 安全チェック
 
+<<<<<<< HEAD
+        messageElem.textContent = message;
+        modal.style.display = 'flex';
+        resultModalCallback = callback || null;
+      }
+    </script>
+    <div id="result-modal"
+      style="display:none; position: fixed; top: 0; left: 0; width:100vw; height:100vh; background-color: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+      <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; text-align: center;">
+        <p id="result-message" style="white-space: pre-line; font-size: 1.2em;"></p>
+        <button id="result-ok">OK</button>
+      </div>
+=======
       messageElem.textContent = message;
       modal.style.display = 'flex';
       resultModalCallback = callback || null;
@@ -690,9 +763,13 @@
     <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; text-align: center;">
       <p id="result-message" style="white-space: pre-line; font-size: 1.2em;"></p>
       <button id="result-ok">OK</button>
+>>>>>>> a64c061151d734cb9978e50f1a1ca9c368a78b49
     </div>
+<<<<<<< HEAD
+=======
   </div>
 
+>>>>>>> a64c061151d734cb9978e50f1a1ca9c368a78b49
 </body>
 
 </html>
