@@ -346,13 +346,6 @@ function startGame(roomId) {
   const parentPlayer = room.players[room.oya];
   const parentShoupai = shoupais[room.oya];
 
-  parentPlayer.send(JSON.stringify({
-    type: 'tsumo',
-    roomId,
-    playerIndex: room.oya,
-    handString: parentShoupai.toString()
-  }));
-
   // 親のターンからスタート
   console.log(6)
   // 状態をルームに保存
@@ -375,6 +368,13 @@ function startGame(roomId) {
       playerIndex: i,
       roomId,
       handString: shoupai.toString()
+    }));
+
+    parentPlayer.send(JSON.stringify({ //ツモがstartよりも前だとmyPlayerIndexが初期化されないため後ろに移動
+      type: 'tsumo',
+      roomId,
+      playerIndex: room.oya,
+      handString: parentShoupai.toString()
     }));
 
     // ✅ ツモ和了チェックは先手だけ
