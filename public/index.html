@@ -180,14 +180,28 @@
         canDiscard = false; // まだ捨てられない（判定中）
       }
 
-      if (data.type === 'tsumo' && data.winner !== undefined) {
+      if (data.type === 'tsumoResult') {
+        // ボタン非表示（念のため）
         tsumoButton.style.display = 'none';
         ronButton.style.display = 'none';
         skipButton.style.display = 'none';
-        if (data.winner === myPlayerIndex) {
-          alert('🎉 ツモあがり！');
+
+        const winner = data.winner;
+        const loser = data.loser;
+        const point = data.huleDetail?.point ?? '???';
+        const yakuList = Array.isArray(data.huleDetail?.yaku)
+          ? data.huleDetail.yaku.join(', ')
+          : '役不明';
+
+        if (winner === myPlayerIndex) {
+          alert(`🎉 ツモあがり！\n点数: +${point}\n役: ${yakuList}`);
         } else {
-          alert('相手がツモあがりました。');
+          alert(`相手がツモあがりました。\n点数: -${point}\n役: ${yakuList}`);
+        }
+
+        // スコア表示を更新
+        if (Array.isArray(data.newScores)) {
+          updateScoreDisplay(data.newScores);
         }
       }
 

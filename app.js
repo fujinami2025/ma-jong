@@ -153,7 +153,7 @@ app.ws('/ws', (ws, req) => {
       const yakuList = Array.isArray(huleData.hupai)
         ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
         : [];
-      console.log('yakuList'+yakuList);
+      console.log('yakuList' + yakuList);
       // 両者に通知
       room.players.forEach((player, index) => {
         if (player.readyState === 1) {
@@ -191,17 +191,55 @@ app.ws('/ws', (ws, req) => {
     }
 
     if (data.type === 'tsumo') {
-      const winner = data.playerIndex
-      room.players.forEach((player) => {
+      const winnerIndex = data.playerIndex;
+      const loserIndex = (winnerIndex + 1) % 2;
+      const winnerShoupai = room.shoupais[winnerIndex];
+
+      const huleData = Majiang.Util.hule(
+        winnerShoupai,
+        null, // ツモなので null
+        Majiang.Util.hule_param({
+          zhuangfeng: 0,
+          menfeng: winnerIndex,
+          baopai: room.baopai || [],
+          fubaopai: room.fubaopai || [],
+          changbang: room.changbang || 0,
+          lizhibang: room.lizhibang || 0
+        })
+      );
+
+      if (!huleData) {
+        console.log("※ツモ和了条件を満たしていないため処理スキップ");
+        return;
+      }
+
+      const scoreDelta = huleData.defen;
+
+      // 点数加減（ロンと同様）
+      room.scores[winnerIndex] += scoreDelta;
+      room.scores[loserIndex] -= scoreDelta;
+
+      console.log(`ツモ和了：プレイヤー${winnerIndex}、点数：${scoreDelta}`);
+      console.log('新しいスコア:', room.scores);
+
+      // 両者に通知
+      room.players.forEach((player, index) => {
         if (player.readyState === 1) {
           player.send(JSON.stringify({
-            type: 'tsumo',
-            winner,
-            pai: null
-          }))
+            type: 'tsumoResult',
+            winner: winnerIndex,
+            loser: loserIndex,
+            scoreDelta,
+            newScores: room.scores,
+            huleDetail: {
+              point: scoreDelta,
+              yaku: Array.isArray(huleData.hupai)
+                ? huleData.hupai.map(y => `${y.name}(${y.fanshu || ''})`)
+                : []
+            }
+          }));
         }
-      })
-      console.log('あがり（ツモ）')
+      });
     }
 
     if (data.type === 'log') {
