@@ -78,7 +78,10 @@ app.ws('/ws', (ws, req) => {
         console.error("Shoupaiの再構築に失敗:", rawShoupai);
         return;
       }
-
+      console.log("oppShoupai:", oppShoupai);
+      console.log("typeof oppShoupai:", typeof oppShoupai);
+      console.log("oppShoupai instanceof Majiang.Shoupai:", oppShoupai instanceof Majiang.Shoupai);
+      console.log("oppShoupai.lizhi:", oppShoupai.lizhi);
       // リーチ状態の反映（サーバー側フラグを利用）
       if (room.isRiichiFlags[opponentIndex]) {
         oppShoupai.lizhi();  // これはShoupaiインスタンスでしか使えません
