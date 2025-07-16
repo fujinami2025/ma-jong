@@ -123,7 +123,7 @@ app.ws('/ws', (ws, req) => {
       const winnerShoupai = room.shoupais[winnerIndex];
       const paiStr = convertPaiIndexToMPSZ(data.pai); // 例: "p3"
       console.log('ron' + 2);
-
+      const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
       const huleData = Majiang.Util.hule(
         winnerShoupai,
         paiStr + '-',  // ロン判定用（ツモなら null）
@@ -133,7 +133,7 @@ app.ws('/ws', (ws, req) => {
           baopai: room.baopai || ["p9"],       // ドラ牌配列（例: ["p5"]）
           fubaopai: room.fubaopai || ["p8"],   // 裏ドラ
           changbang: room.changbang || 0,  // 連荘棒数
-          lizhibang: room.lizhibang || 0   // リーチ棒数
+          lizhibang: lizhibang          //リーチしているか、していたら1
         })
       );
       console.log("huleData:", JSON.stringify(huleData, null, 2));
@@ -199,6 +199,7 @@ app.ws('/ws', (ws, req) => {
       const winnerIndex = data.playerIndex;
       const loserIndex = (winnerIndex + 1) % 2;
       const winnerShoupai = room.shoupais[winnerIndex];
+      const lizhibang = room.isRiichiFlags[playerIndex] ? 1 : 0;
 
       const huleData = Majiang.Util.hule(
         winnerShoupai,
@@ -209,7 +210,7 @@ app.ws('/ws', (ws, req) => {
           baopai: room.baopai || [],
           fubaopai: room.fubaopai || [],
           changbang: room.changbang || 0,
-          lizhibang: room.lizhibang || 0
+          lizhibang: lizhibang
         })
       );
 
@@ -275,7 +276,7 @@ function startGame(roomId) {
 
   // 🔧 テスト用固定牌構成
   const fixedHand0 = [0, 1, 2, 4, 8, 12, 36, 40, 44, 108, 109, /*予備:*/ 5, 6]; // プレイヤー0
-  const fixedHand1 = [7,37, 38, 39, 41, 45, 49, 54, 58, 62, 66, 69, 70]; // プレイヤー1 (即ロン用)
+  const fixedHand1 = [7, 37, 38, 39, 41, 45, 49, 54, 58, 62, 66, 69, 70]; // プレイヤー1 (即ロン用)
   const hands = [fixedHand0, fixedHand1]
 
 
