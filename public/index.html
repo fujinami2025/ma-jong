@@ -626,8 +626,8 @@
     }
 
     function convertIndexToMPSZ(index) {
-      const tile = Math.floor(index / 4);  // 0〜33 の牌番号
-      const num = (tile % 9);
+      const tile = Math.floor(index / 4);  // 0〜35 の牌番号
+      const num = (tile % 9)+1;
       const suitIndex = Math.floor(tile / 9);
 
       const suits = ['m', 'p', 's', 'z'];
