@@ -625,16 +625,12 @@
     }
 
     function convertIndexToMPSZ(index) {
-      const tile = Math.floor(index / 4);  // 0〜33 の牌番号
-      const num = (tile % 9) + 1;
-      const suitIndex = Math.floor(tile / 9);
-
       const suits = ['m', 'p', 's', 'z'];
-      const suit = suits[suitIndex];
-
-      return `${suit}${num}`;
+      const suit = Math.floor((index - 1) / 9);
+      const num = ((index - 1) % 9) + 1;
+      return suits[suit] + num;
     }
-
+    
     function updateScoreDisplay(newScores) {
       if (myPlayerIndex === 0) {
         // 自分がプレイヤー0なら、score-1が下、score-0が上
