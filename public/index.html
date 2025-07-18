@@ -591,6 +591,8 @@
       img.classList.add('tile-img');
       if (isRiichi) img.classList.add('riichi');
       opponentDiscards.appendChild(img);
+
+      img.scrollTop = img.scrollHeight; //自動スクロール
     }
 
     function showMyDiscardedTile(pai, isRiichi = false) {
@@ -603,6 +605,8 @@
       img.classList.add('tile-img');
       if (isRiichi) img.classList.add('riichi');
       myDiscards.appendChild(img);
+
+      img.scrollTop = img.scrollHeight; //自動スクロール
     }
 
     ws.onclose = () => {
